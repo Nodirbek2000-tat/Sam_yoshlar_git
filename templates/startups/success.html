@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block title %}StartUp qabul qilindi — sam-yosh tadbirkor.uz{% endblock %}
+
+{% block content %}
+<section class="tashkilot-success">
+    <div class="container container-narrow">
+        <div class="tashkilot-success-card animate-slide-up">
+            <span class="tashkilot-success-icon">🚀</span>
+            <h1 class="tashkilot-success-title">StartUpingiz ro'yxatdan o'tkazildi!</h1>
+            <p class="tashkilot-success-desc">Arizangiz ko'rib chiqilmoqda. Tasdiqlangach, loyihangiz platformada e'lon qilinadi va investorlar uni ko'ra oladi.</p>
+            <div class="tashkilot-success-actions">
+                <a href="{% url 'core:home' %}" class="btn btn-primary btn-lg">Bosh sahifaga o'tish</a>
+                <a href="{% url 'startups:list' %}" class="btn btn-outline btn-lg">StartUplar ro'yxati</a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

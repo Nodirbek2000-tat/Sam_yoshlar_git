@@ -1,0 +1,61 @@
+{% extends 'panel/base_panel.html' %}
+
+{% block title %}Takliflar{% endblock %}
+{% block page_title %}Takliflar{% endblock %}
+{% block page_subtitle %}Foydalanuvchilarning platforma bo'yicha takliflari{% endblock %}
+
+{% block content %}
+<div class="panel-card">
+    {% if page_obj.object_list %}
+        <div class="panel-table-wrap">
+            <table class="panel-table">
+                <thead>
+                    <tr>
+                        <th>Taklif</th>
+                        <th>Muallif</th>
+                        <th>Sana</th>
+                        <th>Ovoz</th>
+                        <th>Holat</th>
+                        <th style="width:230px">Amal</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for suggestion in page_obj %}
+                        <tr>
+                            <td>
+                                <div class="panel-table-title">{{ suggestion.title|truncatechars:55 }}</div>
+                                <div class="panel-table-meta">{{ suggestion.description|truncatechars:80 }}</div>
+                            </td>
+                            <td>
+                                <a href="{% url 'panel:user_detail' suggestion.user.pk %}">{{ suggestion.user.full_name }}</a>
+                            </td>
+                            <td>{{ suggestion.created_at|date:"d.m.Y" }}</td>
+                            <td>👍 {{ suggestion.votes }}</td>
+                            <td>{% include 'panel/_status_badge.html' with status=suggestion.status label=suggestion.get_status_display %}</td>
+                            <td>
+                                <form method="post" action="{% url 'panel:suggestion_status' suggestion.pk %}"
+                                      class="panel-inline-form">
+                                    {% csrf_token %}
+                                    <select name="status" class="panel-input panel-select">
+                                        {% for value, label in statuses %}
+                                            <option value="{{ value }}" {% if suggestion.status == value %}selected{% endif %}>{{ label }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <button type="submit" class="panel-btn panel-btn-outline panel-btn-sm">✓</button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% include 'panel/_pagination.html' %}
+    {% else %}
+        <div class="panel-empty">
+            <div class="panel-empty-icon">💡</div>
+            <div class="panel-empty-title">Takliflar yo'q</div>
+            <div class="panel-empty-text">Foydalanuvchilar kabinetdan taklif yuborishi mumkin.</div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

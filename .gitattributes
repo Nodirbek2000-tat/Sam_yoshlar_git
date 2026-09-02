@@ -1,0 +1,6 @@
+# Docker/Linux skriptlari doim LF bo'lsin — CRLF ularni buzadi
+*.sh text eol=lf
+docker/entrypoint.sh text eol=lf
+docker/init-ssl.sh text eol=lf
+Dockerfile text eol=lf
+*.conf text eol=lf

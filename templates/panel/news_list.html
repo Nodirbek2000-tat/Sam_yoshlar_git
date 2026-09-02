@@ -1,0 +1,92 @@
+{% extends 'panel/base_panel.html' %}
+
+{% block title %}Yangiliklar{% endblock %}
+{% block page_title %}Yangiliklar{% endblock %}
+{% block page_subtitle %}Jami {{ page_obj.paginator.count }} ta yangilik{% endblock %}
+
+{% block header_actions %}
+    <a href="{% url 'panel:news_create' %}" class="panel-btn panel-btn-primary">+ Yangi yangilik</a>
+{% endblock %}
+
+{% block content %}
+<form method="get" class="panel-toolbar">
+    <div class="panel-search">
+        <span class="panel-search-icon">🔍</span>
+        <input type="search" name="q" value="{{ search }}" class="panel-input"
+               placeholder="Sarlavha bo'yicha qidirish...">
+    </div>
+    <button type="submit" class="panel-btn panel-btn-outline">Qidirish</button>
+</form>
+
+<div class="panel-card">
+    {% if page_obj.object_list %}
+        <div class="panel-table-wrap">
+            <table class="panel-table">
+                <thead>
+                    <tr>
+                        <th style="width:70px"></th>
+                        <th>Sarlavha</th>
+                        <th>Kategoriya</th>
+                        <th>Sana</th>
+                        <th>Ko'rish</th>
+                        <th>Holat</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for news in page_obj %}
+                        <tr>
+                            <td>
+                                {% if news.image %}
+                                    <img src="{{ news.image.url }}" alt="" class="panel-thumb">
+                                {% else %}
+                                    <div class="panel-thumb">📰</div>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <div class="panel-table-title">{{ news.title|truncatechars:60 }}</div>
+                                <div class="panel-table-meta">{{ news.display_author|default:"—" }}</div>
+                            </td>
+                            <td><span class="panel-badge panel-badge-primary">{{ news.get_category_display }}</span></td>
+                            <td>{{ news.published_at|date:"d.m.Y" }}</td>
+                            <td>👁 {{ news.views }}</td>
+                            <td>
+                                {% if news.is_published %}
+                                    <span class="panel-badge panel-badge-success">Chop etilgan</span>
+                                {% else %}
+                                    <span class="panel-badge panel-badge-gray">Qoralama</span>
+                                {% endif %}
+                                {% if news.is_featured %}
+                                    <span class="panel-badge panel-badge-warning">★</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <div class="panel-table-actions">
+                                    <a href="{{ news.get_absolute_url }}" target="_blank" rel="noopener"
+                                       class="panel-btn panel-btn-ghost panel-btn-sm" title="Saytda ko'rish">👁</a>
+                                    <a href="{% url 'panel:news_edit' news.pk %}"
+                                       class="panel-btn panel-btn-outline panel-btn-sm">Tahrirlash</a>
+                                    <form method="post" action="{% url 'panel:news_delete' news.pk %}"
+                                          onsubmit="return confirm('«{{ news.title|escapejs }}» o\'chirilsinmi?\n\nBu amalni qaytarib bo\'lmaydi.')">
+                                        {% csrf_token %}
+                                        <button type="submit" class="panel-btn panel-btn-danger panel-btn-sm"
+                                                title="O'chirish">🗑</button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% include 'panel/_pagination.html' with qs=""|add:"q="|add:search|add:"&" %}
+    {% else %}
+        <div class="panel-empty">
+            <div class="panel-empty-icon">📰</div>
+            <div class="panel-empty-title">Yangiliklar topilmadi</div>
+            <div class="panel-empty-text">Birinchi yangilikni qo'shing — u darhol saytda paydo bo'ladi.</div>
+            <a href="{% url 'panel:news_create' %}" class="panel-btn panel-btn-primary">+ Yangilik qo'shish</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

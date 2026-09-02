@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block title %}Ruxsat yo'q — sam-yosh tadbirkor.uz{% endblock %}
+
+{% block content %}
+<section class="error-page">
+    <div class="error-glow"></div>
+
+    <div class="container error-inner">
+        <div class="error-code">
+            <span class="error-digit">4</span>
+            <span class="error-digit error-digit-mid">0</span>
+            <span class="error-digit">3</span>
+        </div>
+
+        <h1 class="error-title">Bu bo'limga ruxsatingiz yo'q</h1>
+        <p class="error-text">Sahifani ko'rish uchun tegishli huquqlar kerak. Agar bu xato deb hisoblasangiz, kengashga murojaat qiling.</p>
+
+        <div class="error-actions">
+            <a href="{% url 'core:home' %}" class="btn btn-primary btn-lg">🏠 Bosh sahifaga</a>
+            <a href="{% url 'accounts:login' %}" class="btn btn-outline btn-lg">Tizimga kirish</a>
+        </div>
+    </div>
+</section>
+{% endblock %}

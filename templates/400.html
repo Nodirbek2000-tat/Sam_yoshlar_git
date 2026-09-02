@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block title %}Noto'g'ri so'rov — sam-yosh tadbirkor.uz{% endblock %}
+
+{% block content %}
+<section class="error-page">
+    <div class="error-glow"></div>
+
+    <div class="container error-inner">
+        <div class="error-code">
+            <span class="error-digit">4</span>
+            <span class="error-digit error-digit-mid">0</span>
+            <span class="error-digit">0</span>
+        </div>
+
+        <h1 class="error-title">So'rov noto'g'ri yuborildi</h1>
+        <p class="error-text">Yuborilgan ma'lumotlar tushunarsiz bo'ldi. Sahifani yangilab, qaytadan urinib ko'ring.</p>
+
+        <div class="error-actions">
+            <a href="{% url 'core:home' %}" class="btn btn-primary btn-lg">🏠 Bosh sahifaga</a>
+            
+        </div>
+    </div>
+</section>
+{% endblock %}

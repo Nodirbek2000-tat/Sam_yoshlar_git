@@ -1,0 +1,87 @@
+{% extends 'panel/base_panel.html' %}
+
+{% block title %}Sozlamalar{% endblock %}
+{% block page_title %}Sayt sozlamalari{% endblock %}
+{% block page_subtitle %}Aloqa ma'lumotlari, maqsad, rahbariyat{% endblock %}
+
+{% block content %}
+<div class="panel-card">
+    <div class="panel-card-head"><h2 class="panel-card-title">Umumiy ma'lumotlar</h2></div>
+    <div class="panel-card-body">
+        <form method="post" enctype="multipart/form-data" novalidate>
+            {% csrf_token %}
+            <div class="panel-form-grid">
+                {% for field in form %}
+                    <div class="panel-field {% if field.name == 'tagline' or field.name == 'mission' or field.name == 'vision' %}panel-field-wide{% endif %}">
+                        <label class="panel-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                        {{ field }}
+                        {% if field.errors %}<ul class="panel-errors">{% for e in field.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="panel-form-foot">
+                <button type="submit" class="panel-btn panel-btn-primary">💾 Saqlash</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="panel-grid panel-grid-2" style="margin-top:18px">
+    <div class="panel-card">
+        <div class="panel-card-head">
+            <h2 class="panel-card-title">👤 Rahbariyat va a'zolar</h2>
+            <a href="{% url 'panel:leader_create' %}" class="panel-btn panel-btn-primary panel-btn-sm">+ Qo'shish</a>
+        </div>
+        <div class="panel-list">
+            {% for leader in leaders %}
+                <a href="{% url 'panel:leader_edit' leader.pk %}" class="panel-list-item">
+                    <span class="panel-avatar">
+                        {% if leader.photo %}<img src="{{ leader.photo.url }}" alt="">{% else %}{{ leader.initials }}{% endif %}
+                    </span>
+                    <div class="panel-list-main">
+                        <div class="panel-list-title">{{ leader.full_name }}</div>
+                        <div class="panel-list-meta">{{ leader.position }}</div>
+                    </div>
+                    {% if leader.is_active %}
+                        <span class="panel-badge panel-badge-success">Faol</span>
+                    {% else %}
+                        <span class="panel-badge panel-badge-gray">Yashirin</span>
+                    {% endif %}
+                </a>
+            {% empty %}
+                <div class="panel-empty">
+                    <div class="panel-empty-icon">👤</div>
+                    <div class="panel-empty-title">Ro'yxat bo'sh</div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="panel-card">
+        <div class="panel-card-head">
+            <h2 class="panel-card-title">✅ Kengash vazifalari</h2>
+            <a href="{% url 'panel:task_create' %}" class="panel-btn panel-btn-primary panel-btn-sm">+ Qo'shish</a>
+        </div>
+        <div class="panel-list">
+            {% for task in tasks %}
+                <a href="{% url 'panel:task_edit' task.pk %}" class="panel-list-item">
+                    <div class="panel-list-main">
+                        <div class="panel-list-title">{{ task.text }}</div>
+                        <div class="panel-list-meta">Tartib: {{ task.order }}</div>
+                    </div>
+                    {% if task.is_active %}
+                        <span class="panel-badge panel-badge-success">Faol</span>
+                    {% else %}
+                        <span class="panel-badge panel-badge-gray">Yashirin</span>
+                    {% endif %}
+                </a>
+            {% empty %}
+                <div class="panel-empty">
+                    <div class="panel-empty-icon">✅</div>
+                    <div class="panel-empty-title">Vazifalar yo'q</div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

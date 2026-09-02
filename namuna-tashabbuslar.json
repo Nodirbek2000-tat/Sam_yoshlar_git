@@ -1,0 +1,56 @@
+{
+  "initiatives": [
+    {
+      "direction": "eco",
+      "kind": "idea",
+      "title": "Maktablarda plastik yig'ish punktlari",
+      "description": "Har bir maktabda plastik shishalarni topshirish punkti bo'lsin. O'quvchilar topshirgan plastik uchun ball yig'adi, yil oxirida eng faollari taqdirlanadi.",
+      "expected_result": "Yiliga kamida 20 tonna plastik qayta ishlashga topshiriladi.",
+      "author_name": "Aziz Rahimov",
+      "author_phone": "+998901112233",
+      "region": "samarqand",
+      "vote_count": 128,
+      "created_at": "2026-08-15",
+      "comments": [
+        {
+          "author_name": "Nodira Karimova",
+          "text": "Zo'r g'oya! Bizning maktabda ham shunday qilish kerak.",
+          "created_at": "2026-08-16"
+        },
+        {
+          "author_name": "Bobur Nazarov",
+          "text": "Ball tizimini mobil ilova orqali qilsa yanada qulay bo'ladi.",
+          "created_at": "2026-08-18"
+        }
+      ]
+    },
+    {
+      "direction": "ai",
+      "kind": "startup",
+      "title": "Fermerlar uchun kasallik aniqlovchi ilova",
+      "description": "Fermer barg rasmini oladi, sun'iy intellekt o'simlik kasalligini aniqlab, davolash usulini aytadi.",
+      "expected_result": "Hosil yo'qotish 30% ga kamayadi.",
+      "author_name": "Madina Yusupova",
+      "region": "fargona",
+      "vote_count": 96,
+      "created_at": "2026-08-20",
+      "comments": [
+        {
+          "author_name": "Jasur Toshmatov",
+          "text": "Offline rejimda ham ishlasa yaxshi bo'lardi — qishloqda internet zaif."
+        }
+      ]
+    },
+    {
+      "direction": "smartcity",
+      "kind": "problem",
+      "title": "Bekatlarda avtobus vaqti ko'rinmaydi",
+      "description": "Yo'lovchilar avtobus qachon kelishini bilmaydi, ba'zan 40 daqiqa kutishadi.",
+      "author_name": "Sherzod Qodirov",
+      "region": "toshkent_shahri",
+      "vote_count": 74,
+      "created_at": "2026-08-22",
+      "comments": []
+    }
+  ]
+}

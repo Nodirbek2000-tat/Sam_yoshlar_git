@@ -1,0 +1,33 @@
+{% extends 'cabinet/base_cabinet.html' %}
+
+{% block title %}Biznes — Kabinet{% endblock %}
+{% block cabinet_title %}Biznes{% endblock %}
+{% block cabinet_subtitle %}Korxonangiz haqidagi ma'lumotlar{% endblock %}
+
+{% block cabinet_content %}
+<div class="card">
+    <div class="card-body">
+        <form method="post" enctype="multipart/form-data" novalidate>
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+                <div class="alert alert-error">{% for e in form.non_field_errors %}{{ e }}{% endfor %}</div>
+            {% endif %}
+
+            <div class="form-grid">
+                {% for field in form %}
+                    <div class="form-group {% if field.name == 'description' or field.name == 'bio' or field.name == 'address' %}form-group-wide{% endif %}">
+                        <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                        {{ field }}
+                        {% if field.help_text %}<small class="form-hint">{{ field.help_text }}</small>{% endif %}
+                        {% if field.errors %}<ul class="form-errors">{% for e in field.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-lg">Biznes ma'lumotlarini saqlash</button>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

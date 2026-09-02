@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block title %}StartUplar — sam-yosh tadbirkor.uz{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <div class="container">
+        <h1 class="page-header-title">StartUplar</h1>
+        <p class="page-header-subtitle">Platformada ro'yxatdan o'tgan innovatsion loyihalar</p>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <div class="tabs">
+            <a href="?" class="tab {% if not active_sphere %}active{% endif %}">Barchasi</a>
+            {% for value, label in spheres %}
+                <a href="?yonalish={{ value }}" class="tab {% if active_sphere == value %}active{% endif %}">{{ label }}</a>
+            {% endfor %}
+        </div>
+
+        {% if startups %}
+            <div class="grid grid-3">
+                {% for startup in startups %}
+                    <article class="card scroll-reveal">
+                        <div class="card-body">
+                            <span class="home-menu-card-icon">{{ startup.sphere_icon }}</span>
+                            <span class="badge badge-primary">{{ startup.get_sphere_display }}</span>
+                            <h3 class="card-title">{{ startup.name }}</h3>
+                            <p class="card-text">{{ startup.about|truncatechars:140 }}</p>
+                            <div class="card-meta">
+                                <span>👤 {{ startup.full_name }}</span>
+                                <span>📍 {{ startup.get_region_display }}</span>
+                            </div>
+                            <span class="badge badge-info">{{ startup.get_stage_display }}</span>
+                        </div>
+                    </article>
+                {% endfor %}
+            </div>
+
+            {% include 'partials/pagination.html' %}
+        {% else %}
+            <div class="empty-state">
+                <div class="empty-state-icon">🚀</div>
+                <div class="empty-state-title">StartUplar topilmadi</div>
+                <div class="empty-state-text">
+                    Hozircha tasdiqlangan startup yo'q.
+                    <a href="{% url 'startups:register' %}">Birinchi bo'lib ro'yxatdan o'ting →</a>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

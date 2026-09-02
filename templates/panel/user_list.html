@@ -1,0 +1,100 @@
+{% extends 'panel/base_panel.html' %}
+
+{% block title %}Foydalanuvchilar{% endblock %}
+{% block page_title %}Foydalanuvchilar{% endblock %}
+{% block page_subtitle %}Jami {{ page_obj.paginator.count }} ta hisob{% endblock %}
+
+{% block content %}
+<form method="get" class="panel-toolbar">
+    <div class="panel-search">
+        <span class="panel-search-icon">🔍</span>
+        <input type="search" name="q" value="{{ search }}" class="panel-input"
+               placeholder="Ism, email yoki telefon...">
+    </div>
+    <select name="rol" class="panel-input panel-select" style="max-width:190px" onchange="this.form.submit()">
+        <option value="">Barcha rollar</option>
+        {% for value, label in roles %}
+            <option value="{{ value }}" {% if active_role == value %}selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+    </select>
+    <select name="holat" class="panel-input panel-select" style="max-width:190px" onchange="this.form.submit()">
+        <option value="">Barcha holatlar</option>
+        <option value="tasdiqlangan" {% if active_status == 'tasdiqlangan' %}selected{% endif %}>Tasdiqlangan</option>
+        <option value="kutilmoqda" {% if active_status == 'kutilmoqda' %}selected{% endif %}>Kutilmoqda</option>
+        <option value="bloklangan" {% if active_status == 'bloklangan' %}selected{% endif %}>Bloklangan</option>
+    </select>
+    <button type="submit" class="panel-btn panel-btn-outline">Qidirish</button>
+</form>
+
+<div class="panel-card">
+    {% if page_obj.object_list %}
+        <div class="panel-table-wrap">
+            <table class="panel-table">
+                <thead>
+                    <tr>
+                        <th>Foydalanuvchi</th>
+                        <th>Aloqa</th>
+                        <th>Rol</th>
+                        <th>Hudud</th>
+                        <th>Ro'yxatdan o'tgan</th>
+                        <th>Holat</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for person in page_obj %}
+                        <tr>
+                            <td>
+                                <div style="display:flex; align-items:center; gap:11px">
+                                    <span class="panel-avatar">
+                                        {% if person.avatar %}<img src="{{ person.avatar.url }}" alt="">{% else %}{{ person.initials }}{% endif %}
+                                    </span>
+                                    <div class="panel-table-title">{{ person.full_name|default:"—" }}</div>
+                                </div>
+                            </td>
+                            <td>
+                                {{ person.email }}
+                                <div class="panel-table-meta">{{ person.phone|default:"—" }}</div>
+                            </td>
+                            <td><span class="panel-badge panel-badge-primary">{{ person.get_role_display }}</span></td>
+                            <td>{{ person.get_region_display|default:"—" }}</td>
+                            <td>{{ person.date_joined|date:"d.m.Y" }}</td>
+                            <td>
+                                {% if not person.is_active %}
+                                    <span class="panel-badge panel-badge-error">Bloklangan</span>
+                                {% elif person.is_verified %}
+                                    <span class="panel-badge panel-badge-success">✓ Tasdiqlangan</span>
+                                {% else %}
+                                    <span class="panel-badge panel-badge-warning">Kutilmoqda</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <div class="panel-table-actions">
+                                    {% if person != user %}
+                                        <form method="post" action="{% url 'panel:user_toggle' person.pk 'admin' %}"
+                                              onsubmit="return confirm('Administrator huquqi o\'zgartirilsinmi?')">
+                                            {% csrf_token %}
+                                            <button type="submit"
+                                                    class="panel-btn panel-btn-sm {% if person.is_staff %}panel-btn-success{% else %}panel-btn-ghost{% endif %}"
+                                                    title="{% if person.is_staff %}Administrator — bosib olib qo'ying{% else %}Adminlik berish{% endif %}">⚙️</button>
+                                        </form>
+                                    {% endif %}
+                                    <a href="{% url 'panel:user_detail' person.pk %}"
+                                       class="panel-btn panel-btn-outline panel-btn-sm">Ko'rish</a>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% include 'panel/_pagination.html' with qs=""|add:"q="|add:search|add:"&rol="|add:active_role|add:"&holat="|add:active_status|add:"&" %}
+    {% else %}
+        <div class="panel-empty">
+            <div class="panel-empty-icon">👥</div>
+            <div class="panel-empty-title">Foydalanuvchi topilmadi</div>
+            <div class="panel-empty-text">Qidiruv yoki filtrni o'zgartirib ko'ring.</div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block title %}E'lonlar — sam-yosh tadbirkor.uz{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <div class="container">
+        <h1 class="page-header-title">E'lonlar</h1>
+        <p class="page-header-subtitle">Grantlar, kreditlar, tanlovlar va boshqa imkoniyatlar</p>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <div class="tabs">
+            <a href="?" class="tab {% if not active_type %}active{% endif %}">Barchasi</a>
+            {% for value, label in types %}
+                <a href="?turi={{ value }}" class="tab {% if active_type == value %}active{% endif %}">{{ label }}</a>
+            {% endfor %}
+        </div>
+
+        {% if announcements %}
+            <div class="grid grid-2">
+                {% for item in announcements %}
+                    <a href="{% url 'content:announcement_detail' item.slug %}"
+                       class="card announcement-card scroll-reveal">
+                        <div class="card-body">
+                            <div class="announcement-head">
+                                <span class="badge badge-accent">{{ item.icon }} {{ item.get_type_display }}</span>
+                                <span class="badge {% if item.is_expired %}badge-error{% else %}badge-success{% endif %}">
+                                    {{ item.status_label }}
+                                </span>
+                            </div>
+                            <h3 class="card-title">{{ item.title }}</h3>
+                            <p class="card-text">{{ item.body|truncatechars:160 }}</p>
+                            <div class="card-meta">
+                                <span>📅 Joylangan: {{ item.posted_at|date:"Y-m-d" }}</span>
+                                {% if item.deadline %}<span>⏰ Muddat: {{ item.deadline|date:"Y-m-d" }}</span>{% endif %}
+                            </div>
+                        </div>
+                    </a>
+                {% endfor %}
+            </div>
+
+            {% include 'partials/pagination.html' %}
+        {% else %}
+            <div class="empty-state">
+                <div class="empty-state-icon">📢</div>
+                <div class="empty-state-title">E'lonlar topilmadi</div>
+                <div class="empty-state-text">Tanlangan turdagi e'lonlar hozircha yo'q.</div>
+            </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

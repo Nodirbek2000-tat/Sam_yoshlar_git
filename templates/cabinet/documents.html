@@ -1,0 +1,67 @@
+{% extends 'cabinet/base_cabinet.html' %}
+
+{% block title %}Hujjatlar — Kabinet{% endblock %}
+{% block cabinet_title %}Hujjatlar{% endblock %}
+{% block cabinet_subtitle %}Guvohnoma, litsenziya, shartnoma va hisobotlar{% endblock %}
+
+{% block cabinet_content %}
+<div class="card">
+    <div class="card-body">
+        <form method="post" enctype="multipart/form-data" novalidate>
+            {% csrf_token %}
+            <div class="form-grid">
+                {% for field in form %}
+                    <div class="form-group">
+                        <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                        {{ field }}
+                        {% if field.errors %}<ul class="form-errors">{% for e in field.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+            <button type="submit" class="btn btn-primary">📄 Hujjat yuklash</button>
+        </form>
+    </div>
+</div>
+
+{% if documents %}
+    <div class="table-container">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Nomi</th>
+                    <th>Turi</th>
+                    <th>Hajmi</th>
+                    <th>Yuklangan</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for document in documents %}
+                    <tr>
+                        <td>
+                            <a href="{{ document.file.url }}" target="_blank" rel="noopener">📄 {{ document.title }}</a>
+                            {% if document.note %}<div class="mini-list-meta">{{ document.note }}</div>{% endif %}
+                        </td>
+                        <td><span class="badge badge-info">{{ document.get_type_display }}</span></td>
+                        <td>{{ document.size_kb }} KB</td>
+                        <td>{{ document.created_at|date:"d.m.Y" }}</td>
+                        <td>
+                            <form method="post" action="{% url 'cabinet:document_delete' document.pk %}"
+                                  onsubmit="return confirm('Hujjat o\'chirilsinmi?')">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-ghost btn-sm">🗑</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% else %}
+    <div class="empty-state">
+        <div class="empty-state-icon">📄</div>
+        <div class="empty-state-title">Hujjatlar yo'q</div>
+        <div class="empty-state-text">Birinchi hujjatingizni yuklang.</div>
+    </div>
+{% endif %}
+{% endblock %}

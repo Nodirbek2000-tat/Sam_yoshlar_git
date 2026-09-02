@@ -1,0 +1,38 @@
+{% extends 'cabinet/base_cabinet.html' %}
+
+{% block title %}Bildirishnomalar — Kabinet{% endblock %}
+{% block cabinet_title %}Bildirishnomalar{% endblock %}
+{% block cabinet_subtitle %}{{ unread_count }} ta o'qilmagan xabar{% endblock %}
+
+{% block cabinet_content %}
+{% if notifications %}
+    {% if unread_count %}
+        <form method="post" action="{% url 'cabinet:notifications_read_all' %}" class="notif-actions">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-outline btn-sm">✓ Barchasini o'qilgan deb belgilash</button>
+        </form>
+    {% endif %}
+
+    <div class="notif-list">
+        {% for notification in notifications %}
+            <article class="notif-item {% if not notification.is_read %}unread{% endif %}">
+                <span class="notif-icon">{{ notification.icon }}</span>
+                <div class="notif-body">
+                    <div class="notif-title">{{ notification.title }}</div>
+                    {% if notification.message %}<p class="notif-text">{{ notification.message }}</p>{% endif %}
+                    <span class="mini-list-meta">{{ notification.created_at|date:"d.m.Y H:i" }}</span>
+                </div>
+                {% if notification.link %}
+                    <a href="{{ notification.link }}" class="btn btn-ghost btn-sm">→</a>
+                {% endif %}
+            </article>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="empty-state">
+        <div class="empty-state-icon">🔔</div>
+        <div class="empty-state-title">Bildirishnomalar yo'q</div>
+        <div class="empty-state-text">Yangi xabarlar shu yerda paydo bo'ladi.</div>
+    </div>
+{% endif %}
+{% endblock %}

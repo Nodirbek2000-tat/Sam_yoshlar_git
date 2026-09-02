@@ -1,0 +1,998 @@
+/* «Yoshlar Ovozi» — futuristik bo'lim.
+   Saytning qolgan qismi yorug', bu bo'lim ataylab qorong'i: boshqa olamga kirgandek. */
+
+.voice-page {
+    --v-bg: #070a10;
+    --v-bg2: #0c121c;
+    --v-line: rgba(255, 255, 255, .08);
+    --v-ink: #f2efe9;
+    --v-dim: #a9b0be;
+    --v-faint: #5c6474;
+    --v-gold: #d9b36c;
+    --v-gold-b: #f0ce8a;
+    --v-turq: #35b7a6;
+    --v-turq-b: #6fe0ce;
+    --cat-color: #35b7a6;
+    --cat-accent: #6fe0ce;
+
+    position: relative;
+    min-height: 100vh;
+    padding: calc(var(--navbar-height) + 40px) 0 80px;
+    color: var(--v-ink);
+    font-family: 'Manrope', 'Inter', sans-serif;
+    background:
+        radial-gradient(1100px 620px at 18% -8%, rgba(53, 183, 166, .10), transparent 60%),
+        radial-gradient(900px 600px at 100% 10%, rgba(217, 179, 108, .09), transparent 55%),
+        linear-gradient(180deg, var(--v-bg) 0%, var(--v-bg2) 100%);
+    overflow-x: hidden;
+}
+
+.voice-page::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(rgba(255, 255, 255, .035) 1px, transparent 1px);
+    background-size: 34px 34px;
+    opacity: .5;
+    pointer-events: none;
+}
+
+.voice-wrap { position: relative; z-index: 1; max-width: 1240px; margin: 0 auto; padding: 0 24px; }
+
+/* samyosh.css dagi h1..h4 ranglari bu qorong'i bo'limga sizib kirmasin */
+.voice-page h1,
+.voice-page h2,
+.voice-page h3,
+.voice-page h4,
+.voice-page p,
+.voice-page label { color: inherit; }
+
+.voice-page { color: var(--v-ink); }
+.voice-wrap-narrow { max-width: 980px; }
+
+/* ---------------- Hero ---------------- */
+
+.voice-hero { text-align: center; margin-bottom: 30px; }
+
+.voice-back {
+    display: inline-block;
+    margin-bottom: 20px;
+    color: var(--v-faint);
+    font-size: 13px;
+    letter-spacing: .4px;
+    transition: color .2s ease;
+}
+
+.voice-back:hover { color: var(--v-turq-b); }
+
+.voice-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    font-family: 'Space Grotesk', monospace;
+    font-size: 12px;
+    letter-spacing: 3.4px;
+    text-transform: uppercase;
+    color: var(--v-turq-b);
+    margin-bottom: 14px;
+}
+
+.voice-eyebrow::before,
+.voice-eyebrow::after {
+    content: '';
+    width: 26px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--v-turq));
+}
+
+.voice-eyebrow::after { background: linear-gradient(90deg, var(--v-turq), transparent); }
+
+.voice-title {
+    font-family: 'Fraunces', Georgia, serif;
+    font-weight: 600;
+    font-size: clamp(29px, 4.4vw, 48px);
+    line-height: 1.12;
+    letter-spacing: -.01em;
+    margin: 0 auto 14px;
+    max-width: 780px;
+    color: var(--v-ink);
+}
+
+.voice-title em {
+    font-style: italic;
+    font-weight: 500;
+    background: linear-gradient(100deg, var(--v-gold-b), var(--v-turq-b));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.voice-lede {
+    max-width: 580px;
+    margin: 0 auto 24px;
+    color: var(--v-dim);
+    font-size: 15.5px;
+    line-height: 1.65;
+}
+
+.voice-totals { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; }
+
+.voice-total {
+    display: flex;
+    align-items: baseline;
+    gap: 9px;
+    padding: 12px 24px;
+    border: 1px solid var(--v-line);
+    border-radius: 100px;
+    background: rgba(255, 255, 255, .02);
+}
+
+.voice-total b {
+    font-family: 'Space Grotesk', monospace;
+    font-size: 23px;
+    font-weight: 700;
+    background: linear-gradient(100deg, var(--v-gold-b), var(--v-turq-b));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.voice-total span { color: var(--v-faint); font-size: 12px; letter-spacing: .5px; }
+
+.voice-flash {
+    display: inline-block;
+    margin-bottom: 16px;
+    padding: 12px 22px;
+    border-radius: 100px;
+    border: 1px solid rgba(53, 183, 166, .45);
+    background: rgba(53, 183, 166, .14);
+    color: var(--v-turq-b);
+    font-size: 13.5px;
+    font-weight: 600;
+}
+
+/* ---------------- Yo'nalish menyusi (scrollbar yashirin) ---------------- */
+
+.voice-rail {
+    display: flex;
+    gap: 9px;
+    overflow-x: auto;
+    padding: 6px 2px 10px;
+    margin-bottom: 26px;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 24px, #000 calc(100% - 24px), transparent);
+    mask-image: linear-gradient(90deg, transparent, #000 24px, #000 calc(100% - 24px), transparent);
+}
+
+.voice-rail::-webkit-scrollbar { display: none; }
+
+.voice-pill {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 9px 16px 9px 9px;
+    border-radius: 100px;
+    border: 1px solid var(--v-line);
+    background: rgba(255, 255, 255, .02);
+    color: var(--v-dim);
+    font-size: 13px;
+    font-weight: 600;
+    white-space: nowrap;
+    transition: all .25s ease;
+}
+
+.voice-pill:hover { border-color: rgba(255, 255, 255, .2); color: var(--v-ink); transform: translateY(-2px); }
+
+.voice-pill .ic {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, .05);
+    flex-shrink: 0;
+    transition: all .25s ease;
+}
+
+.voice-pill .ic svg { width: 17px; height: 17px; }
+
+.voice-pill.active {
+    color: var(--v-ink);
+    background: rgba(255, 255, 255, .05);
+    border-color: var(--cat-color);
+    box-shadow: 0 0 0 1px var(--cat-color) inset, 0 8px 24px -8px var(--cat-color);
+}
+
+.voice-pill.active .ic { background: var(--cat-color); box-shadow: 0 0 18px -2px var(--cat-color); }
+.voice-pill.active .ic svg { color: #080b12; }
+
+.voice-pill-count {
+    font-family: 'Space Grotesk', monospace;
+    font-size: 11px;
+    color: var(--v-faint);
+    padding-left: 3px;
+}
+
+/* ---------------- Reyting taxtasi ---------------- */
+
+.voice-board { display: flex; flex-direction: column; gap: 16px; }
+
+.voice-row {
+    display: grid;
+    grid-template-columns: 58px 232px minmax(0, 1fr);
+    gap: 18px;
+    align-items: center;
+    padding: 18px;
+    border: 1px solid var(--v-line);
+    border-radius: 20px;
+    background: linear-gradient(180deg, rgba(255, 255, 255, .028), rgba(255, 255, 255, .008));
+    backdrop-filter: blur(6px);
+    transition: border-color .25s ease, transform .25s ease, box-shadow .25s ease;
+}
+
+.voice-row:hover {
+    border-color: color-mix(in srgb, var(--cat-color) 55%, transparent);
+    transform: translateY(-3px);
+    box-shadow: 0 18px 40px -22px var(--cat-color);
+}
+
+.voice-row.place-1 {
+    border-color: color-mix(in srgb, var(--cat-color) 70%, transparent);
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--cat-color) 40%, transparent) inset,
+                0 20px 50px -26px var(--cat-color);
+    background: linear-gradient(120deg,
+        color-mix(in srgb, var(--cat-color) 10%, transparent),
+        rgba(255, 255, 255, .012));
+}
+
+/* O'rin */
+
+.voice-place { display: flex; flex-direction: column; align-items: center; gap: 5px; }
+
+.voice-place-num {
+    font-family: 'Space Grotesk', monospace;
+    font-size: 19px;
+    font-weight: 700;
+    letter-spacing: -.02em;
+    color: var(--v-dim);
+    padding: 8px 0;
+    width: 56px;
+    text-align: center;
+    border-radius: 13px;
+    background: rgba(255, 255, 255, .04);
+    border: 1px solid var(--v-line);
+}
+
+.voice-row.place-1 .voice-place-num {
+    background: linear-gradient(135deg, #f0ce8a, #d9b36c);
+    border-color: transparent;
+    color: #0a0d13;
+    box-shadow: 0 8px 22px -8px #d9b36c;
+}
+
+.voice-row.place-2 .voice-place-num {
+    background: linear-gradient(135deg, #e6ebf2, #b9c4d2);
+    border-color: transparent;
+    color: #0a0d13;
+}
+
+.voice-row.place-3 .voice-place-num {
+    background: linear-gradient(135deg, #e3ab7c, #c2854f);
+    border-color: transparent;
+    color: #0a0d13;
+}
+
+.voice-place-crown { font-size: 17px; }
+
+/* Matn */
+
+.voice-row-body { min-width: 0; }
+
+.voice-row-tags { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 9px; }
+
+.voice-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 11px;
+    border-radius: 100px;
+    border: 1px solid var(--v-line);
+    background: rgba(255, 255, 255, .03);
+    font-size: 11.5px;
+    font-weight: 600;
+    color: var(--v-dim);
+}
+
+.voice-tag-dir { color: var(--cat-color); border-color: color-mix(in srgb, var(--cat-color) 45%, transparent); }
+
+.voice-tag-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--cat-color);
+    box-shadow: 0 0 9px var(--cat-color);
+}
+
+.voice-tag-rank { color: var(--v-gold-b); border-color: rgba(217, 179, 108, .5); }
+
+.voice-row-title {
+    font-family: 'Fraunces', Georgia, serif;
+    font-size: 21px;
+    font-weight: 600;
+    line-height: 1.25;
+    margin: 0 0 8px;
+    letter-spacing: -.01em;
+}
+
+.voice-row-title a { color: var(--v-ink); transition: color .2s ease; }
+.voice-row-title a:hover { color: var(--cat-color); }
+
+.voice-row-text { color: var(--v-dim); font-size: 13.5px; line-height: 1.6; margin: 0 0 12px; }
+
+.voice-row-stats { display: flex; flex-wrap: wrap; gap: 16px; margin-bottom: 14px; }
+
+.voice-stat { font-size: 12.5px; color: var(--v-faint); }
+
+.voice-stat b {
+    font-family: 'Space Grotesk', monospace;
+    font-size: 15px;
+    color: var(--v-ink);
+    margin-right: 3px;
+}
+
+.voice-stat-author { color: var(--v-dim); }
+
+/* Tugmalar */
+
+.voice-row-actions { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+
+.voice-vote-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 18px;
+    border: 1px solid color-mix(in srgb, var(--cat-color) 45%, transparent);
+    border-radius: 100px;
+    background: color-mix(in srgb, var(--cat-color) 12%, transparent);
+    color: var(--v-ink);
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all .2s ease;
+}
+
+.voice-vote-btn:hover:not(:disabled) {
+    background: color-mix(in srgb, var(--cat-color) 26%, transparent);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px -12px var(--cat-color);
+}
+
+.voice-vote-btn:active:not(:disabled) { transform: scale(.96); }
+
+.voice-vote-btn.voted {
+    background: linear-gradient(100deg, var(--cat-color), var(--cat-accent));
+    border-color: transparent;
+    color: #0a0d13;
+    cursor: default;
+}
+
+.voice-vote-btn:disabled { cursor: default; }
+
+.voice-vote-count { font-family: 'Space Grotesk', monospace; font-size: 15px; }
+.voice-vote-word { font-weight: 600; }
+
+.voice-comment-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 18px;
+    border: 1px solid var(--v-line);
+    border-radius: 100px;
+    background: rgba(255, 255, 255, .03);
+    color: var(--v-dim);
+    font-size: 13px;
+    font-weight: 600;
+    transition: all .2s ease;
+}
+
+.voice-comment-btn:hover { color: var(--v-ink); border-color: rgba(255, 255, 255, .25); transform: translateY(-2px); }
+
+/* ---------------- Tirik sahna ---------------- */
+
+.voice-row-scene, .voice-detail-scene { min-width: 0; }
+.voice-row-scene .voice-canvas { aspect-ratio: 4 / 3; }
+
+.voice-canvas {
+    position: relative;
+    border-radius: 14px;
+    background: radial-gradient(120% 130% at 50% 8%, rgba(255, 255, 255, .06), transparent 55%), #060910;
+    border: 1px solid rgba(255, 255, 255, .06);
+    overflow: hidden;
+    aspect-ratio: 900 / 500;
+    box-shadow: inset 0 0 50px rgba(0, 0, 0, .5);
+}
+
+.voice-canvas svg { width: 100%; height: 100%; display: block; position: relative; z-index: 1; }
+
+.voice-canvas::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+        linear-gradient(rgba(255, 255, 255, .03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, .03) 1px, transparent 1px);
+    background-size: 26px 26px;
+    -webkit-mask-image: radial-gradient(120% 100% at 50% 15%, #000 30%, transparent 85%);
+    mask-image: radial-gradient(120% 100% at 50% 15%, #000 30%, transparent 85%);
+    pointer-events: none;
+}
+
+.voice-canvas::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 90px;
+    background: linear-gradient(180deg, transparent, var(--cat-color) 50%, transparent);
+    opacity: .06;
+    mix-blend-mode: screen;
+    pointer-events: none;
+    z-index: 2;
+    animation: voiceScan 7s linear infinite;
+}
+
+@keyframes voiceScan { 0% { top: -90px; } 100% { top: 100%; } }
+
+.voice-hud {
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    border-color: var(--cat-color);
+    opacity: .65;
+    pointer-events: none;
+    z-index: 3;
+}
+
+.voice-hud.tl { top: 8px; left: 8px; border-top: 2px solid; border-left: 2px solid; }
+.voice-hud.tr { top: 8px; right: 8px; border-top: 2px solid; border-right: 2px solid; }
+.voice-hud.bl { bottom: 8px; left: 8px; border-bottom: 2px solid; border-left: 2px solid; }
+.voice-hud.br { bottom: 8px; right: 8px; border-bottom: 2px solid; border-right: 2px solid; }
+
+.voice-fly { position: absolute; inset: 0; pointer-events: none; z-index: 4; }
+
+.voice-particle {
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+    transition: transform .65s cubic-bezier(.22, .75, .3, 1), opacity .65s ease;
+    filter: drop-shadow(0 0 10px currentColor);
+}
+
+.voice-scene-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    margin-top: 8px;
+    font-family: 'Space Grotesk', monospace;
+    font-size: 11.5px;
+}
+
+.voice-scene-name { color: var(--cat-color); letter-spacing: .8px; text-transform: uppercase; }
+.voice-scene-label { color: var(--v-faint); }
+
+/* ---------------- Bitta tashabbus ---------------- */
+
+.voice-detail {
+    display: grid;
+    grid-template-columns: 300px minmax(0, 1fr);
+    gap: 24px;
+    align-items: start;
+    margin: 18px 0 34px;
+    padding: 24px;
+    border: 1px solid var(--v-line);
+    border-radius: 20px;
+    background: linear-gradient(180deg, rgba(255, 255, 255, .03), rgba(255, 255, 255, .01));
+}
+
+.voice-detail-title {
+    font-family: 'Fraunces', Georgia, serif;
+    font-size: 30px;
+    font-weight: 600;
+    line-height: 1.2;
+    margin: 0 0 16px;
+    letter-spacing: -.01em;
+}
+
+.voice-detail-author { display: flex; align-items: center; gap: 11px; margin-bottom: 18px; }
+
+.voice-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--cat-color), var(--cat-accent));
+    color: #0a0d13;
+    font-weight: 700;
+    font-size: 13px;
+    flex-shrink: 0;
+}
+
+.voice-detail-author-name { font-weight: 700; font-size: 14px; }
+.voice-detail-author-meta { font-size: 12px; color: var(--v-faint); }
+
+.voice-detail-body { color: var(--v-dim); font-size: 15px; line-height: 1.75; }
+.voice-detail-body p { margin: 0 0 12px; }
+
+.voice-detail-block {
+    margin: 18px 0;
+    padding: 14px 18px;
+    border-left: 3px solid var(--cat-color);
+    border-radius: 0 12px 12px 0;
+    background: rgba(255, 255, 255, .03);
+}
+
+.voice-detail-block h3 {
+    margin: 0 0 6px;
+    font-size: 12px;
+    letter-spacing: 1.6px;
+    text-transform: uppercase;
+    color: var(--cat-color);
+    font-family: 'Space Grotesk', monospace;
+}
+
+.voice-detail-block p { margin: 0; color: var(--v-dim); font-size: 14px; line-height: 1.65; }
+
+/* ---------------- Takliflar ---------------- */
+
+.voice-section-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    margin: 0 0 16px;
+}
+
+.voice-section-title {
+    font-family: 'Fraunces', Georgia, serif;
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--v-ink);
+    margin: 0 0 16px;
+}
+
+.voice-section-head .voice-section-title { margin: 0; }
+
+.voice-section-count {
+    font-family: 'Space Grotesk', monospace;
+    font-size: 12px;
+    color: var(--v-faint);
+    padding: 4px 12px;
+    border: 1px solid var(--v-line);
+    border-radius: 100px;
+}
+
+.voice-comment-form {
+    padding: 20px;
+    border: 1px solid var(--v-line);
+    border-radius: 16px;
+    background: rgba(255, 255, 255, .02);
+    margin-bottom: 22px;
+}
+
+.voice-comment-list { display: flex; flex-direction: column; gap: 12px; }
+
+.voice-comment {
+    display: flex;
+    gap: 13px;
+    padding: 16px 18px;
+    border: 1px solid var(--v-line);
+    border-radius: 14px;
+    background: rgba(255, 255, 255, .028);
+    transition: border-color .2s ease, transform .2s ease;
+}
+
+.voice-comment:hover {
+    border-color: color-mix(in srgb, var(--cat-color) 40%, transparent);
+    transform: translateX(3px);
+}
+
+.voice-comment > div { min-width: 0; flex: 1; }
+
+.voice-comment-head { display: flex; gap: 10px; align-items: baseline; margin-bottom: 4px; }
+.voice-comment-head strong { font-size: 13.5px; color: var(--v-ink); }
+.voice-comment-head span { font-size: 11.5px; color: var(--v-faint); }
+.voice-comment-text { margin: 0; font-size: 13.5px; color: var(--v-dim); line-height: 1.6; }
+
+/* ---------------- Yonma-yon tashabbuslar ---------------- */
+
+.voice-comments { margin-top: 8px; }
+.voice-siblings { margin-top: 36px; }
+
+.voice-sibling-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; }
+
+.voice-sibling {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 15px 17px;
+    border: 1px solid var(--v-line);
+    border-radius: 14px;
+    background: rgba(255, 255, 255, .022);
+    transition: all .2s ease;
+}
+
+.voice-sibling:hover { border-color: var(--cat-color); transform: translateY(-3px); }
+
+.voice-sibling-votes { font-family: 'Space Grotesk', monospace; font-size: 11.5px; color: var(--cat-color); }
+.voice-sibling-title { font-size: 13.5px; font-weight: 600; color: var(--v-ink); line-height: 1.4; }
+
+/* ---------------- Xabar (toast) ---------------- */
+
+.voice-toast {
+    position: fixed;
+    left: 50%;
+    bottom: 34px;
+    transform: translate(-50%, 20px);
+    padding: 13px 24px;
+    border-radius: 100px;
+    border: 1px solid var(--v-line);
+    background: rgba(12, 18, 28, .94);
+    backdrop-filter: blur(10px);
+    color: var(--v-ink);
+    font-size: 14px;
+    font-weight: 600;
+    box-shadow: 0 18px 44px rgba(0, 0, 0, .5);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .3s ease, transform .3s cubic-bezier(.2, .8, .3, 1.2);
+    z-index: 200;
+}
+
+.voice-toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+.voice-toast.milestone {
+    border-color: var(--v-gold);
+    background: linear-gradient(100deg, rgba(217, 179, 108, .22), rgba(53, 183, 166, .18)), rgba(12, 18, 28, .96);
+    box-shadow: 0 18px 44px rgba(217, 179, 108, .25);
+}
+
+/* ---------------- Animatsiyalar ---------------- */
+
+.pop {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: voicePop .5s cubic-bezier(.2, .8, .3, 1.2) backwards;
+}
+
+@keyframes voicePop {
+    from { opacity: 0; transform: scale(.2) translateY(6px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.floatcoin { animation: voiceFloat 3.2s ease-in-out infinite; }
+
+@keyframes voiceFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+/* ---------------- Bo'sh holat ---------------- */
+
+.voice-empty {
+    padding: 26px 18px;
+    text-align: center;
+    border: 1px dashed var(--v-line);
+    border-radius: 14px;
+    color: var(--v-faint);
+    font-size: 13.5px;
+    line-height: 1.6;
+}
+
+.voice-empty-big { padding: 60px 24px; border-radius: 20px; }
+.voice-empty-icon { font-size: 2.6rem; display: block; margin-bottom: 12px; }
+.voice-empty-big h2 { font-family: 'Fraunces', Georgia, serif; font-size: 22px; margin: 0 0 8px; color: var(--v-ink); }
+.voice-empty-big p { color: var(--v-dim); margin: 0 0 20px; font-size: 14px; }
+
+/* ---------------- Tashabbus bildirish formasi ---------------- */
+
+.voice-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    padding: 13px 24px;
+    border: none;
+    border-radius: 100px;
+    background: linear-gradient(100deg, var(--cat-color), var(--cat-accent));
+    color: #0a0d13;
+    font-family: 'Space Grotesk', monospace;
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 1.1px;
+    text-transform: uppercase;
+    cursor: pointer;
+    box-shadow: 0 10px 30px -10px var(--cat-color);
+    transition: transform .18s ease, box-shadow .18s ease;
+}
+
+.voice-cta:hover { transform: translateY(-2px); box-shadow: 0 14px 34px -10px var(--cat-color); }
+.voice-cta:active { transform: scale(.97); }
+.voice-cta-hero { margin-top: 22px; }
+
+.voice-form-card {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 30px;
+    border: 1px solid var(--v-line);
+    border-radius: 20px;
+    background: linear-gradient(180deg, rgba(255, 255, 255, .03), rgba(255, 255, 255, .01));
+    backdrop-filter: blur(6px);
+}
+
+.voice-field { margin-bottom: 18px; }
+
+.voice-label {
+    display: block;
+    margin-bottom: 7px;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--v-ink);
+    letter-spacing: .2px;
+}
+
+.voice-input {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid var(--v-line);
+    border-radius: 12px;
+    background: rgba(255, 255, 255, .03);
+    color: var(--v-ink);
+    font-family: inherit;
+    font-size: 14.5px;
+    transition: border-color .2s ease, box-shadow .2s ease;
+}
+
+.voice-input::placeholder { color: var(--v-faint); }
+
+.voice-input:focus {
+    outline: none;
+    border-color: var(--cat-color);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--cat-color) 20%, transparent);
+}
+
+.voice-textarea { resize: vertical; line-height: 1.6; }
+.voice-input option { background: #0c121c; color: var(--v-ink); }
+
+.voice-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
+
+.voice-kind-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
+
+.voice-kind {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 15px 12px;
+    border: 1px solid var(--v-line);
+    border-radius: 14px;
+    background: rgba(255, 255, 255, .02);
+    cursor: pointer;
+    transition: all .22s ease;
+}
+
+.voice-kind:hover { border-color: rgba(255, 255, 255, .22); transform: translateY(-2px); }
+.voice-kind input { position: absolute; opacity: 0; }
+
+.voice-kind:has(input:checked) {
+    border-color: var(--cat-color);
+    background: color-mix(in srgb, var(--cat-color) 14%, transparent);
+    box-shadow: 0 0 0 1px var(--cat-color) inset;
+}
+
+.voice-kind-icon { font-size: 1.5rem; }
+.voice-kind-label { font-size: 13px; font-weight: 600; color: var(--v-ink); }
+
+.voice-dir-picker {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding-bottom: 8px;
+    scrollbar-width: none;
+}
+
+.voice-dir-picker::-webkit-scrollbar { display: none; }
+
+.voice-errors { list-style: none; margin: 6px 0 0; padding: 0; color: #ff8a80; font-size: 12.5px; }
+
+.voice-form-foot { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin-top: 8px; }
+
+.voice-ghost {
+    display: inline-flex;
+    align-items: center;
+    padding: 12px 20px;
+    border: 1px solid var(--v-line);
+    border-radius: 100px;
+    color: var(--v-dim);
+    font-size: 13.5px;
+    font-weight: 600;
+    transition: all .2s ease;
+}
+
+.voice-ghost:hover { color: var(--v-ink); border-color: rgba(255, 255, 255, .25); }
+
+/* ---------------- Mobil ---------------- */
+
+@media (max-width: 900px) {
+    .voice-row { grid-template-columns: 52px 168px minmax(0, 1fr); gap: 12px; }
+    .voice-detail { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 680px) {
+    .voice-row { grid-template-columns: 46px minmax(0, 1fr); }
+    .voice-row-scene { grid-row: 2; grid-column: 1 / -1; }
+}
+
+@media (max-width: 640px) {
+    .voice-wrap { padding: 0 16px; }
+    .voice-row { padding: 14px; gap: 12px; }
+    .voice-row-title { font-size: 18px; }
+    .voice-place-num { width: 46px; font-size: 16px; }
+    .voice-detail { padding: 18px; }
+    .voice-detail-title { font-size: 23px; }
+    .voice-form-card { padding: 20px; }
+    .voice-vote-word { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .voice-canvas::after,
+    .floatcoin,
+    .pop { animation: none; }
+}
+
+/* ---------------- Sahifalash ---------------- */
+
+.voice-pages {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 14px;
+    margin-top: 28px;
+}
+
+.voice-page-btn {
+    padding: 11px 22px;
+    border: 1px solid var(--v-line);
+    border-radius: 100px;
+    background: rgba(255, 255, 255, .03);
+    color: var(--v-dim);
+    font-size: 13px;
+    font-weight: 600;
+    transition: all .2s ease;
+}
+
+.voice-page-btn:hover { color: var(--v-ink); border-color: rgba(255, 255, 255, .25); transform: translateY(-2px); }
+
+.voice-page-info {
+    font-family: 'Space Grotesk', monospace;
+    font-size: 13px;
+    color: var(--v-faint);
+}
+
+/* ---------------- Lenta o'qlari (scroll uchun) ---------------- */
+
+.rail-wrap { position: relative; }
+
+.rail-wrap .voice-rail { margin-bottom: 26px; }
+
+.rail-arrow {
+    position: absolute;
+    top: 18px;
+    transform: translateY(-50%);
+    z-index: 5;
+    width: 34px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    border: 1px solid var(--v-line);
+    background: rgba(12, 18, 28, .94);
+    backdrop-filter: blur(8px);
+    color: var(--v-ink);
+    font-size: 20px;
+    line-height: 1;
+    cursor: pointer;
+    transition: all .2s ease;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, .45);
+}
+
+.rail-arrow:hover { border-color: var(--cat-color); color: var(--cat-color); transform: translateY(-50%) scale(1.08); }
+.rail-arrow.hidden { opacity: 0; pointer-events: none; }
+.rail-arrow-prev { left: -6px; }
+.rail-arrow-next { right: -6px; }
+
+.voice-rail.is-scrollable { cursor: grab; }
+.voice-rail.is-dragging { cursor: grabbing; user-select: none; }
+.voice-rail.is-dragging a { pointer-events: none; }
+
+@media (max-width: 640px) {
+    .rail-arrow { display: none; }
+}
+
+/* ---------------- Qorong'i header (tashabbuslar bo'limi) ---------------- */
+
+.voice-theme { background: #070a10; }
+
+.voice-theme .navbar {
+    background: rgba(10, 15, 24, .82);
+    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(255, 255, 255, .08);
+}
+
+.voice-theme .navbar-brand { color: #f2efe9; }
+.voice-theme .navbar-brand .nav-icon { filter: brightness(1.2); }
+
+.voice-theme .navbar-link { color: #a9b0be; }
+
+.voice-theme .navbar-link:hover {
+    background: rgba(255, 255, 255, .06);
+    color: #f2efe9;
+}
+
+.voice-theme .navbar-link.active {
+    background: rgba(53, 183, 166, .16);
+    color: #6fe0ce;
+    box-shadow: 0 0 0 1px rgba(53, 183, 166, .35) inset;
+}
+
+.voice-theme .navbar-menu {
+    background: #0c121c;
+    border: 1px solid rgba(255, 255, 255, .08);
+}
+
+.voice-theme .menu-toggle { color: #f2efe9; }
+
+.voice-theme .navbar-actions .btn-ghost { color: #a9b0be; }
+.voice-theme .navbar-actions .btn-ghost:hover { background: rgba(255, 255, 255, .06); color: #f2efe9; }
+
+.voice-theme .navbar-actions .btn-outline {
+    border-color: rgba(255, 255, 255, .2);
+    color: #a9b0be;
+}
+
+.voice-theme .navbar-actions .btn-outline:hover {
+    border-color: #6fe0ce;
+    color: #6fe0ce;
+    background: rgba(53, 183, 166, .1);
+}
+
+.voice-theme .navbar-actions .btn-primary {
+    background: linear-gradient(100deg, #35b7a6, #6fe0ce);
+    color: #0a0d13;
+    box-shadow: 0 8px 22px -10px #35b7a6;
+}
+
+.voice-theme .nav-logout {
+    background: rgba(255, 255, 255, .05);
+    border-color: rgba(255, 255, 255, .16);
+    color: #a9b0be;
+}
+
+.voice-theme .nav-logout:hover {
+    background: rgba(198, 40, 40, .18);
+    border-color: #ef5350;
+    color: #ff8a80;
+}
+
+.voice-theme .nav-user { background: linear-gradient(135deg, #35b7a6, #6fe0ce); color: #0a0d13; }

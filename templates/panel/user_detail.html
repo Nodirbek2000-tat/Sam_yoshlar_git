@@ -1,0 +1,164 @@
+{% extends 'panel/base_panel.html' %}
+
+{% block title %}{{ user_obj.full_name }}{% endblock %}
+{% block page_title %}{{ user_obj.full_name }}{% endblock %}
+{% block page_subtitle %}{{ user_obj.email }} · {{ user_obj.get_role_display }}{% endblock %}
+
+{% block header_actions %}
+    <a href="{% url 'panel:users' %}" class="panel-btn panel-btn-ghost">← Foydalanuvchilar</a>
+{% endblock %}
+
+{% block content %}
+<div class="panel-grid panel-grid-2">
+    <div>
+        <div class="panel-card">
+            <div class="panel-card-head">
+                <h2 class="panel-card-title">Ma'lumotlarni tahrirlash</h2>
+            </div>
+            <div class="panel-card-body">
+                <form method="post" novalidate>
+                    {% csrf_token %}
+                    <div class="panel-form-grid">
+                        {% for field in form %}
+                            {% if field.field.widget.input_type == 'checkbox' %}
+                                <div class="panel-field">
+                                    <label class="panel-check-row">{{ field }}<span>{{ field.label }}</span></label>
+                                </div>
+                            {% else %}
+                                <div class="panel-field">
+                                    <label class="panel-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                                    {{ field }}
+                                    {% if field.errors %}<ul class="panel-errors">{% for e in field.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                    <div class="panel-form-foot">
+                        <button type="submit" class="panel-btn panel-btn-primary">💾 Saqlash</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div>
+        <div class="panel-card">
+            <div class="panel-card-head">
+                <h2 class="panel-card-title">Hisob holati</h2>
+            </div>
+            <div class="panel-card-body">
+                <div style="display:flex; align-items:center; gap:14px; margin-bottom:18px">
+                    <span class="panel-avatar" style="width:56px;height:56px;font-size:17px">
+                        {% if user_obj.avatar %}<img src="{{ user_obj.avatar.url }}" alt="">{% else %}{{ user_obj.initials }}{% endif %}
+                    </span>
+                    <div>
+                        <div class="panel-list-title">{{ user_obj.full_name }}</div>
+                        <div class="panel-list-meta">
+                            Ro'yxatdan o'tgan: {{ user_obj.date_joined|date:"d.m.Y" }}
+                            {% if user_obj.last_login %} · Oxirgi kirish: {{ user_obj.last_login|date:"d.m.Y H:i" }}{% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:18px">
+                    {% if user_obj.is_verified %}
+                        <span class="panel-badge panel-badge-success">✓ Tasdiqlangan</span>
+                    {% else %}
+                        <span class="panel-badge panel-badge-warning">Tasdiqlanmagan</span>
+                    {% endif %}
+                    {% if user_obj.is_active %}
+                        <span class="panel-badge panel-badge-info">Faol</span>
+                    {% else %}
+                        <span class="panel-badge panel-badge-error">Bloklangan</span>
+                    {% endif %}
+                    {% if user_obj.is_staff %}<span class="panel-badge panel-badge-primary">Xodim</span>{% endif %}
+                </div>
+
+                {% if user_obj != user %}
+                    <div style="display:flex; gap:9px; flex-wrap:wrap">
+                        <form method="post" action="{% url 'panel:user_toggle' user_obj.pk 'verify' %}">
+                            {% csrf_token %}
+                            <button type="submit" class="panel-btn {% if user_obj.is_verified %}panel-btn-outline{% else %}panel-btn-success{% endif %}">
+                                {% if user_obj.is_verified %}Tasdiqni olish{% else %}✓ Tasdiqlash{% endif %}
+                            </button>
+                        </form>
+                        <form method="post" action="{% url 'panel:user_toggle' user_obj.pk 'block' %}"
+                              onsubmit="return confirm('Holatni o\'zgartirishni tasdiqlaysizmi?')">
+                            {% csrf_token %}
+                            <button type="submit" class="panel-btn {% if user_obj.is_active %}panel-btn-danger{% else %}panel-btn-success{% endif %}">
+                                {% if user_obj.is_active %}🚫 Bloklash{% else %}Faollashtirish{% endif %}
+                            </button>
+                        </form>
+
+                        <form method="post" action="{% url 'panel:user_toggle' user_obj.pk 'admin' %}"
+                              onsubmit="return confirm('Administrator huquqi o\'zgartirilsinmi?')">
+                            {% csrf_token %}
+                            <button type="submit" class="panel-btn {% if user_obj.is_staff %}panel-btn-outline{% else %}panel-btn-primary{% endif %}">
+                                {% if user_obj.is_staff %}Adminlikni olib qo'yish{% else %}⚙️ Adminlik berish{% endif %}
+                            </button>
+                        </form>
+                    </div>
+                {% else %}
+                    <div class="panel-alert panel-alert-info" style="margin:0">
+                        Bu sizning hisobingiz — o'zingizni o'zgartira olmaysiz.
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        {% if business %}
+            <div class="panel-card" style="margin-top:18px">
+                <div class="panel-card-head"><h2 class="panel-card-title">🏢 Biznes profil</h2></div>
+                <div class="panel-card-body">
+                    <div class="panel-list-title">{{ business.name }}</div>
+                    <div class="panel-list-meta">{{ business.get_sphere_display }} · {{ business.get_region_display }}</div>
+                    <div style="margin-top:10px">
+                        {% include 'panel/_status_badge.html' with status=business.status label=business.get_status_display %}
+                        <span class="panel-badge panel-badge-gray">{{ business.products.count }} mahsulot</span>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+
+        {% if registrations %}
+            <div class="panel-card" style="margin-top:18px">
+                <div class="panel-card-head"><h2 class="panel-card-title">📅 Tadbirlari</h2></div>
+                <div class="panel-list">
+                    {% for reg in registrations %}
+                        <div class="panel-list-item">
+                            <div class="panel-list-main">
+                                <div class="panel-list-title">{{ reg.event.title }}</div>
+                                <div class="panel-list-meta">{{ reg.event.starts_at|date:"d.m.Y H:i" }}</div>
+                            </div>
+                            {% if reg.is_cancelled %}
+                                <span class="panel-badge panel-badge-error">Bekor</span>
+                            {% elif reg.attended %}
+                                <span class="panel-badge panel-badge-success">Qatnashgan</span>
+                            {% else %}
+                                <span class="panel-badge panel-badge-info">Yozilgan</span>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+
+        {% if appeals %}
+            <div class="panel-card" style="margin-top:18px">
+                <div class="panel-card-head"><h2 class="panel-card-title">📨 Murojaatlari</h2></div>
+                <div class="panel-list">
+                    {% for appeal in appeals %}
+                        <a href="{% url 'panel:appeal_detail' appeal.pk %}" class="panel-list-item">
+                            <div class="panel-list-main">
+                                <div class="panel-list-title">{{ appeal.subject }}</div>
+                                <div class="panel-list-meta">{{ appeal.created_at|date:"d.m.Y" }}</div>
+                            </div>
+                            {% include 'panel/_status_badge.html' with status=appeal.status label=appeal.get_status_display %}
+                        </a>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,127 @@
+{% extends 'panel/base_panel.html' %}
+
+{% block title %}Dashboard{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
+{% block page_subtitle %}Platformaning umumiy holati{% endblock %}
+
+{% block header_actions %}
+    <a href="{% url 'panel:news_create' %}" class="panel-btn panel-btn-primary">+ Yangilik</a>
+{% endblock %}
+
+{% block content %}
+<div class="panel-grid panel-grid-4">
+    {% for stat in stats %}
+        <a href="{% url stat.url %}" class="panel-stat" data-tone="{{ stat.tone }}">
+            <span class="panel-stat-icon">{{ stat.icon }}</span>
+            <div class="panel-stat-value">{{ stat.value }}</div>
+            <div class="panel-stat-label">{{ stat.label }}</div>
+            <div class="panel-stat-sub">{{ stat.sub }}</div>
+        </a>
+    {% endfor %}
+</div>
+
+<div class="panel-grid panel-grid-2" style="margin-top: 18px;">
+    <div class="panel-card">
+        <div class="panel-card-head">
+            <h2 class="panel-card-title">⏳ E'tibor talab qiladi</h2>
+        </div>
+        <div class="panel-pending">
+            {% for item in pending %}
+                <a href="{% url item.url %}" class="panel-pending-item">
+                    <span class="panel-pending-icon">{{ item.icon }}</span>
+                    <span class="panel-pending-label">{{ item.label }}</span>
+                    <span class="panel-pending-count {% if item.value %}hot{% endif %}">{{ item.value }}</span>
+                </a>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="panel-card">
+        <div class="panel-card-head">
+            <h2 class="panel-card-title">📅 Yaqinlashayotgan tadbirlar</h2>
+            <a href="{% url 'panel:events' %}" class="panel-btn panel-btn-ghost panel-btn-sm">Barchasi →</a>
+        </div>
+        <div class="panel-list">
+            {% for event in upcoming_events %}
+                <a href="{% url 'panel:event_edit' event.pk %}" class="panel-list-item">
+                    <div class="panel-list-main">
+                        <div class="panel-list-title">{{ event.title }}</div>
+                        <div class="panel-list-meta">
+                            {{ event.starts_at|date:"d.m.Y H:i" }} · {{ event.location }}
+                        </div>
+                    </div>
+                    <div style="text-align:right; min-width:110px;">
+                        <div class="panel-list-meta">{{ event.reg_count }}/{{ event.capacity }}</div>
+                        <div class="panel-progress">
+                            <div class="panel-progress-fill" style="width: {{ event.fill_percent }}%"></div>
+                        </div>
+                    </div>
+                </a>
+            {% empty %}
+                <div class="panel-empty">
+                    <div class="panel-empty-icon">📅</div>
+                    <div class="panel-empty-title">Kelasi tadbirlar yo'q</div>
+                    <a href="{% url 'panel:event_create' %}" class="panel-btn panel-btn-primary">+ Tadbir qo'shish</a>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<div class="panel-grid panel-grid-2" style="margin-top: 18px;">
+    <div class="panel-card">
+        <div class="panel-card-head">
+            <h2 class="panel-card-title">👥 Yangi foydalanuvchilar</h2>
+            <a href="{% url 'panel:users' %}" class="panel-btn panel-btn-ghost panel-btn-sm">Barchasi →</a>
+        </div>
+        <div class="panel-list">
+            {% for person in recent_users %}
+                <a href="{% url 'panel:user_detail' person.pk %}" class="panel-list-item">
+                    <span class="panel-avatar">
+                        {% if person.avatar %}<img src="{{ person.avatar.url }}" alt="">{% else %}{{ person.initials }}{% endif %}
+                    </span>
+                    <div class="panel-list-main">
+                        <div class="panel-list-title">{{ person.full_name }}</div>
+                        <div class="panel-list-meta">{{ person.email }} · {{ person.date_joined|date:"d.m.Y" }}</div>
+                    </div>
+                    {% if person.is_verified %}
+                        <span class="panel-badge panel-badge-success">✓ Tasdiqlangan</span>
+                    {% else %}
+                        <span class="panel-badge panel-badge-warning">Kutilmoqda</span>
+                    {% endif %}
+                </a>
+            {% empty %}
+                <div class="panel-empty">
+                    <div class="panel-empty-icon">👥</div>
+                    <div class="panel-empty-title">Foydalanuvchilar yo'q</div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="panel-card">
+        <div class="panel-card-head">
+            <h2 class="panel-card-title">📨 So'nggi murojaatlar</h2>
+            <a href="{% url 'panel:appeals' %}" class="panel-btn panel-btn-ghost panel-btn-sm">Barchasi →</a>
+        </div>
+        <div class="panel-list">
+            {% for appeal in recent_appeals %}
+                <a href="{% url 'panel:appeal_detail' appeal.pk %}" class="panel-list-item">
+                    <div class="panel-list-main">
+                        <div class="panel-list-title">{{ appeal.subject }}</div>
+                        <div class="panel-list-meta">
+                            {{ appeal.user.full_name }} · {{ appeal.created_at|date:"d.m.Y" }}
+                        </div>
+                    </div>
+                    {% include 'panel/_status_badge.html' with status=appeal.status label=appeal.get_status_display %}
+                </a>
+            {% empty %}
+                <div class="panel-empty">
+                    <div class="panel-empty-icon">📨</div>
+                    <div class="panel-empty-title">Murojaatlar yo'q</div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

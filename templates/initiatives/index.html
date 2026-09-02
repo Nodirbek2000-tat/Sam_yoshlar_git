@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block title %}Tashabbuslar — sam-yosh tadbirkor.uz{% endblock %}
+
+{% block content %}
+<div class="tashabbuslar-page">
+    <section class="tashabbuslar-hero">
+        <div class="container">
+            <div class="tashabbuslar-hero-content animate-fade-in">
+                <a href="{% url 'core:home' %}" class="tashabbuslar-back-link">← Bosh sahifaga qaytish</a>
+                <span class="tashabbuslar-hero-icon">🌟</span>
+                <h1 class="tashabbuslar-hero-title">Tashabbuslar</h1>
+                <p class="tashabbuslar-hero-subtitle">
+                    Tashkilotlar muammolarini aniqlash va yoshlar tomonidan innovatsion
+                    yechimlar taklif etish platformasi
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section class="tashabbuslar-categories">
+        <div class="container">
+            <div class="tashabbuslar-grid">
+                {% for card in cards %}
+                    <a href="{% url card.url %}" class="tashabbuslar-card animate-slide-up {% if card.featured %}tashabbuslar-card-featured{% endif %}"
+                       style="--card-gradient: {{ card.gradient }}; --card-shadow: {{ card.shadow }};">
+                        {% if card.featured %}<span class="tashabbuslar-flag">YANGI</span>{% endif %}
+                        <div class="tashabbuslar-card-bg"></div>
+                        <div class="tashabbuslar-card-content">
+                            <span class="tashabbuslar-card-icon">{{ card.icon }}</span>
+                            <h2 class="tashabbuslar-card-title">{{ card.title }}</h2>
+                            <p class="tashabbuslar-card-desc">{{ card.description }}</p>
+                            <p class="tashabbuslar-card-details">{{ card.details }}</p>
+                            <div class="tashabbuslar-card-stats">
+                                {% for stat in card.stats %}
+                                    <div class="tashabbuslar-stat">
+                                        <span class="tashabbuslar-stat-value">{{ stat.value }}</span>
+                                        <span class="tashabbuslar-stat-label">{{ stat.label }}</span>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                            <div class="tashabbuslar-card-action">
+                                <span>Kirish</span>
+                                <span class="tashabbuslar-card-action-arrow">→</span>
+                            </div>
+                        </div>
+                    </a>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %}

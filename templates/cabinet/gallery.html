@@ -1,0 +1,49 @@
+{% extends 'cabinet/base_cabinet.html' %}
+
+{% block title %}Galereya — Kabinet{% endblock %}
+{% block cabinet_title %}Galereya{% endblock %}
+{% block cabinet_subtitle %}Korxonangiz faoliyatini aks ettiruvchi rasmlar{% endblock %}
+
+{% block cabinet_content %}
+<div class="card">
+    <div class="card-body">
+        <form method="post" enctype="multipart/form-data" novalidate>
+            {% csrf_token %}
+            <div class="form-grid">
+                {% for field in form %}
+                    <div class="form-group">
+                        <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                        {{ field }}
+                        {% if field.errors %}<ul class="form-errors">{% for e in field.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+            <button type="submit" class="btn btn-primary">🖼️ Rasm yuklash</button>
+        </form>
+    </div>
+</div>
+
+{% if images %}
+    <div class="gallery-grid">
+        {% for image in images %}
+            <figure class="gallery-item">
+                <img src="{{ image.image.url }}" alt="{{ image.caption }}">
+                <figcaption>
+                    <span>{{ image.caption|default:"" }}</span>
+                    <form method="post" action="{% url 'cabinet:gallery_delete' image.pk %}"
+                          onsubmit="return confirm('Rasm o\'chirilsinmi?')">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-ghost btn-sm">🗑</button>
+                    </form>
+                </figcaption>
+            </figure>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="empty-state">
+        <div class="empty-state-icon">🖼️</div>
+        <div class="empty-state-title">Galereya bo'sh</div>
+        <div class="empty-state-text">Birinchi rasmni yuklang.</div>
+    </div>
+{% endif %}
+{% endblock %}

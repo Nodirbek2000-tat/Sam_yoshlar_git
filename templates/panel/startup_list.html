@@ -1,0 +1,78 @@
+{% extends 'panel/base_panel.html' %}
+
+{% block title %}StartUplar{% endblock %}
+{% block page_title %}StartUplar{% endblock %}
+{% block page_subtitle %}Jami {{ page_obj.paginator.count }} ta ariza{% endblock %}
+
+{% block content %}
+<div class="panel-toolbar">
+    <div class="panel-chips">
+        <a href="?" class="panel-chip {% if not active_status %}active{% endif %}">Barchasi</a>
+        {% for value, label in statuses %}
+            <a href="?holat={{ value }}" class="panel-chip {% if active_status == value %}active{% endif %}">{{ label }}</a>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="panel-card">
+    {% if page_obj.object_list %}
+        <div class="panel-table-wrap">
+            <table class="panel-table">
+                <thead>
+                    <tr>
+                        <th>StartUp</th>
+                        <th>Muallif</th>
+                        <th>Yo'nalish</th>
+                        <th>Bosqich</th>
+                        <th>Pitch</th>
+                        <th>Holat</th>
+                        <th style="width:230px">Amal</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for startup in page_obj %}
+                        <tr>
+                            <td>
+                                <div class="panel-table-title">{{ startup.sphere_icon }} {{ startup.name }}</div>
+                                <div class="panel-table-meta">{{ startup.about|truncatechars:70 }}</div>
+                            </td>
+                            <td>
+                                {{ startup.full_name }}
+                                <div class="panel-table-meta">{{ startup.phone }} · {{ startup.get_region_display }}</div>
+                            </td>
+                            <td>{{ startup.get_sphere_display }}</td>
+                            <td><span class="panel-badge panel-badge-info">{{ startup.get_stage_display }}</span></td>
+                            <td>
+                                {% if startup.pitch_file %}
+                                    <a href="{{ startup.pitch_file.url }}" target="_blank" rel="noopener"
+                                       class="panel-btn panel-btn-ghost panel-btn-sm">📎 Fayl</a>
+                                {% else %}—{% endif %}
+                            </td>
+                            <td>{% include 'panel/_status_badge.html' with status=startup.status label=startup.get_status_display %}</td>
+                            <td>
+                                <form method="post" action="{% url 'panel:startup_status' startup.pk %}"
+                                      class="panel-inline-form">
+                                    {% csrf_token %}
+                                    <select name="status" class="panel-input panel-select">
+                                        {% for value, label in statuses %}
+                                            <option value="{{ value }}" {% if startup.status == value %}selected{% endif %}>{{ label }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <button type="submit" class="panel-btn panel-btn-outline panel-btn-sm">✓</button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% include 'panel/_pagination.html' with qs=""|add:"holat="|add:active_status|add:"&" %}
+    {% else %}
+        <div class="panel-empty">
+            <div class="panel-empty-icon">🚀</div>
+            <div class="panel-empty-title">StartUp arizalari yo'q</div>
+            <div class="panel-empty-text">Arizalar /startupperlar sahifasi orqali keladi.</div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

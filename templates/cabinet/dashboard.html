@@ -1,0 +1,154 @@
+{% extends 'cabinet/base_cabinet.html' %}
+
+{% block title %}Kabinet — sam-yosh tadbirkor.uz{% endblock %}
+
+{% block cabinet_head %}
+<div class="cab-welcome">
+    <div class="cab-welcome-inner">
+        <h1 class="cab-welcome-hi">Xush kelibsiz, {{ user.get_short_name }}! 👋</h1>
+        <p class="cab-welcome-sub">
+            {% if profile_completion < 100 %}
+                Profilingiz {{ profile_completion }}% to'ldirilgan. Uni yakunlang — grantlar,
+                tadbirlar va hamkorlik takliflari sizga tezroq yetib boradi.
+            {% else %}
+                Profilingiz to'liq. Endi yangi imkoniyatlarni kuzatib boring va tadbirlarda ishtirok eting.
+            {% endif %}
+        </p>
+        <div class="cab-welcome-actions">
+            <a href="{% url 'content:event_list' %}" class="cab-welcome-btn solid">📅 Tadbirlarni ko'rish</a>
+            <a href="{% url 'content:announcement_list' %}" class="cab-welcome-btn">📢 Imkoniyatlar</a>
+            <a href="{% url 'cabinet:appeals' %}" class="cab-welcome-btn">📨 Murojaat yuborish</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block cabinet_content %}
+<div class="cab-stats">
+    {% for stat in stats %}
+        <a href="{% url stat.url %}" class="cab-stat" data-tone="{{ stat.tone }}">
+            <span class="cab-stat-icon">{{ stat.icon }}</span>
+            <div>
+                <div class="cab-stat-value">{{ stat.value }}</div>
+                <div class="cab-stat-label">{{ stat.label }}</div>
+            </div>
+        </a>
+    {% endfor %}
+</div>
+
+<div class="cab-cards">
+    <div class="cab-panel">
+        <div class="cab-panel-head">
+            <h2 class="cab-panel-title">Profil to'ldirilganligi</h2>
+            <a href="{% url 'cabinet:profile' %}" class="cab-link-more">Tahrirlash →</a>
+        </div>
+        <div class="cab-panel-body">
+            <div class="cab-progress-row">
+                <div class="cab-ring" style="--value: {{ profile_completion }}">
+                    <div class="cab-ring-inner">{{ profile_completion }}%</div>
+                </div>
+                <p class="cab-progress-text">
+                    {% if profile_completion < 50 %}
+                        Ism, telefon, hudud va biznes ma'lumotlarini qo'shsangiz, profilingiz
+                        to'liqroq bo'ladi.
+                    {% elif profile_completion < 100 %}
+                        Yaxshi ketyapsiz! Rasm, qisqacha ma'lumot va biznes tavsifini
+                        qo'shsangiz — 100% bo'ladi.
+                    {% else %}
+                        Profilingiz to'liq to'ldirilgan. Ajoyib! 🎉
+                    {% endif %}
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="cab-panel">
+        <div class="cab-panel-head">
+            <h2 class="cab-panel-title">🏢 Biznes profil</h2>
+            {% if business %}<a href="{% url 'cabinet:business' %}" class="cab-link-more">Tahrirlash →</a>{% endif %}
+        </div>
+        <div class="cab-panel-body">
+            {% if business %}
+                <div class="cab-list-title" style="font-size: var(--font-size-base)">{{ business.name }}</div>
+                <div class="cab-list-meta">{{ business.get_sphere_display }}{% if business.region %} · {{ business.get_region_display }}{% endif %}</div>
+                <div style="display:flex; gap:var(--space-2); margin-top:var(--space-3); flex-wrap:wrap">
+                    <span class="badge {% if business.status == 'approved' %}badge-success{% else %}badge-warning{% endif %}">
+                        {{ business.get_status_display }}
+                    </span>
+                    <span class="badge badge-info">📦 {{ business.products.count }} mahsulot</span>
+                    <span class="badge badge-primary">🖼️ {{ business.gallery.count }} rasm</span>
+                </div>
+            {% else %}
+                <div class="cab-empty">
+                    <div class="cab-empty-icon">🏢</div>
+                    <p class="cab-empty-text">
+                        Biznes profilingiz hali yo'q. To'ldiring — platformada ko'rinasiz
+                        va hamkorlar sizni topadi.
+                    </p>
+                    <a href="{% url 'cabinet:business' %}" class="btn btn-primary btn-sm">Biznes qo'shish →</a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="cab-panel">
+        <div class="cab-panel-head">
+            <h2 class="cab-panel-title">📨 So'nggi murojaatlar</h2>
+            <a href="{% url 'cabinet:appeals' %}" class="cab-link-more">Barchasi →</a>
+        </div>
+        <div class="cab-panel-body">
+            {% if recent_appeals %}
+                <div class="cab-list">
+                    {% for appeal in recent_appeals %}
+                        <div class="cab-list-item">
+                            <div class="cab-list-main">
+                                <div class="cab-list-title">{{ appeal.subject }}</div>
+                                <div class="cab-list-meta">{{ appeal.created_at|date:"d.m.Y" }}</div>
+                            </div>
+                            <span class="badge badge-{% if appeal.status == 'done' %}success{% elif appeal.status == 'rejected' %}error{% else %}warning{% endif %}">
+                                {{ appeal.get_status_display }}
+                            </span>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="cab-empty">
+                    <div class="cab-empty-icon">📨</div>
+                    <p class="cab-empty-text">Hozircha murojaat yo'q. Savolingiz bo'lsa kengashga yozing.</p>
+                    <a href="{% url 'cabinet:appeals' %}" class="btn btn-outline btn-sm">Murojaat yuborish →</a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="cab-panel">
+        <div class="cab-panel-head">
+            <h2 class="cab-panel-title">📅 Yaqinlashayotgan tadbirlar</h2>
+            <a href="{% url 'cabinet:events' %}" class="cab-link-more">Barchasi →</a>
+        </div>
+        <div class="cab-panel-body">
+            {% if upcoming_events %}
+                <div class="cab-list">
+                    {% for reg in upcoming_events %}
+                        <a href="{{ reg.event.get_absolute_url }}" class="cab-list-item">
+                            <div class="cab-list-main">
+                                <div class="cab-list-title">{{ reg.event.title }}</div>
+                                <div class="cab-list-meta">
+                                    📅 {{ reg.event.starts_at|date:"d.m.Y H:i" }} · 📍 {{ reg.event.location }}
+                                </div>
+                            </div>
+                            <span class="cab-link-more">→</span>
+                        </a>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="cab-empty">
+                    <div class="cab-empty-icon">📅</div>
+                    <p class="cab-empty-text">Yozilgan tadbirlaringiz yo'q. Kelayotgan tadbirlarni ko'rib chiqing.</p>
+                    <a href="{% url 'content:event_list' %}" class="btn btn-outline btn-sm">Tadbirlarni ko'rish →</a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

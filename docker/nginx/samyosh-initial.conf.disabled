@@ -1,0 +1,24 @@
+# SERTIFIKAT OLISHDAN OLDIN ishlatiladi.
+#
+# 1) samyosh.conf ni vaqtincha .disabled qiling, bu faylni .conf qiling
+# 2) docker compose up -d nginx
+# 3) ./docker/init-ssl.sh ni ishga tushiring
+# 4) fayllarni qaytaring va: docker compose restart nginx
+
+server {
+    listen 80;
+    listen [::]:80;
+    server_name samyosh.uz www.samyosh.uz;
+
+    location /.well-known/acme-challenge/ {
+        root /var/www/certbot;
+    }
+
+    location / {
+        proxy_pass http://web:8000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}

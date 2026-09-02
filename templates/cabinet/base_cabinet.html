@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/cabinet.css' %}">{% endblock %}
+
+{# Kabinetda footer ham, tepadagi umumiy xabar bloki ham ko'rsatilmaydi #}
+{% block footer %}{% endblock %}
+{% block messages %}{% endblock %}
+
+{% block content %}
+<div class="cab-shell">
+    <aside class="cab-sidebar" id="cab-sidebar">
+        <div class="cab-user">
+            <span class="cab-avatar">
+                {% if user.avatar %}<img src="{{ user.avatar.url }}" alt="{{ user.full_name }}">{% else %}{{ user.initials }}{% endif %}
+            </span>
+            <div>
+                <div class="cab-user-name">{{ user.get_short_name }}</div>
+                <div class="cab-user-role">{{ user.get_role_display }}</div>
+            </div>
+        </div>
+
+        <nav class="cab-nav">
+            <a href="{% url 'cabinet:dashboard' %}" class="cab-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+                <span class="cab-link-icon">📊</span> Dashboard
+            </a>
+            <a href="{% url 'cabinet:profile' %}" class="cab-link {% if request.resolver_match.url_name == 'profile' %}active{% endif %}">
+                <span class="cab-link-icon">👤</span> Profil
+            </a>
+
+            <div class="cab-nav-title">Biznes</div>
+            <a href="{% url 'cabinet:business' %}" class="cab-link {% if request.resolver_match.url_name == 'business' %}active{% endif %}">
+                <span class="cab-link-icon">🏢</span> Biznes profil
+            </a>
+            <a href="{% url 'cabinet:products' %}" class="cab-link {% if request.resolver_match.url_name == 'products' %}active{% endif %}">
+                <span class="cab-link-icon">📦</span> Mahsulotlar
+            </a>
+            <a href="{% url 'cabinet:gallery' %}" class="cab-link {% if request.resolver_match.url_name == 'gallery' %}active{% endif %}">
+                <span class="cab-link-icon">🖼️</span> Galereya
+            </a>
+            <a href="{% url 'cabinet:documents' %}" class="cab-link {% if request.resolver_match.url_name == 'documents' %}active{% endif %}">
+                <span class="cab-link-icon">📄</span> Hujjatlar
+            </a>
+
+            <div class="cab-nav-title">Faoliyat</div>
+            <a href="{% url 'cabinet:appeals' %}" class="cab-link {% if request.resolver_match.url_name == 'appeals' %}active{% endif %}">
+                <span class="cab-link-icon">📨</span> Murojaatlar
+            </a>
+            <a href="{% url 'cabinet:suggestions' %}" class="cab-link {% if request.resolver_match.url_name == 'suggestions' %}active{% endif %}">
+                <span class="cab-link-icon">💡</span> Takliflar
+            </a>
+            <a href="{% url 'cabinet:initiatives' %}" class="cab-link {% if request.resolver_match.url_name == 'initiatives' %}active{% endif %}">
+                <span class="cab-link-icon">✨</span> Tashabbuslarim
+            </a>
+            <a href="{% url 'cabinet:events' %}" class="cab-link {% if request.resolver_match.url_name == 'events' %}active{% endif %}">
+                <span class="cab-link-icon">📅</span> Tadbirlarim
+            </a>
+            <a href="{% url 'cabinet:notifications' %}" class="cab-link {% if request.resolver_match.url_name == 'notifications' %}active{% endif %}">
+                <span class="cab-link-icon">🔔</span> Bildirishnomalar
+                {% if unread_count %}<span class="cab-badge">{{ unread_count }}</span>{% endif %}
+            </a>
+        </nav>
+    </aside>
+
+    <div class="cab-overlay" id="cab-overlay"></div>
+
+    <div class="cab-main">
+        <button class="cab-burger" id="cab-burger">☰ Menyu</button>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags|default:'info' }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+
+        {% block cabinet_head %}
+            <div class="cab-head">
+                <h1 class="cab-title">{% block cabinet_title %}Kabinet{% endblock %}</h1>
+                <p class="cab-subtitle">{% block cabinet_subtitle %}{% endblock %}</p>
+            </div>
+        {% endblock %}
+
+        {% block cabinet_content %}{% endblock %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    (function () {
+        var burger = document.getElementById('cab-burger');
+        var sidebar = document.getElementById('cab-sidebar');
+        var overlay = document.getElementById('cab-overlay');
+        if (!burger) return;
+        function close() { sidebar.classList.remove('open'); overlay.classList.remove('show'); }
+        burger.addEventListener('click', function () {
+            sidebar.classList.toggle('open');
+            overlay.classList.toggle('show');
+        });
+        overlay.addEventListener('click', close);
+    })();
+</script>
+{% endblock %}

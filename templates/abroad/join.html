@@ -1,0 +1,133 @@
+{% extends 'base.html' %}
+
+{% block title %}Qo'shilish — Chet eldagi tengdoshim{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <div class="container">
+        <h1 class="page-header-title">✈️ Men ham chet eldaman</h1>
+        <p class="page-header-subtitle">
+            Ma'lumotlaringizni qoldiring — yurtdagi tengdoshlaringiz siz bilan bog'lana oladi.
+        </p>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container container-narrow">
+        <div class="card">
+            <div class="card-body">
+                <form method="post" enctype="multipart/form-data" novalidate>
+                    {% csrf_token %}
+
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-error">
+                            {% for error in form.non_field_errors %}{{ error }}{% endfor %}
+                        </div>
+                    {% endif %}
+
+                    <h2 class="peer-section-title">Siz haqingizda</h2>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label" for="{{ form.full_name.id_for_label }}">F.I.O. *</label>
+                            {{ form.full_name }}
+                            {% if form.full_name.errors %}<ul class="form-errors">{% for e in form.full_name.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="{{ form.photo.id_for_label }}">Rasm</label>
+                            {{ form.photo }}
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="{{ form.home_region.id_for_label }}">O'zbekistondagi hududingiz</label>
+                            {{ form.home_region }}
+                        </div>
+                    </div>
+
+                    <h2 class="peer-section-title">Qayerdasiz</h2>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label" for="{{ form.country.id_for_label }}">Davlat *</label>
+                            {{ form.country }}
+                            {% if form.country.errors %}<ul class="form-errors">{% for e in form.country.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="{{ form.city.id_for_label }}">Shahar</label>
+                            {{ form.city }}
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="{{ form.since_year.id_for_label }}">Qaysi yildan beri</label>
+                            {{ form.since_year }}
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">U yerda nima qilyapsiz? *</label>
+                        <div class="role-grid">
+                            {% for radio in form.purpose %}
+                                <label class="role-option">
+                                    {{ radio.tag }}
+                                    <span class="role-icon">
+                                        {% if radio.data.value == 'study' %}🎓
+                                        {% elif radio.data.value == 'work' %}💼
+                                        {% elif radio.data.value == 'business' %}🚀
+                                        {% elif radio.data.value == 'research' %}🔬
+                                        {% elif radio.data.value == 'internship' %}📋
+                                        {% else %}✨{% endif %}
+                                    </span>
+                                    <span class="role-label">{{ radio.choice_label }}</span>
+                                </label>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label" for="{{ form.institution.id_for_label }}">Universitet / kompaniya</label>
+                            {{ form.institution }}
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="{{ form.field.id_for_label }}">Yo'nalish / kasb</label>
+                            {{ form.field }}
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="{{ form.about.id_for_label }}">O'zingiz haqingizda *</label>
+                        {{ form.about }}
+                        {% if form.about.errors %}<ul class="form-errors">{% for e in form.about.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="{{ form.can_help.id_for_label }}">Nimada yordam bera olasiz</label>
+                        {{ form.can_help }}
+                    </div>
+
+                    <h2 class="peer-section-title">Aloqa <small>(kamida bittasi)</small></h2>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label" for="{{ form.telegram.id_for_label }}">Telegram</label>
+                            {{ form.telegram }}
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="{{ form.instagram.id_for_label }}">Instagram</label>
+                            {{ form.instagram }}
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="{{ form.email.id_for_label }}">Email</label>
+                            {{ form.email }}
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="{{ form.phone.id_for_label }}">Telefon</label>
+                            {{ form.phone }}
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-accent btn-lg">✈️ Ro'yxatdan o'tish</button>
+                    <p class="form-hint" style="margin-top: var(--space-3)">
+                        Ma'lumotlaringiz admin tomonidan ko'rib chiqilgach ro'yxatda paydo bo'ladi.
+                    </p>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

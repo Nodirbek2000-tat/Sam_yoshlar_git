@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+
+{% block title %}Tadbirlar — sam-yosh tadbirkor.uz{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <div class="container">
+        <h1 class="page-header-title">Tadbirlar</h1>
+        <p class="page-header-subtitle">Kengash tomonidan tashkil etilgan tadbirlar</p>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <div class="tabs">
+            <a href="?" class="tab {% if active_filter == 'all' %}active{% endif %}">Barchasi</a>
+            <a href="?holat=kelasi" class="tab {% if active_filter == 'kelasi' %}active{% endif %}">📅 Kelasi</a>
+            <a href="?holat=otgan" class="tab {% if active_filter == 'otgan' %}active{% endif %}">✅ O'tgan</a>
+        </div>
+
+        {% if events %}
+            <div class="grid grid-3">
+                {% for event in events %}
+                    <article class="card event-card scroll-reveal {% if event.is_past %}is-past{% endif %}">
+                        <div class="event-date">
+                            <span class="event-date-day">{{ event.starts_at|date:"d" }}</span>
+                            <span class="event-date-month">{{ event.starts_at|date:"M" }}</span>
+                            <span class="event-date-year">{{ event.starts_at|date:"Y" }}</span>
+                        </div>
+                        <div class="card-body">
+                            {% if event.is_past %}
+                                <span class="badge badge-success">O'tgan</span>
+                            {% elif event.is_full %}
+                                <span class="badge badge-warning">Joylar tugagan</span>
+                            {% else %}
+                                <span class="badge badge-info">Ochiq</span>
+                            {% endif %}
+
+                            <h3 class="card-title">{{ event.title }}</h3>
+                            <p class="card-text">{{ event.description|truncatechars:120 }}</p>
+
+                            <div class="card-meta">
+                                <span>🕐 {{ event.starts_at|date:"H:i" }}</span>
+                                <span>📍 {{ event.location }}</span>
+                            </div>
+
+                            <div class="event-capacity">
+                                <div class="event-capacity-bar">
+                                    <div class="event-capacity-fill" style="width: {{ event.fill_percent }}%"></div>
+                                </div>
+                                <span class="event-capacity-text">
+                                    👥 {{ event.registered_count }}/{{ event.capacity }} ishtirokchi
+                                </span>
+                            </div>
+
+                            <a href="{{ event.get_absolute_url }}" class="btn btn-outline btn-sm">Batafsil →</a>
+                        </div>
+                    </article>
+                {% endfor %}
+            </div>
+
+            {% include 'partials/pagination.html' %}
+        {% else %}
+            <div class="empty-state">
+                <div class="empty-state-icon">📅</div>
+                <div class="empty-state-title">Tadbirlar topilmadi</div>
+                <div class="empty-state-text">Hozircha bu bo'limda tadbir yo'q.</div>
+            </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,63 @@
+{% extends 'cabinet/base_cabinet.html' %}
+
+{% block title %}Takliflar — Kabinet{% endblock %}
+{% block cabinet_title %}Takliflar{% endblock %}
+{% block cabinet_subtitle %}Platformani yaxshilash bo'yicha takliflaringiz{% endblock %}
+
+{% block cabinet_content %}
+<div class="card">
+    <div class="card-body">
+        <h2 class="card-title">Yangi taklif</h2>
+        <form method="post" novalidate>
+            {% csrf_token %}
+            <div class="form-grid">
+                {% for field in form %}
+                    <div class="form-group {% if field.name != 'title' %}form-group-wide{% endif %}">
+                        <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                        {{ field }}
+                        {% if field.errors %}<ul class="form-errors">{% for e in field.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+            <button type="submit" class="btn btn-accent btn-lg">💡 Taklifni yuborish</button>
+        </form>
+    </div>
+</div>
+
+{% if suggestions %}
+    <div class="timeline">
+        {% for suggestion in suggestions %}
+            <article class="card timeline-item">
+                <div class="card-body">
+                    <div class="timeline-head">
+                        <h3 class="card-title">{{ suggestion.title }}</h3>
+                        <span class="badge badge-{% if suggestion.status == 'approved' %}success{% elif suggestion.status == 'rejected' %}error{% else %}warning{% endif %}">
+                            {{ suggestion.get_status_display }}
+                        </span>
+                    </div>
+                    <div class="card-meta">
+                        <span>📅 {{ suggestion.created_at|date:"d.m.Y" }}</span>
+                        <span>👍 {{ suggestion.votes }}</span>
+                    </div>
+                    <p class="card-text">{{ suggestion.description|linebreaksbr }}</p>
+                    {% if suggestion.expected_benefit %}
+                        <p class="card-text"><strong>Kutilayotgan foyda:</strong> {{ suggestion.expected_benefit }}</p>
+                    {% endif %}
+                    {% if suggestion.response %}
+                        <div class="response-box">
+                            <strong>Kengash javobi:</strong>
+                            <p>{{ suggestion.response|linebreaksbr }}</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </article>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="empty-state">
+        <div class="empty-state-icon">💡</div>
+        <div class="empty-state-title">Takliflar yo'q</div>
+        <div class="empty-state-text">Platformani yaxshilash bo'yicha fikringizni yozing.</div>
+    </div>
+{% endif %}
+{% endblock %}

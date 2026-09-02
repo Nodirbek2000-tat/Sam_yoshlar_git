@@ -1,0 +1,157 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Yoshlar Ovozi — {{ active.name }} | sam-yosh tadbirkor.uz{% endblock %}
+{% block description %}14 yo'nalish, tirik ekotizim. G'oyangizni bildiring va ovoz bering — har bir ovoz ekranda jonlanadi.{% endblock %}
+
+{% block extra_css %}
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'css/voice.css' %}">
+{% endblock %}
+
+{% block footer %}{% endblock %}
+{% block messages %}{% endblock %}
+
+{% block content %}
+<div class="voice-page" style="--cat-color: {{ active.color }}; --cat-accent: {{ active.accent }};">
+    <div class="voice-wrap">
+
+        <header class="voice-hero">
+            <a href="{% url 'initiatives:index' %}" class="voice-back">← Tashabbuslar bo'limiga qaytish</a>
+            <p class="voice-eyebrow">Yoshlar Ovozi — Milliy Tashabbuslar Platformasi</p>
+            <h1 class="voice-title">Har bir ovoz — <em>kelajakning bir bo'lagi</em></h1>
+            <p class="voice-lede">
+                14 yo'nalish, 14 tirik ekotizim. G'oyangizni bildiring — u ekranda jonlanadi:
+                barg bo'lib bitadi, chiroq bo'lib yonadi, neyron bo'lib ulanadi.
+            </p>
+
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="voice-total" style="margin-bottom:14px">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+
+            <div class="voice-totals">
+                <div class="voice-total"><b>{{ total_votes }}</b><span>JAMI OVOZ</span></div>
+                <div class="voice-total"><b>{{ total_ideas }}</b><span>TASHABBUS</span></div>
+                <div class="voice-total"><b>14</b><span>YO'NALISH</span></div>
+            </div>
+        </header>
+
+        <div class="voice-rail-wrap">
+            <nav class="voice-rail">
+                {% for item in directions %}
+                    <a href="{% url 'initiatives:voice_direction' item.id %}"
+                       class="voice-pill {% if item.id == active.id %}active{% endif %}"
+                       style="--cat-color: {{ item.color }}">
+                        <span class="ic">
+                            <svg viewBox="0 0 40 40" fill="none" stroke="currentColor"
+                                 stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">{{ item.icon|safe }}</svg>
+                        </span>
+                        {{ item.name }}
+                        <span class="voice-pill-count">{{ item.votes }}</span>
+                    </a>
+                {% endfor %}
+            </nav>
+        </div>
+
+        <main class="voice-stage" id="voice-stage">
+            <!-- Chap: ma'lumot va reyting -->
+            <section class="voice-info">
+                <span class="voice-info-eyebrow">{{ active.name }}</span>
+                <h2 class="voice-info-title">{{ active.title }}</h2>
+                <p class="voice-info-tagline">{{ active.tagline }}</p>
+
+                <a href="{% url 'initiatives:initiative_create_direction' active.id %}" class="voice-cta">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"
+                         stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+                    Tashabbus bildirish
+                </a>
+
+                <div class="voice-rank-head">
+                    <span class="voice-rank-title">Reyting — eng ko'p ovoz</span>
+                    <span class="voice-rank-title">{{ active_stats.ideas }} ta g'oya</span>
+                </div>
+
+                {% if ranking %}
+                    <div class="voice-rank-list">
+                        {% for idea in ranking %}
+                            <article class="voice-idea {% if forloop.counter == 1 %}top1{% elif forloop.counter == 2 %}top2{% elif forloop.counter == 3 %}top3{% endif %}"
+                                     id="taklif-{{ idea.pk }}">
+                                <span class="voice-rank-badge">#{{ forloop.counter }}</span>
+
+                                <div class="voice-idea-body">
+                                    <h3 class="voice-idea-title">{{ idea.kind_icon }} {{ idea.title }}</h3>
+                                    <div class="voice-idea-meta">
+                                        <span>{{ idea.get_kind_display }}</span>
+                                        <span>· {{ idea.author_label }}</span>
+                                        {% if idea.region %}<span>· {{ idea.get_region_display }}</span>{% endif %}
+                                    </div>
+                                    {% if idea.summary %}
+                                        <p class="voice-idea-summary">{{ idea.summary }}</p>
+                                    {% else %}
+                                        <p class="voice-idea-summary">{{ idea.description|truncatechars:110 }}</p>
+                                    {% endif %}
+                                </div>
+
+                                <button type="button"
+                                        class="voice-vote {% if idea.voted %}voted{% endif %}"
+                                        data-vote-url="{% url 'initiatives:vote' idea.pk %}"
+                                        {% if idea.voted %}disabled{% endif %}
+                                        aria-label="Ovoz berish">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                         stroke-width="2.4" stroke-linecap="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+                                    <span class="voice-vote-count">{{ idea.vote_count }}</span>
+                                </button>
+                            </article>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="voice-empty">
+                        Bu yo'nalishda hali tashabbus yo'q.<br>
+                        <strong>Birinchi bo'ling</strong> — g'oyangiz shu ekranda jonlanadi.
+                    </div>
+                {% endif %}
+            </section>
+
+            <!-- O'ng: tirik sahna -->
+            <section class="voice-scene-col">
+                <div class="voice-progress">
+                    <div class="voice-progress-track">
+                        <div class="voice-progress-fill" id="voice-progress-fill"></div>
+                    </div>
+                    <span class="voice-progress-label" id="voice-progress-label"></span>
+                </div>
+
+                <div class="voice-canvas">
+                    <svg id="voice-scene" viewBox="0 0 900 500" preserveAspectRatio="xMidYMid meet"></svg>
+                    <div class="voice-fly" id="voice-fly"></div>
+                    <span class="voice-hud tl"></span><span class="voice-hud tr"></span>
+                    <span class="voice-hud bl"></span><span class="voice-hud br"></span>
+                </div>
+
+                <div class="voice-scene-foot">
+                    <div class="voice-scene-count">
+                        <strong id="voice-direction-votes">{{ active_stats.votes }}</strong>
+                        <span>ovoz · {{ active.title }}</span>
+                    </div>
+                    <span class="voice-hint">Ovoz berganingizda sahna o'sadi 🌱</span>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <div class="voice-toast" id="voice-toast"></div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+{{ directions|json_script:"voice-directions" }}
+<script>
+    window.VOICE_DATA = {
+        directions: JSON.parse(document.getElementById('voice-directions').textContent),
+        activeId: "{{ active.id|escapejs }}"
+    };
+</script>
+<script src="{% static 'js/voice.js' %}" defer></script>
+{% endblock %}

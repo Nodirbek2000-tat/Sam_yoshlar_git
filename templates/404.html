@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block title %}Sahifa topilmadi — sam-yosh tadbirkor.uz{% endblock %}
+
+{% block content %}
+<section class="error-page">
+    <div class="error-glow"></div>
+
+    <div class="container error-inner">
+        <div class="error-code">
+            <span class="error-digit">4</span>
+            <span class="error-digit error-digit-mid">0</span>
+            <span class="error-digit">4</span>
+        </div>
+
+        <h1 class="error-title">Bu sahifa topilmadi</h1>
+        <p class="error-text">
+            Havola noto'g'ri bo'lishi, sahifa ko'chirilgan yoki o'chirilgan bo'lishi mumkin.
+            Quyidagi bo'limlardan birini tanlang.
+        </p>
+
+        <div class="error-actions">
+            <a href="{% url 'core:home' %}" class="btn btn-primary btn-lg">🏠 Bosh sahifaga</a>
+            <a href="{% url 'content:news_list' %}" class="btn btn-outline btn-lg">📰 Yangiliklar</a>
+        </div>
+
+        <div class="error-links">
+            <a href="{% url 'content:event_list' %}" class="error-link">
+                <span class="error-link-icon">📅</span>
+                <span class="error-link-title">Tadbirlar</span>
+                <span class="error-link-desc">Trening, forum va seminarlar</span>
+            </a>
+            <a href="{% url 'content:announcement_list' %}" class="error-link">
+                <span class="error-link-icon">📢</span>
+                <span class="error-link-title">E'lonlar</span>
+                <span class="error-link-desc">Grant, kredit va tanlovlar</span>
+            </a>
+            <a href="{% url 'initiatives:index' %}" class="error-link">
+                <span class="error-link-icon">🌟</span>
+                <span class="error-link-title">Tashabbuslar</span>
+                <span class="error-link-desc">Muammolar va yechimlar</span>
+            </a>
+            <a href="{% url 'startups:register' %}" class="error-link">
+                <span class="error-link-icon">🚀</span>
+                <span class="error-link-title">Startupperlar</span>
+                <span class="error-link-desc">Loyihangizni ro'yxatdan o'tkazing</span>
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,90 @@
+{% extends 'panel/base_panel.html' %}
+
+{% block title %}Tashabbuslar{% endblock %}
+{% block page_title %}Tashabbuslar{% endblock %}
+{% block page_subtitle %}Jami {{ page_obj.paginator.count }} ta bildirilgan tashabbus{% endblock %}
+
+{% block header_actions %}
+    <a href="{% url 'panel:voice' %}" class="panel-btn panel-btn-ghost">← Yoshlar Ovozi</a>
+{% endblock %}
+
+{% block content %}
+<form method="get" class="panel-toolbar">
+    <div class="panel-search">
+        <span class="panel-search-icon">🔍</span>
+        <input type="search" name="q" value="{{ search }}" class="panel-input"
+               placeholder="Sarlavha, tavsif yoki muallif...">
+    </div>
+    <select name="yonalish" class="panel-input panel-select" style="max-width:210px" onchange="this.form.submit()">
+        <option value="">Barcha yo'nalishlar</option>
+        {% for item in directions %}
+            <option value="{{ item.id }}" {% if active_direction == item.id %}selected{% endif %}>{{ item.name }}</option>
+        {% endfor %}
+    </select>
+    <select name="holat" class="panel-input panel-select" style="max-width:190px" onchange="this.form.submit()">
+        <option value="">Barcha holatlar</option>
+        {% for value, label in statuses %}
+            <option value="{{ value }}" {% if active_status == value %}selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+    </select>
+    <button type="submit" class="panel-btn panel-btn-outline">Qidirish</button>
+</form>
+
+<div class="panel-card">
+    {% if page_obj.object_list %}
+        <div class="panel-table-wrap">
+            <table class="panel-table">
+                <thead>
+                    <tr>
+                        <th>Tashabbus</th>
+                        <th>Yo'nalish</th>
+                        <th>Turi</th>
+                        <th>Muallif</th>
+                        <th>Ovoz</th>
+                        <th>Holat</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for idea in page_obj %}
+                        <tr>
+                            <td>
+                                <div class="panel-table-title">{{ idea.kind_icon }} {{ idea.title|truncatechars:52 }}</div>
+                                <div class="panel-table-meta">{{ idea.summary|default:idea.description|truncatechars:70 }}</div>
+                            </td>
+                            <td>
+                                <span class="panel-badge" style="background: {{ idea.direction_data.color }}22; color: {{ idea.direction_data.color }}">
+                                    {{ idea.direction_data.name }}
+                                </span>
+                            </td>
+                            <td>{{ idea.get_kind_display }}</td>
+                            <td>
+                                {{ idea.author_label }}
+                                <div class="panel-table-meta">{{ idea.author_phone|default:"—" }}</div>
+                            </td>
+                            <td><strong>{{ idea.vote_count }}</strong></td>
+                            <td>
+                                {% include 'panel/_status_badge.html' with status=idea.status label=idea.get_status_display %}
+                                {% if not idea.is_published %}<span class="panel-badge panel-badge-gray">Yashirin</span>{% endif %}
+                            </td>
+                            <td>
+                                <div class="panel-table-actions">
+                                    <a href="{% url 'panel:initiative_detail' idea.pk %}"
+                                       class="panel-btn panel-btn-outline panel-btn-sm">Ko'rish</a>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% include 'panel/_pagination.html' with qs=""|add:"q="|add:search|add:"&yonalish="|add:active_direction|add:"&holat="|add:active_status|add:"&" %}
+    {% else %}
+        <div class="panel-empty">
+            <div class="panel-empty-icon">✨</div>
+            <div class="panel-empty-title">Tashabbus topilmadi</div>
+            <div class="panel-empty-text">Filtrni o'zgartiring yoki boshqa yo'nalishni tanlang.</div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,79 @@
+{% extends 'panel/base_panel.html' %}
+
+{% block title %}Ishtirokchilar{% endblock %}
+{% block page_title %}{{ event.title }}{% endblock %}
+{% block page_subtitle %}{{ event.registered_count }} / {{ event.capacity }} ishtirokchi · {{ event.starts_at|date:"d.m.Y H:i" }}{% endblock %}
+
+{% block header_actions %}
+    <a href="{% url 'panel:events' %}" class="panel-btn panel-btn-ghost">← Tadbirlar</a>
+    <a href="{% url 'panel:event_edit' event.pk %}" class="panel-btn panel-btn-outline">Tadbirni tahrirlash</a>
+{% endblock %}
+
+{% block content %}
+<div class="panel-card">
+    {% if registrations %}
+        <div class="panel-table-wrap">
+            <table class="panel-table">
+                <thead>
+                    <tr>
+                        <th>Ishtirokchi</th>
+                        <th>Aloqa</th>
+                        <th>Hudud</th>
+                        <th>Yozilgan sana</th>
+                        <th>Holat</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for reg in registrations %}
+                        <tr>
+                            <td>
+                                <div style="display:flex; align-items:center; gap:11px">
+                                    <span class="panel-avatar">
+                                        {% if reg.user.avatar %}<img src="{{ reg.user.avatar.url }}" alt="">{% else %}{{ reg.user.initials }}{% endif %}
+                                    </span>
+                                    <div>
+                                        <a href="{% url 'panel:user_detail' reg.user.pk %}" class="panel-table-title">{{ reg.user.full_name }}</a>
+                                        <div class="panel-table-meta">{{ reg.user.get_role_display }}</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                {{ reg.user.email }}
+                                <div class="panel-table-meta">{{ reg.user.phone|default:"—" }}</div>
+                            </td>
+                            <td>{{ reg.user.get_region_display|default:"—" }}</td>
+                            <td>{{ reg.created_at|date:"d.m.Y H:i" }}</td>
+                            <td>
+                                {% if reg.is_cancelled %}
+                                    <span class="panel-badge panel-badge-error">Bekor qilgan</span>
+                                {% elif reg.attended %}
+                                    <span class="panel-badge panel-badge-success">✓ Qatnashgan</span>
+                                {% else %}
+                                    <span class="panel-badge panel-badge-warning">Kutilmoqda</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if not reg.is_cancelled %}
+                                    <form method="post" action="{% url 'panel:toggle_attendance' reg.pk %}">
+                                        {% csrf_token %}
+                                        <button type="submit" class="panel-btn panel-btn-sm {% if reg.attended %}panel-btn-ghost{% else %}panel-btn-success{% endif %}">
+                                            {% if reg.attended %}Belgini olish{% else %}✓ Qatnashdi{% endif %}
+                                        </button>
+                                    </form>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="panel-empty">
+            <div class="panel-empty-icon">👥</div>
+            <div class="panel-empty-title">Hali hech kim yozilmagan</div>
+            <div class="panel-empty-text">Foydalanuvchilar tadbir sahifasidan yozilishi mumkin.</div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

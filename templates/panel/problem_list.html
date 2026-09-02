@@ -1,0 +1,54 @@
+{% extends 'panel/base_panel.html' %}
+
+{% block title %}Muammolar{% endblock %}
+{% block page_title %}Tashkilot muammolari{% endblock %}
+{% block page_subtitle %}{{ organizations }} ta tashkilot · {{ page_obj.paginator.count }} ta muammo{% endblock %}
+
+{% block content %}
+<div class="panel-card">
+    {% if page_obj.object_list %}
+        <div class="panel-table-wrap">
+            <table class="panel-table">
+                <thead>
+                    <tr>
+                        <th>Tashkilot</th>
+                        <th>Kategoriya</th>
+                        <th>Muammo</th>
+                        <th>Yechimlar</th>
+                        <th>Sana</th>
+                        <th>Holat</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for problem in page_obj %}
+                        <tr>
+                            <td>
+                                <div class="panel-table-title">{{ problem.organization.name }}</div>
+                                <div class="panel-table-meta">
+                                    {{ problem.organization.get_sphere_display }} · {{ problem.organization.phone }}
+                                </div>
+                            </td>
+                            <td><span class="panel-badge panel-badge-primary">{{ problem.icon }} {{ problem.get_category_display }}</span></td>
+                            <td style="max-width:380px">{{ problem.description|truncatechars:130 }}</td>
+                            <td>
+                                <a href="{% url 'panel:solutions' %}" class="panel-badge panel-badge-info">
+                                    💡 {{ problem.solution_count }}
+                                </a>
+                            </td>
+                            <td>{{ problem.created_at|date:"d.m.Y" }}</td>
+                            <td>{% include 'panel/_status_badge.html' with status=problem.status label=problem.get_status_display %}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% include 'panel/_pagination.html' %}
+    {% else %}
+        <div class="panel-empty">
+            <div class="panel-empty-icon">🏛️</div>
+            <div class="panel-empty-title">Muammolar yo'q</div>
+            <div class="panel-empty-text">Tashkilotlar anketa orqali muammo kiritishi mumkin.</div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

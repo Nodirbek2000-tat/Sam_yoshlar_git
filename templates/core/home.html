@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="home-landing">
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content animate-fade-in">
+                <h1 class="hero-title">sam-yosh tadbirkor.uz</h1>
+                <p class="hero-subtitle">
+                    O'zbekiston yosh tadbirkorlarini birlashtiruvchi, qo'llab-quvvatlovchi va
+                    rivojlantirishga xizmat qiluvchi yagona axborot platformasi.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section class="home-menu-section">
+        <div class="container">
+            <div class="home-menu-grid">
+                {% for card in cards %}
+                <a href="{% url card.url %}" class="home-menu-card animate-slide-up"
+                   style="--card-gradient: {{ card.gradient }}; --card-shadow: {{ card.shadow }}; animation-delay: {{ forloop.counter0|floatformat:0 }}00ms;">
+                    <div class="home-menu-card-bg"></div>
+                    <div class="home-menu-card-content">
+                        <span class="home-menu-card-icon">{{ card.icon }}</span>
+                        <h2 class="home-menu-card-title">{{ card.title }}</h2>
+                        <p class="home-menu-card-desc">{{ card.description }}</p>
+                        <span class="home-menu-card-arrow">→</span>
+                    </div>
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %}

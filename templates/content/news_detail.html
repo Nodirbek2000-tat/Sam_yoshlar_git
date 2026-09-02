@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ news.title }} — sam-yosh tadbirkor.uz{% endblock %}
+{% block description %}{{ news.excerpt|truncatechars:160 }}{% endblock %}
+
+{% block content %}
+<section class="section article-section">
+    <div class="container container-narrow">
+        <a href="{% url 'content:news_list' %}" class="tashabbuslar-back-link">← Yangiliklarga qaytish</a>
+
+        <span class="badge badge-primary">{{ news.get_category_display }}</span>
+        <h1 class="article-title">{{ news.title }}</h1>
+
+        <div class="article-meta">
+            <span>📅 {{ news.published_at|date:"d.m.Y" }}</span>
+            {% if news.display_author %}<span>✍️ {{ news.display_author }}</span>{% endif %}
+            <span>👁️ {{ news.views }}</span>
+        </div>
+
+        {% if news.image %}
+            <img src="{{ news.image.url }}" alt="{{ news.title }}" class="article-image">
+        {% endif %}
+
+        <p class="article-lead">{{ news.excerpt }}</p>
+        <div class="article-body">{{ news.body|linebreaks }}</div>
+    </div>
+</section>
+
+{% if related %}
+<section class="section section-alt">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">O'xshash yangiliklar</h2>
+        </div>
+        <div class="grid grid-3">
+            {% for item in related %}
+                <a href="{{ item.get_absolute_url }}" class="card news-card">
+                    {% if item.image %}
+                        <img src="{{ item.image.url }}" alt="{{ item.title }}" class="card-img">
+                    {% else %}
+                        <div class="card-img card-img-placeholder">📰</div>
+                    {% endif %}
+                    <div class="card-body">
+                        <h3 class="card-title">{{ item.title }}</h3>
+                        <div class="card-meta"><span>📅 {{ item.published_at|date:"Y-m-d" }}</span></div>
+                    </div>
+                </a>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+{% endblock %}

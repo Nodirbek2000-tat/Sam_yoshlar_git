@@ -1,0 +1,124 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ event.title }} — sam-yosh tadbirkor.uz{% endblock %}
+
+{% block content %}
+<section class="section article-section">
+    <div class="container container-narrow">
+        <a href="{% url 'content:event_list' %}" class="tashabbuslar-back-link">← Tadbirlarga qaytish</a>
+
+        <div class="event-head-badges">
+            {% if event.is_past %}
+                <span class="badge badge-success">O'tgan tadbir</span>
+            {% elif event.is_full %}
+                <span class="badge badge-warning">Joylar tugagan</span>
+            {% else %}
+                <span class="badge badge-info">Ro'yxat ochiq</span>
+            {% endif %}
+            {% if is_registered %}
+                <span class="badge badge-accent">✓ Siz yozilgansiz</span>
+            {% endif %}
+        </div>
+
+        <h1 class="article-title">{{ event.title }}</h1>
+
+        {% if event.image %}
+            <img src="{{ event.image.url }}" alt="{{ event.title }}" class="article-image">
+        {% endif %}
+
+        <div class="event-info-grid">
+            <div class="event-info-item">
+                <span class="event-info-icon">📅</span>
+                <div>
+                    <div class="event-info-label">Sana</div>
+                    <div class="event-info-value">{{ event.starts_at|date:"d.m.Y" }}</div>
+                </div>
+            </div>
+            <div class="event-info-item">
+                <span class="event-info-icon">🕐</span>
+                <div>
+                    <div class="event-info-label">Vaqt</div>
+                    <div class="event-info-value">
+                        {{ event.starts_at|date:"H:i" }}{% if event.ends_at %} — {{ event.ends_at|date:"H:i" }}{% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="event-info-item">
+                <span class="event-info-icon">📍</span>
+                <div>
+                    <div class="event-info-label">Manzil</div>
+                    <div class="event-info-value">{{ event.location }}</div>
+                </div>
+            </div>
+            <div class="event-info-item">
+                <span class="event-info-icon">👥</span>
+                <div>
+                    <div class="event-info-label">Ishtirokchilar</div>
+                    <div class="event-info-value">{{ event.registered_count }}/{{ event.capacity }}</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="event-capacity">
+            <div class="event-capacity-bar">
+                <div class="event-capacity-fill" style="width: {{ event.fill_percent }}%"></div>
+            </div>
+            <span class="event-capacity-text">{{ event.seats_left }} ta joy qoldi</span>
+        </div>
+
+        <div class="article-body">{{ event.description|linebreaks }}</div>
+
+        {% if not event.is_past %}
+            {% if is_registered %}
+                <div class="event-joined">
+                    <span class="event-joined-icon">🎉</span>
+                    <div class="event-joined-body">
+                        <h2 class="event-joined-title">Siz ushbu tadbirga yozildingiz!</h2>
+                        <p class="event-joined-text">
+                            Tadbir <strong>{{ event.starts_at|date:"d.m.Y, H:i" }}</strong> da
+                            <strong>{{ event.location }}</strong> manzilida bo'lib o'tadi.
+                            Barcha tadbirlaringizni kabinetdan kuzatib borishingiz mumkin.
+                        </p>
+                        <div class="event-joined-actions">
+                            <a href="{% url 'cabinet:events' %}" class="btn btn-primary">📅 Tadbirlarim →</a>
+                            <form method="post" action="{% url 'content:event_register' event.slug %}">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-ghost">Ishtirokni bekor qilish</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            {% elif user.is_authenticated %}
+                <div class="event-cta">
+                    {% if event.is_full %}
+                        <span class="event-cta-icon">😔</span>
+                        <h2 class="event-cta-title">Afsuski, barcha joylar band</h2>
+                        <p class="event-cta-note">Boshqa tadbirlarni ko'rib chiqing yoki keyingi safar kuzatib boring.</p>
+                        <a href="{% url 'content:event_list' %}" class="btn btn-outline btn-lg">Boshqa tadbirlar</a>
+                    {% else %}
+                        <span class="event-cta-icon">🙋</span>
+                        <h2 class="event-cta-title">Ushbu tadbirda ishtirok etasizmi?</h2>
+                        <p class="event-cta-note">
+                            Hozircha {{ event.seats_left }} ta bo'sh joy bor. Yozilgach, tadbir
+                            kabinetingizdagi «Tadbirlarim» bo'limida paydo bo'ladi.
+                        </p>
+                        <form method="post" action="{% url 'content:event_register' event.slug %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-accent btn-lg">🙋 Ishtirok etaman</button>
+                        </form>
+                    {% endif %}
+                </div>
+            {% else %}
+                <div class="event-cta">
+                    <span class="event-cta-icon">🔐</span>
+                    <h2 class="event-cta-title">Tadbirga yozilish uchun tizimga kiring</h2>
+                    <p class="event-cta-note">Telegram orqali bir daqiqada kirasiz — parol kerak emas.</p>
+                    <a href="{% url 'accounts:login' %}?next={{ request.path }}" class="btn btn-primary btn-lg">
+                        ✈️ Telegram orqali kirish
+                    </a>
+                </div>
+            {% endif %}
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

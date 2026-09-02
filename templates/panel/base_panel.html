@@ -1,0 +1,140 @@
+{% load static %}<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>{% block title %}Boshqaruv paneli{% endblock %} — sam-yosh tadbirkor.uz</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/panel.css' %}">
+</head>
+<body class="panel-body">
+
+<aside class="panel-sidebar" id="panel-sidebar">
+    <div class="panel-brand">
+        <span class="panel-brand-mark">⚙️</span>
+        <div>
+            <div class="panel-brand-title">Boshqaruv</div>
+            <div class="panel-brand-sub">sam-yosh tadbirkor.uz</div>
+        </div>
+    </div>
+
+    <nav class="panel-nav">
+        <a href="{% url 'panel:dashboard' %}" class="panel-link {% if active == 'dashboard' %}active{% endif %}">
+            <span class="panel-link-icon">📊</span> Dashboard
+        </a>
+
+        <div class="panel-nav-title">Kontent</div>
+        <a href="{% url 'panel:news' %}" class="panel-link {% if active == 'news' %}active{% endif %}">
+            <span class="panel-link-icon">📰</span> Yangiliklar
+        </a>
+        <a href="{% url 'panel:events' %}" class="panel-link {% if active == 'events' %}active{% endif %}">
+            <span class="panel-link-icon">📅</span> Tadbirlar
+        </a>
+        <a href="{% url 'panel:announcements' %}" class="panel-link {% if active == 'announcements' %}active{% endif %}">
+            <span class="panel-link-icon">📢</span> E'lonlar
+        </a>
+
+        <div class="panel-nav-title">Foydalanuvchilar</div>
+        <a href="{% url 'panel:users' %}" class="panel-link {% if active == 'users' %}active{% endif %}">
+            <span class="panel-link-icon">👥</span> Hisoblar
+        </a>
+        <a href="{% url 'panel:appeals' %}" class="panel-link {% if active == 'appeals' %}active{% endif %}">
+            <span class="panel-link-icon">📨</span> Murojaatlar
+        </a>
+        <a href="{% url 'panel:suggestions' %}" class="panel-link {% if active == 'suggestions' %}active{% endif %}">
+            <span class="panel-link-icon">💡</span> Takliflar
+        </a>
+
+        <div class="panel-nav-title">Yoshlar Ovozi</div>
+        <a href="{% url 'panel:voice' %}" class="panel-link {% if active == 'voice' %}active{% endif %}">
+            <span class="panel-link-icon">✨</span> Tashabbuslar
+        </a>
+        <a href="{% url 'panel:import' %}" class="panel-link {% if active == 'import' %}active{% endif %}">
+            <span class="panel-link-icon">📥</span> JSON import
+        </a>
+
+        <a href="{% url 'panel:peers' %}" class="panel-link {% if active == 'peers' %}active{% endif %}">
+            <span class="panel-link-icon">🌍</span> Chet eldagilar
+        </a>
+
+        <div class="panel-nav-title">Loyihalar</div>
+        <a href="{% url 'panel:startups' %}" class="panel-link {% if active == 'startups' %}active{% endif %}">
+            <span class="panel-link-icon">🚀</span> StartUplar
+        </a>
+        <a href="{% url 'panel:problems' %}" class="panel-link {% if active == 'problems' %}active{% endif %}">
+            <span class="panel-link-icon">🏛️</span> Muammolar
+        </a>
+        <a href="{% url 'panel:solutions' %}" class="panel-link {% if active == 'solutions' %}active{% endif %}">
+            <span class="panel-link-icon">🌟</span> Yechimlar
+        </a>
+
+        <div class="panel-nav-title">Tizim</div>
+        <a href="{% url 'panel:settings' %}" class="panel-link {% if active == 'settings' %}active{% endif %}">
+            <span class="panel-link-icon">⚙️</span> Sayt sozlamalari
+        </a>
+    </nav>
+
+    <div class="panel-sidebar-foot">
+        <a href="{% url 'core:home' %}" class="panel-link panel-link-muted">
+            <span class="panel-link-icon">🌐</span> Saytga qaytish
+        </a>
+    </div>
+</aside>
+
+<div class="panel-main">
+    <header class="panel-header">
+        <button class="panel-burger" id="panel-burger" aria-label="Menyu">☰</button>
+
+        <div class="panel-header-titles">
+            <h1 class="panel-title">{% block page_title %}Dashboard{% endblock %}</h1>
+            <p class="panel-subtitle">{% block page_subtitle %}{% endblock %}</p>
+        </div>
+
+        <div class="panel-header-actions">
+            {% block header_actions %}{% endblock %}
+            <div class="panel-user">
+                <span class="panel-user-avatar">{{ user.initials }}</span>
+                <div class="panel-user-info">
+                    <span class="panel-user-name">{{ user.get_short_name }}</span>
+                    <span class="panel-user-role">Administrator</span>
+                </div>
+            </div>
+            <form method="post" action="{% url 'accounts:logout' %}">
+                {% csrf_token %}
+                <button type="submit" class="panel-btn panel-btn-ghost">Chiqish</button>
+            </form>
+        </div>
+    </header>
+
+    <main class="panel-content">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="panel-alert panel-alert-{{ message.tags|default:'info' }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+
+        {% block content %}{% endblock %}
+    </main>
+</div>
+
+<div class="panel-overlay" id="panel-overlay"></div>
+
+<script>
+    (function () {
+        var burger = document.getElementById('panel-burger');
+        var sidebar = document.getElementById('panel-sidebar');
+        var overlay = document.getElementById('panel-overlay');
+        function close() { sidebar.classList.remove('open'); overlay.classList.remove('show'); }
+        burger.addEventListener('click', function () {
+            sidebar.classList.toggle('open');
+            overlay.classList.toggle('show');
+        });
+        overlay.addEventListener('click', close);
+    })();
+</script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>

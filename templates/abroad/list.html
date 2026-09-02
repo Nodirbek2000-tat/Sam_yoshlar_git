@@ -1,0 +1,111 @@
+{% extends 'base.html' %}
+
+{% block title %}Chet eldagi tengdoshim — sam-yosh tadbirkor.uz{% endblock %}
+{% block description %}Chet elda o'qiyotgan va ishlayotgan yurtdoshlarimiz bilan bog'laning — tajriba, maslahat va yo'l-yo'riq.{% endblock %}
+
+{% block content %}
+<section class="abroad-hero">
+    <div class="container">
+        <div class="abroad-hero-inner">
+            <span class="abroad-hero-icon">🌍</span>
+            <h1 class="abroad-hero-title">Chet eldagi tengdoshim</h1>
+            <p class="abroad-hero-text">
+                Chet elda o'qiyotgan va ishlayotgan yurtdoshlarimiz bilan bog'laning.
+                Ular bosib o'tgan yo'l — sizning qisqa yo'lingiz bo'lishi mumkin.
+            </p>
+
+            <div class="abroad-hero-stats">
+                <div class="abroad-hero-stat"><b>{{ total }}</b><span>tengdosh</span></div>
+                <div class="abroad-hero-stat"><b>{{ country_total }}</b><span>davlat</span></div>
+            </div>
+
+            <a href="{% url 'abroad:join' %}" class="btn btn-accent btn-lg">
+                ✈️ Men ham chet eldaman — qo'shilish
+            </a>
+        </div>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <form method="get" class="search-bar">
+            <span class="search-icon">🔍</span>
+            <input type="search" name="q" value="{{ search }}" class="form-input"
+                   placeholder="Ism, universitet, shahar yoki yo'nalish bo'yicha qidiring...">
+            {% if active_country %}<input type="hidden" name="davlat" value="{{ active_country }}">{% endif %}
+        </form>
+
+        {% if countries %}
+            <div class="tabs">
+                <a href="?{% if search %}q={{ search }}{% endif %}"
+                   class="tab {% if not active_country %}active{% endif %}">🌍 Barchasi</a>
+                {% for c in countries %}
+                    <a href="?davlat={{ c.code }}{% if search %}&q={{ search }}{% endif %}"
+                       class="tab {% if active_country == c.code %}active{% endif %}">
+                        <span class="cc" style="--cc: {{ c.color }}">{{ c.short }}</span>
+                        {{ c.name }} <small>{{ c.count }}</small>
+                    </a>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {% if page_obj.object_list %}
+            <div class="grid grid-3">
+                {% for peer in page_obj %}
+                    <a href="{{ peer.get_absolute_url }}" class="peer-card scroll-reveal">
+                        <div class="peer-card-top">
+                            <div class="peer-avatar">
+                                {% if peer.photo %}
+                                    <img src="{{ peer.photo.url }}" alt="{{ peer.full_name }}">
+                                {% else %}
+                                    <span>{{ peer.initials }}</span>
+                                {% endif %}
+                                <span class="peer-flag" style="--cc: {{ peer.country_color }}">{{ peer.flag }}</span>
+                            </div>
+                            <div>
+                                <h3 class="peer-name">{{ peer.full_name }}</h3>
+                                <div class="peer-place">
+                                    {{ peer.get_country_display }}{% if peer.city %}, {{ peer.city }}{% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="peer-tags">
+                            <span class="badge badge-primary">{{ peer.purpose_icon }} {{ peer.get_purpose_display }}</span>
+                            {% if peer.since_year %}<span class="badge badge-info">{{ peer.since_year }}-yildan</span>{% endif %}
+                        </div>
+
+                        {% if peer.institution %}
+                            <div class="peer-line">🏛️ {{ peer.institution }}</div>
+                        {% endif %}
+                        {% if peer.field %}
+                            <div class="peer-line">📚 {{ peer.field }}</div>
+                        {% endif %}
+
+                        <p class="peer-about">{{ peer.about|truncatechars:110 }}</p>
+
+                        {% if peer.can_help %}
+                            <div class="peer-help">
+                                <strong>Yordam bera oladi:</strong> {{ peer.can_help|truncatechars:80 }}
+                            </div>
+                        {% endif %}
+
+                        <span class="peer-more">Batafsil va aloqa →</span>
+                    </a>
+                {% endfor %}
+            </div>
+
+            {% include 'partials/pagination.html' %}
+        {% else %}
+            <div class="empty-state">
+                <div class="empty-state-icon">🌍</div>
+                <div class="empty-state-title">Hozircha hech kim qo'shilmagan</div>
+                <div class="empty-state-text">
+                    Agar siz yoki tanishingiz chet elda bo'lsangiz — birinchi bo'lib qo'shiling.
+                </div>
+                <a href="{% url 'abroad:join' %}" class="btn btn-primary">Qo'shilish →</a>
+            </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

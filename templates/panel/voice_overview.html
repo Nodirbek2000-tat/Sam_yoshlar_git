@@ -1,0 +1,148 @@
+{% extends 'panel/base_panel.html' %}
+
+{% block title %}Yoshlar tashabbuslari{% endblock %}
+{% block page_title %}Yoshlar tashabbuslari{% endblock %}
+{% block page_subtitle %}To'liq statistika, reyting va eng faol mualliflar{% endblock %}
+
+{% block header_actions %}
+    <a href="{% url 'panel:initiatives' %}" class="panel-btn panel-btn-outline">Barcha tashabbuslar</a>
+    <a href="/tashabbuslar/yoshlar/" target="_blank" rel="noopener" class="panel-btn panel-btn-primary">Saytda ko'rish ↗</a>
+{% endblock %}
+
+{% block content %}
+<div class="panel-grid panel-grid-4">
+    <div class="panel-stat" data-tone="primary">
+        <span class="panel-stat-icon">✨</span>
+        <div class="panel-stat-value">{{ total_ideas }}</div>
+        <div class="panel-stat-label">Bildirilgan tashabbus</div>
+        <div class="panel-stat-sub">+{{ new_ideas_week }} bu hafta</div>
+    </div>
+    <div class="panel-stat" data-tone="success">
+        <span class="panel-stat-icon">👍</span>
+        <div class="panel-stat-value">{{ total_votes }}</div>
+        <div class="panel-stat-label">Jami ovoz</div>
+        <div class="panel-stat-sub">+{{ new_votes_week }} bu hafta</div>
+    </div>
+    <div class="panel-stat" data-tone="info">
+        <span class="panel-stat-icon">💬</span>
+        <div class="panel-stat-value">{{ total_comments }}</div>
+        <div class="panel-stat-label">Berilgan taklif</div>
+    </div>
+    <div class="panel-stat" data-tone="accent">
+        <span class="panel-stat-icon">🗳️</span>
+        <div class="panel-stat-value">{{ total_voters }}</div>
+        <div class="panel-stat-label">Ovoz berishlar</div>
+    </div>
+</div>
+
+<div class="panel-grid panel-grid-2" style="margin-top:18px">
+    <div class="panel-card">
+        <div class="panel-card-head">
+            <h2 class="panel-card-title">🏆 Reyting — Top 10</h2>
+            <a href="{% url 'panel:initiatives' %}" class="panel-btn panel-btn-ghost panel-btn-sm">Barchasi →</a>
+        </div>
+        <div class="panel-list">
+            {% for idea in top %}
+                <a href="{% url 'panel:initiative_detail' idea.pk %}" class="panel-list-item">
+                    <span class="panel-rank {% if forloop.counter <= 3 %}panel-rank-top{% endif %}">#{{ forloop.counter }}</span>
+                    <div class="panel-list-main">
+                        <div class="panel-list-title">{{ idea.kind_icon }} {{ idea.title }}</div>
+                        <div class="panel-list-meta">
+                            {{ idea.author_label }} ·
+                            <span style="color:{{ idea.direction_data.color }}">{{ idea.direction_data.name }}</span>
+                        </div>
+                    </div>
+                    <div style="display:flex; gap:6px">
+                        <span class="panel-badge panel-badge-success">👍 {{ idea.vote_count }}</span>
+                        <span class="panel-badge panel-badge-info">💬 {{ idea.comment_total }}</span>
+                    </div>
+                </a>
+            {% empty %}
+                <div class="panel-empty">
+                    <div class="panel-empty-icon">✨</div>
+                    <div class="panel-empty-title">Hali tashabbus yo'q</div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="panel-card">
+        <div class="panel-card-head">
+            <h2 class="panel-card-title">🧭 Yo'nalishlar bo'yicha</h2>
+        </div>
+        <div class="panel-list">
+            {% for dir in directions %}
+                <a href="{% url 'panel:initiatives' %}?yonalish={{ dir.id }}" class="panel-list-item">
+                    <span class="panel-dot" style="background: {{ dir.color }}; color: {{ dir.color }}"></span>
+                    <div class="panel-list-main">
+                        <div class="panel-list-title">{{ dir.name }}</div>
+                        <div class="panel-list-meta">{{ dir.ideas }} ta g'oya · {{ dir.title }}</div>
+                    </div>
+                    <div style="text-align:right; min-width:104px">
+                        <div class="panel-list-meta">{{ dir.votes }} {{ dir.unit }}</div>
+                        <div class="panel-progress">
+                            <div class="panel-progress-fill" style="width: {{ dir.percent }}%; background: {{ dir.color }}"></div>
+                        </div>
+                    </div>
+                </a>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<div class="panel-grid panel-grid-2" style="margin-top:18px">
+    <div class="panel-card">
+        <div class="panel-card-head">
+            <h2 class="panel-card-title">👤 Eng faol mualliflar</h2>
+        </div>
+        <div class="panel-list">
+            {% for author in authors %}
+                <div class="panel-list-item">
+                    <span class="panel-rank {% if forloop.counter == 1 %}panel-rank-top{% endif %}">#{{ forloop.counter }}</span>
+                    <div class="panel-list-main">
+                        <div class="panel-list-title">
+                            {% if author.author_id %}
+                                <a href="{% url 'panel:user_detail' author.author_id %}">{{ author.author_name }}</a>
+                            {% else %}
+                                {{ author.author_name }}
+                            {% endif %}
+                        </div>
+                        <div class="panel-list-meta">{{ author.ideas }} ta tashabbus</div>
+                    </div>
+                    <span class="panel-badge panel-badge-success">👍 {{ author.votes|default:0 }}</span>
+                </div>
+            {% empty %}
+                <div class="panel-empty">
+                    <div class="panel-empty-icon">👤</div>
+                    <div class="panel-empty-title">Mualliflar yo'q</div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="panel-card">
+        <div class="panel-card-head">
+            <h2 class="panel-card-title">💬 So'nggi takliflar</h2>
+        </div>
+        <div class="panel-list">
+            {% for comment in recent_comments %}
+                <a href="{% url 'panel:initiative_detail' comment.initiative_id %}" class="panel-list-item">
+                    <span class="panel-avatar">{{ comment.initials }}</span>
+                    <div class="panel-list-main">
+                        <div class="panel-list-title">{{ comment.text|truncatechars:60 }}</div>
+                        <div class="panel-list-meta">
+                            {{ comment.author_label }} → {{ comment.initiative.title|truncatechars:34 }}
+                        </div>
+                    </div>
+                    <span class="panel-list-meta">{{ comment.created_at|date:"d.m" }}</span>
+                </a>
+            {% empty %}
+                <div class="panel-empty">
+                    <div class="panel-empty-icon">💬</div>
+                    <div class="panel-empty-title">Takliflar yo'q</div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,72 @@
+{% extends 'panel/base_panel.html' %}
+
+{% block title %}Murojaat{% endblock %}
+{% block page_title %}{{ appeal.subject }}{% endblock %}
+{% block page_subtitle %}{{ appeal.user.full_name }} · {{ appeal.created_at|date:"d.m.Y H:i" }}{% endblock %}
+
+{% block header_actions %}
+    <a href="{% url 'panel:appeals' %}" class="panel-btn panel-btn-ghost">← Murojaatlar</a>
+{% endblock %}
+
+{% block content %}
+<div class="panel-grid panel-grid-2">
+    <div class="panel-card">
+        <div class="panel-card-head">
+            <h2 class="panel-card-title">Murojaat matni</h2>
+            {% include 'panel/_status_badge.html' with status=appeal.status label=appeal.get_status_display %}
+        </div>
+        <div class="panel-card-body">
+            <div style="display:flex; align-items:center; gap:11px; margin-bottom:16px">
+                <span class="panel-avatar">
+                    {% if appeal.user.avatar %}<img src="{{ appeal.user.avatar.url }}" alt="">{% else %}{{ appeal.user.initials }}{% endif %}
+                </span>
+                <div>
+                    <a href="{% url 'panel:user_detail' appeal.user.pk %}" class="panel-list-title">{{ appeal.user.full_name }}</a>
+                    <div class="panel-list-meta">{{ appeal.user.email }} · {{ appeal.user.phone|default:"telefon yo'q" }}</div>
+                </div>
+            </div>
+
+            <div style="margin-bottom:12px">
+                <span class="panel-badge panel-badge-primary">{{ appeal.get_category_display }}</span>
+            </div>
+
+            <div class="panel-quote">{{ appeal.message }}</div>
+
+            {% if appeal.attachment %}
+                <a href="{{ appeal.attachment.url }}" target="_blank" rel="noopener"
+                   class="panel-btn panel-btn-outline" style="margin-top:14px">📎 Biriktirilgan fayl</a>
+            {% endif %}
+
+            {% if appeal.responded_at %}
+                <div class="panel-section-title">Oldingi javob</div>
+                <div class="panel-quote">{{ appeal.response }}</div>
+                <div class="panel-list-meta" style="margin-top:8px">
+                    {{ appeal.responded_by.full_name|default:"Admin" }} · {{ appeal.responded_at|date:"d.m.Y H:i" }}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="panel-card" style="height:fit-content">
+        <div class="panel-card-head">
+            <h2 class="panel-card-title">Javob berish</h2>
+        </div>
+        <div class="panel-card-body">
+            <form method="post" novalidate>
+                {% csrf_token %}
+                {% for field in form %}
+                    <div class="panel-field" style="margin-bottom:16px">
+                        <label class="panel-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                        {{ field }}
+                        {% if field.errors %}<ul class="panel-errors">{% for e in field.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+                    </div>
+                {% endfor %}
+                <button type="submit" class="panel-btn panel-btn-primary">📤 Javobni yuborish</button>
+                <p class="panel-list-meta" style="margin-top:10px">
+                    Javob yozilsa, foydalanuvchiga bildirishnoma boradi.
+                </p>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,186 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Yoshlar tashabbuslari{% if active %} — {{ active.name }}{% endif %}{% endblock %}
+{% block description %}Yoshlar bildirgan tashabbuslar reytingi — eng ko'p ovoz olgani birinchi o'rinda.{% endblock %}
+
+{% block extra_css %}
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'css/voice.css' %}">
+{% endblock %}
+
+{% block body_class %}voice-theme{% endblock %}
+{% block footer %}{% endblock %}
+{% block messages %}{% endblock %}
+
+{% block content %}
+<div class="voice-page{% if active %} has-active{% endif %}"
+     {% if active %}style="--cat-color: {{ active.color }}; --cat-accent: {{ active.accent }};"{% endif %}>
+
+    <div class="voice-wrap">
+        <header class="voice-hero">
+            <a href="{% url 'initiatives:index' %}" class="voice-back">← Tashabbuslar bo'limiga qaytish</a>
+            <p class="voice-eyebrow">Yoshlar tashabbuslari — jonli reyting</p>
+            <h1 class="voice-title">Eng kuchli g'oya <em>yuqoriga chiqadi</em></h1>
+            <p class="voice-lede">
+                Har bir tashabbusning o'z tirik ikonkasi bor. Ovoz bersangiz — u o'sadi,
+                taklif yozsangiz — muallifga yetib boradi.
+            </p>
+
+            {% if messages %}
+                <div class="voice-flash">
+                    {% for message in messages %}<span>{{ message }}</span>{% endfor %}
+                </div>
+            {% endif %}
+
+            <div class="voice-totals">
+                <div class="voice-total"><b>{{ total_ideas }}</b><span>TASHABBUS</span></div>
+                <div class="voice-total"><b>{{ total_votes }}</b><span>OVOZ</span></div>
+                <div class="voice-total"><b>{{ total_comments }}</b><span>TAKLIF</span></div>
+            </div>
+
+            <a href="{% url 'initiatives:initiative_create_direction' active.id|default:'eco' %}"
+               class="voice-cta voice-cta-hero">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"
+                     stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+                Tashabbus bildirish
+            </a>
+        </header>
+
+        <nav class="voice-rail" aria-label="Yo'nalishlar">
+            <a href="{% url 'initiatives:youth' %}" class="voice-pill {% if not active %}active{% endif %}"
+               style="--cat-color: #6fe0ce">
+                <span class="ic">
+                    <svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="2.3"
+                         stroke-linecap="round"><circle cx="20" cy="20" r="14"/><path d="M20 6v28M6 20h28"/></svg>
+                </span>
+                Barchasi
+                <span class="voice-pill-count">{{ total_ideas }}</span>
+            </a>
+            {% for item in directions %}
+                <a href="{% url 'initiatives:youth_direction' item.id %}"
+                   class="voice-pill {% if active and item.id == active.id %}active{% endif %}"
+                   style="--cat-color: {{ item.color }}">
+                    <span class="ic">
+                        <svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="2.3"
+                             stroke-linecap="round" stroke-linejoin="round">{{ item.icon|safe }}</svg>
+                    </span>
+                    {{ item.name }}
+                    <span class="voice-pill-count">{{ item.ideas }}</span>
+                </a>
+            {% endfor %}
+        </nav>
+
+        {% if ranking %}
+            <div class="voice-board">
+                {% for idea in ranking %}
+                    <article class="voice-row place-{{ idea.place }}"
+                             id="tashabbus-{{ idea.pk }}"
+                             data-initiative="{{ idea.pk }}"
+                             style="--cat-color: {{ idea.direction_info.color }}; --cat-accent: {{ idea.direction_info.accent }}">
+
+                        <div class="voice-place">
+                            <span class="voice-place-num voice-live-rank">#{{ idea.place }}</span>
+                            {% if idea.place == 1 %}<span class="voice-place-crown">👑</span>{% endif %}
+                        </div>
+
+                        <div class="voice-row-scene">
+                            <div class="voice-canvas">
+                                <svg viewBox="95 45 710 465" preserveAspectRatio="xMidYMid meet"
+                                     data-scene="{{ idea.direction_info.scene }}"
+                                     data-scene-id="i{{ idea.pk }}"
+                                     data-votes="{{ idea.vote_count }}"
+                                     data-max="{{ idea.direction_info.max }}"
+                                     data-unit="{{ idea.direction_info.unit }}"
+                                     data-color="{{ idea.direction_info.color }}"
+                                     data-accent="{{ idea.direction_info.accent }}"></svg>
+                                <div class="voice-fly"></div>
+                                <span class="voice-hud tl"></span><span class="voice-hud tr"></span>
+                                <span class="voice-hud bl"></span><span class="voice-hud br"></span>
+                            </div>
+                            <div class="voice-scene-meta">
+                                <span class="voice-scene-name">{{ idea.direction_info.title }}</span>
+                                <span class="voice-scene-label">{{ idea.vote_count }} / {{ idea.direction_info.max }} {{ idea.direction_info.unit }}</span>
+                            </div>
+                        </div>
+                        <div class="voice-row-body">
+                            <div class="voice-row-tags">
+                                <span class="voice-tag voice-tag-dir">
+                                    <span class="voice-tag-dot"></span>{{ idea.direction_info.name }}
+                                </span>
+                                <span class="voice-tag">{{ idea.kind_icon }} {{ idea.get_kind_display }}</span>
+                                {% if idea.region %}<span class="voice-tag">📍 {{ idea.get_region_display }}</span>{% endif %}
+                            </div>
+
+                            <h2 class="voice-row-title">
+                                <a href="{% url 'initiatives:initiative_detail' idea.pk %}">{{ idea.title }}</a>
+                            </h2>
+
+                            <p class="voice-row-text">{{ idea.description|truncatechars:180 }}</p>
+
+                            <div class="voice-row-stats">
+                                <span class="voice-stat"><b>{{ idea.vote_count }}</b> ovoz</span>
+                                <span class="voice-stat"><b>{{ idea.comment_total }}</b> taklif</span>
+                                <span class="voice-stat voice-stat-author">✍️ {{ idea.author_label }}</span>
+                            </div>
+
+                            <div class="voice-row-actions">
+                                <button type="button"
+                                        class="voice-vote-btn {% if idea.voted %}voted{% endif %}"
+                                        data-vote-url="{% url 'initiatives:vote' idea.pk %}"
+                                        {% if idea.voted %}disabled{% endif %}>
+                                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"
+                                         stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M7 10v11H3V10zM7 10l5-8a2.5 2.5 0 013.5 3L14 10h5.5a2.5 2.5 0 012.4 3.2l-2 7A2.5 2.5 0 0117.5 22H7"/>
+                                    </svg>
+                                    <span class="voice-vote-count">{{ idea.vote_count }}</span>
+                                    <span class="voice-vote-word">{% if idea.voted %}Ovoz berdingiz{% else %}Ovoz berish{% endif %}</span>
+                                </button>
+
+                                <a href="{% url 'initiatives:initiative_detail' idea.pk %}#takliflar"
+                                   class="voice-comment-btn">
+                                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"
+                                         stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
+                                    </svg>
+                                    Taklif berish
+                                </a>
+                            </div>
+                        </div>
+
+                    </article>
+                {% endfor %}
+            </div>
+
+            {% if page_obj.paginator.num_pages > 1 %}
+                <nav class="voice-pages">
+                    {% if page_obj.has_previous %}
+                        <a href="?page={{ page_obj.previous_page_number }}" class="voice-page-btn">← Oldingi</a>
+                    {% endif %}
+                    <span class="voice-page-info">
+                        {{ page_obj.number }} / {{ page_obj.paginator.num_pages }}
+                    </span>
+                    {% if page_obj.has_next %}
+                        <a href="?page={{ page_obj.next_page_number }}" class="voice-page-btn">Keyingi →</a>
+                    {% endif %}
+                </nav>
+            {% endif %}
+        {% else %}
+            <div class="voice-empty voice-empty-big">
+                <span class="voice-empty-icon">✨</span>
+                <h2>{% if active %}Bu yo'nalishda hali tashabbus yo'q{% else %}Hali tashabbus bildirilmagan{% endif %}</h2>
+                <p>Birinchi bo'ling — g'oyangiz reytingda birinchi o'rinni egallaydi.</p>
+                <a href="{% url 'initiatives:initiative_create_direction' active.id|default:'eco' %}" class="voice-cta">
+                    Tashabbus bildirish
+                </a>
+            </div>
+        {% endif %}
+    </div>
+
+    <div class="voice-toast" id="voice-toast"></div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/voice.js' %}" defer></script>
+{% endblock %}

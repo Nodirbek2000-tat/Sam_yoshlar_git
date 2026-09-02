@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ peer.full_name }} — Chet eldagi tengdoshim{% endblock %}
+
+{% block content %}
+<section class="section article-section">
+    <div class="container container-narrow">
+        <a href="{% url 'abroad:list' %}" class="tashabbuslar-back-link">← Barcha tengdoshlar</a>
+
+        <div class="peer-detail">
+            <div class="peer-detail-head">
+                <div class="peer-avatar peer-avatar-lg">
+                    {% if peer.photo %}
+                        <img src="{{ peer.photo.url }}" alt="{{ peer.full_name }}">
+                    {% else %}
+                        <span>{{ peer.initials }}</span>
+                    {% endif %}
+                    <span class="peer-flag" style="--cc: {{ peer.country_color }}">{{ peer.flag }}</span>
+                </div>
+
+                <div>
+                    <h1 class="peer-detail-name">{{ peer.full_name }}</h1>
+                    <div class="peer-detail-place">
+                        <span class="cc" style="--cc: {{ peer.country_color }}">{{ peer.flag }}</span>
+                        {{ peer.get_country_display }}{% if peer.city %}, {{ peer.city }}{% endif %}
+                        {% if peer.home_region %}
+                            <span class="peer-from">· Yurtda: {{ peer.get_home_region_display }}</span>
+                        {% endif %}
+                    </div>
+                    <div class="peer-tags">
+                        <span class="badge badge-primary">{{ peer.purpose_icon }} {{ peer.get_purpose_display }}</span>
+                        {% if peer.since_year %}<span class="badge badge-info">{{ peer.since_year }}-yildan beri</span>{% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-2 peer-facts">
+                {% if peer.institution %}
+                    <div class="peer-fact">
+                        <span class="peer-fact-icon">🏛️</span>
+                        <div>
+                            <div class="peer-fact-label">Universitet / kompaniya</div>
+                            <div class="peer-fact-value">{{ peer.institution }}</div>
+                        </div>
+                    </div>
+                {% endif %}
+                {% if peer.field %}
+                    <div class="peer-fact">
+                        <span class="peer-fact-icon">📚</span>
+                        <div>
+                            <div class="peer-fact-label">Yo'nalish</div>
+                            <div class="peer-fact-value">{{ peer.field }}</div>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+
+            <h2 class="peer-section-title">O'zi haqida</h2>
+            <div class="article-body">{{ peer.about|linebreaks }}</div>
+
+            {% if peer.can_help %}
+                <div class="peer-help-box">
+                    <h2 class="peer-section-title">🤝 Nimada yordam bera oladi</h2>
+                    <p>{{ peer.can_help|linebreaksbr }}</p>
+                </div>
+            {% endif %}
+
+            {% if peer.has_contacts %}
+                <h2 class="peer-section-title">Bog'lanish</h2>
+                <div class="peer-contacts">
+                    {% if peer.telegram %}
+                        <a href="https://t.me/{{ peer.telegram|cut:'@' }}" target="_blank" rel="noopener"
+                           class="peer-contact">📱 Telegram <b>{{ peer.telegram }}</b></a>
+                    {% endif %}
+                    {% if peer.instagram %}
+                        <a href="https://instagram.com/{{ peer.instagram|cut:'@' }}" target="_blank" rel="noopener"
+                           class="peer-contact">📸 Instagram <b>{{ peer.instagram }}</b></a>
+                    {% endif %}
+                    {% if peer.email %}
+                        <a href="mailto:{{ peer.email }}" class="peer-contact">✉️ <b>{{ peer.email }}</b></a>
+                    {% endif %}
+                    {% if peer.phone %}
+                        <a href="tel:{{ peer.phone }}" class="peer-contact">📞 <b>{{ peer.phone }}</b></a>
+                    {% endif %}
+                </div>
+            {% endif %}
+        </div>
+
+        {% if others %}
+            <h2 class="section-title-sm">{{ peer.get_country_display }}dagi boshqa tengdoshlar</h2>
+            <div class="grid grid-2">
+                {% for item in others %}
+                    <a href="{{ item.get_absolute_url }}" class="peer-mini">
+                        <div class="peer-avatar">
+                            {% if item.photo %}<img src="{{ item.photo.url }}" alt="">{% else %}<span>{{ item.initials }}</span>{% endif %}
+                        </div>
+                        <div>
+                            <div class="peer-mini-name">{{ item.full_name }}</div>
+                            <div class="peer-mini-meta">{{ item.institution|default:item.get_purpose_display }}</div>
+                        </div>
+                    </a>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

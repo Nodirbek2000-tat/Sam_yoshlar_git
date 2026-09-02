@@ -1,0 +1,183 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}StartUp ro'yxatdan o'tkazish — sam-yosh tadbirkor.uz{% endblock %}
+
+{% block content %}
+<section class="startup-form-hero">
+    <div class="container">
+        <div class="startup-form-hero-content">
+            <a href="{% url 'core:home' %}" class="tashabbuslar-back-link">← Bosh sahifaga qaytish</a>
+            <span class="startup-form-hero-icon">🚀</span>
+            <h1 class="startup-form-hero-title">StartUp ro'yxatdan o'tkazish</h1>
+            <p class="startup-form-hero-subtitle">
+                O'zingizning innovatsion startup loyihangizni ro'yxatdan o'tkazing va
+                yangi imkoniyatlardan foydalaning
+            </p>
+        </div>
+    </div>
+</section>
+
+<section class="startup-form-section">
+    <div class="startup-form-container">
+        <div class="startup-progress-wrapper">
+            <div class="startup-progress-steps">
+                <div class="startup-progress-step active" data-step-indicator="1">
+                    <span class="startup-progress-step-num">1</span>
+                    <span class="startup-progress-step-label">Shaxsiy ma'lumotlar</span>
+                </div>
+                <div class="startup-progress-line" id="progress-line"></div>
+                <div class="startup-progress-step" data-step-indicator="2">
+                    <span class="startup-progress-step-num">2</span>
+                    <span class="startup-progress-step-label">StartUp ma'lumotlari</span>
+                </div>
+            </div>
+        </div>
+
+        <form method="post" enctype="multipart/form-data" class="startup-form-card" id="startup-form" novalidate>
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+                <div class="alert alert-error">{% for e in form.non_field_errors %}{{ e }}{% endfor %}</div>
+            {% endif %}
+
+            <!-- 1-qadam -->
+            <div class="form-step active" data-step="1">
+                <div class="startup-step-header">
+                    <span class="startup-step-header-icon">👤</span>
+                    <div>
+                        <h2 class="startup-step-header-title">Shaxsiy ma'lumotlar</h2>
+                        <p class="startup-step-header-desc">Birinchi qadam — o'zingiz haqingizda ma'lumot kiriting</p>
+                    </div>
+                </div>
+
+                <div class="startup-fields-grid">
+                    {% for field in form %}
+                        {% if field.name == 'full_name' or field.name == 'phone' or field.name == 'email' or field.name == 'birth_date' or field.name == 'region' or field.name == 'district' %}
+                            <div class="startup-field {% if field.name == 'full_name' %}startup-field-wide{% endif %}">
+                                <div class="startup-field-header">
+                                    <label class="startup-field-label" for="{{ field.id_for_label }}">
+                                        {{ field.label }}{% if field.field.required %} *{% endif %}
+                                    </label>
+                                </div>
+                                {{ field }}
+                                {% if field.errors %}<ul class="form-errors">{% for e in field.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+
+                <div class="startup-nav">
+                    <button type="button" class="btn btn-primary btn-lg" data-goto-step="2">
+                        Davom etish — StartUp ma'lumotlari →
+                    </button>
+                </div>
+            </div>
+
+            <!-- 2-qadam -->
+            <div class="form-step" data-step="2">
+                <div class="startup-step-header">
+                    <span class="startup-step-header-icon">🚀</span>
+                    <div>
+                        <h2 class="startup-step-header-title">StartUp ma'lumotlari</h2>
+                        <p class="startup-step-header-desc">Loyihangiz haqida batafsil yozing</p>
+                    </div>
+                </div>
+
+                <div class="startup-field">
+                    <div class="startup-field-header">
+                        <label class="startup-field-label" for="{{ form.name.id_for_label }}">StartUp nomi *</label>
+                    </div>
+                    {{ form.name }}
+                    {% if form.name.errors %}<ul class="form-errors">{% for e in form.name.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+                </div>
+
+                <div class="startup-field">
+                    <div class="startup-field-header">
+                        <label class="startup-field-label">Yo'nalish *</label>
+                    </div>
+                    <div class="startup-sphere-grid">
+                        {% for radio in form.sphere %}
+                            <label class="startup-sphere-option">
+                                {{ radio.tag }}
+                                <span class="startup-sphere-icon">
+                                    {% for sphere in spheres %}{% if sphere.value == radio.data.value %}{{ sphere.icon }}{% endif %}{% endfor %}
+                                </span>
+                                <span class="startup-sphere-label">{{ radio.choice_label }}</span>
+                            </label>
+                        {% endfor %}
+                    </div>
+                    {% if form.sphere.errors %}<ul class="form-errors">{% for e in form.sphere.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+                </div>
+
+                <div class="startup-fields-grid">
+                    <div class="startup-field">
+                        <div class="startup-field-header">
+                            <label class="startup-field-label" for="{{ form.stage.id_for_label }}">Bosqich</label>
+                        </div>
+                        {{ form.stage }}
+                    </div>
+                    <div class="startup-field">
+                        <div class="startup-field-header">
+                            <label class="startup-field-label" for="{{ form.team_size.id_for_label }}">Jamoa a'zolari</label>
+                        </div>
+                        {{ form.team_size }}
+                    </div>
+                </div>
+
+                <div class="startup-field">
+                    <div class="startup-field-header">
+                        <label class="startup-field-label" for="{{ form.about.id_for_label }}">StartUp haqida *</label>
+                    </div>
+                    {{ form.about }}
+                    {% if form.about.errors %}<ul class="form-errors">{% for e in form.about.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+                </div>
+
+                <div class="startup-field">
+                    <div class="startup-field-header">
+                        <label class="startup-field-label" for="{{ form.problem_solved.id_for_label }}">Qanday muammoni hal qiladi</label>
+                    </div>
+                    {{ form.problem_solved }}
+                </div>
+
+                <div class="startup-fields-grid">
+                    <div class="startup-field">
+                        <div class="startup-field-header">
+                            <label class="startup-field-label" for="{{ form.needed_investment.id_for_label }}">Kerakli investitsiya (so'm)</label>
+                        </div>
+                        {{ form.needed_investment }}
+                    </div>
+                    <div class="startup-field">
+                        <div class="startup-field-header">
+                            <label class="startup-field-label" for="{{ form.website.id_for_label }}">Veb-sayt</label>
+                        </div>
+                        {{ form.website }}
+                    </div>
+                </div>
+
+                <div class="startup-field">
+                    <div class="startup-field-header">
+                        <label class="startup-field-label">Pitch fayl (PDF, PPT — 10 MB gacha)</label>
+                    </div>
+                    <label class="startup-upload-zone" for="{{ form.pitch_file.id_for_label }}">
+                        <span class="startup-upload-icon">📎</span>
+                        <span class="startup-upload-text" id="upload-text">Faylni tanlash uchun bosing</span>
+                        <span class="startup-upload-hint">PDF, PPTX, DOCX — maksimal 10 MB</span>
+                    </label>
+                    <div style="display:none">{{ form.pitch_file }}</div>
+                    {% if form.pitch_file.errors %}<ul class="form-errors">{% for e in form.pitch_file.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+                </div>
+
+                <div class="startup-nav">
+                    <button type="button" class="btn btn-outline btn-lg" data-goto-step="1">← Oldingi</button>
+                    <button type="submit" class="btn btn-accent btn-lg">🚀 StartUpni ro'yxatdan o'tkazish</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/multistep.js' %}" defer></script>
+{% endblock %}

@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Tashabbus bildirish — {{ direction.name }}{% endblock %}
+
+{% block extra_css %}
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'css/voice.css' %}">
+{% endblock %}
+
+{% block body_class %}voice-theme{% endblock %}
+{% block footer %}{% endblock %}
+{% block messages %}{% endblock %}
+
+{% block content %}
+<div class="voice-page" style="--cat-color: {{ direction.color }}; --cat-accent: {{ direction.accent }};">
+    <div class="voice-wrap">
+
+        <header class="voice-hero">
+            <a href="{% url 'initiatives:youth_direction' direction.id %}" class="voice-back">
+                ← {{ direction.name }} yo'nalishiga qaytish
+            </a>
+            <p class="voice-eyebrow">Tashabbus bildirish</p>
+            <h1 class="voice-title">Sizning g'oyangiz <em>shu yerdan boshlanadi</em></h1>
+            <p class="voice-lede">
+                Muammo, g'oya, taklif yoki startap fikringizni yozing. U reytingga tushadi —
+                boshqalar ovoz beradi va eng kuchli g'oyalar yuqoriga chiqadi.
+            </p>
+        </header>
+
+        <form method="post" class="voice-form-card" novalidate>
+            {% csrf_token %}
+            {{ form.direction }}
+
+            {% if form.non_field_errors %}
+                <ul class="voice-errors">{% for e in form.non_field_errors %}<li>{{ e }}</li>{% endfor %}</ul>
+            {% endif %}
+
+            <div class="voice-field">
+                <label class="voice-label">Yo'nalish</label>
+                <div class="voice-dir-picker">
+                    {% for item in directions %}
+                        <a href="{% url 'initiatives:initiative_create_direction' item.id %}"
+                           class="voice-pill {% if item.id == direction.id %}active{% endif %}"
+                           style="--cat-color: {{ item.color }}">
+                            <span class="ic">
+                                <svg viewBox="0 0 40 40" fill="none" stroke="currentColor"
+                                     stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">{{ item.icon|safe }}</svg>
+                            </span>
+                            {{ item.name }}
+                        </a>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="voice-field">
+                <label class="voice-label">Tashabbus turi *</label>
+                <div class="voice-kind-grid">
+                    {% for radio in form.kind %}
+                        <label class="voice-kind">
+                            {{ radio.tag }}
+                            <span class="voice-kind-icon">
+                                {% if radio.data.value == 'problem' %}❗
+                                {% elif radio.data.value == 'idea' %}💡
+                                {% elif radio.data.value == 'proposal' %}📌
+                                {% else %}🚀{% endif %}
+                            </span>
+                            <span class="voice-kind-label">{{ radio.choice_label }}</span>
+                        </label>
+                    {% endfor %}
+                </div>
+                {% if form.kind.errors %}<ul class="voice-errors">{% for e in form.kind.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+            </div>
+
+            <div class="voice-field">
+                <label class="voice-label" for="{{ form.title.id_for_label }}">Muammo / g'oya nomi *</label>
+                {{ form.title }}
+                {% if form.title.errors %}<ul class="voice-errors">{% for e in form.title.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+            </div>
+
+            <div class="voice-field">
+                <label class="voice-label" for="{{ form.description.id_for_label }}">Batafsil yozing *</label>
+                {{ form.description }}
+                {% if form.description.errors %}<ul class="voice-errors">{% for e in form.description.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+            </div>
+
+            <div class="voice-field">
+                <label class="voice-label" for="{{ form.expected_result.id_for_label }}">Kutilayotgan natija</label>
+                {{ form.expected_result }}
+            </div>
+
+            <div class="voice-grid">
+                <div class="voice-field">
+                    <label class="voice-label" for="{{ form.author_name.id_for_label }}">F.I.O. *</label>
+                    {{ form.author_name }}
+                    {% if form.author_name.errors %}<ul class="voice-errors">{% for e in form.author_name.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+                </div>
+                <div class="voice-field">
+                    <label class="voice-label" for="{{ form.author_phone.id_for_label }}">Telefon</label>
+                    {{ form.author_phone }}
+                </div>
+                <div class="voice-field">
+                    <label class="voice-label" for="{{ form.region.id_for_label }}">Viloyat</label>
+                    {{ form.region }}
+                </div>
+            </div>
+
+            <div class="voice-form-foot">
+                <button type="submit" class="voice-cta" style="margin-bottom:0">
+                    ✦ Tashabbusni yuborish
+                </button>
+                <a href="{% url 'initiatives:youth_direction' direction.id %}" class="voice-ghost">Bekor qilish</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

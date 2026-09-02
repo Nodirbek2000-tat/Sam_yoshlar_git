@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Tashkilot muammolarini kiriting — sam-yosh tadbirkor.uz{% endblock %}
+
+{% block content %}
+<section class="tashkilot-form-hero">
+    <div class="container">
+        <div class="tashkilot-form-hero-content">
+            <a href="{% url 'initiatives:index' %}" class="tashabbuslar-back-link">← Tashabbuslar sahifasiga qaytish</a>
+            <span class="tashkilot-form-hero-icon">🏛️</span>
+            <h1 class="tashkilot-form-hero-title">Tashkilot muammolarini kiriting</h1>
+            <p class="tashkilot-form-hero-subtitle">
+                Tashkilotingizdagi mavjud muammolarni aniq va batafsil yozing.
+                Yoshlar sizga yechim taklif etishadi.
+            </p>
+        </div>
+    </div>
+</section>
+
+<section class="tashkilot-form-section">
+    <div class="tashkilot-form-container">
+        <div class="tashkilot-progress-wrapper">
+            <div class="tashkilot-progress">
+                <div class="tashkilot-progress-bar">
+                    <div class="tashkilot-progress-fill" id="progress-fill" style="width: {% widthratio 1 total_steps 100 %}%"></div>
+                </div>
+                <span class="tashkilot-progress-text" id="progress-text">1 / {{ total_steps }}</span>
+            </div>
+        </div>
+
+        <form method="post" data-multistep class="tashkilot-form-card" novalidate>
+            {% csrf_token %}
+            <div class="alert alert-warning" id="step-warning" style="display:none"></div>
+
+            <!-- 1-qadam: tashkilot ma'lumotlari -->
+            <div class="form-step tashkilot-step active" data-step="1">
+                <div class="tashkilot-step-header">
+                    <span class="tashkilot-step-icon">🏢</span>
+                    <div>
+                        <span class="tashkilot-step-number">1-qadam</span>
+                        <h2 class="tashkilot-step-title">Tashkilot ma'lumotlari</h2>
+                        <p class="tashkilot-step-subtitle">Avval tashkilotingiz haqida asosiy ma'lumotlarni kiriting</p>
+                    </div>
+                </div>
+
+                <div class="tashkilot-org-fields">
+                    {% for field in org_form %}
+                        <div class="startup-field">
+                            <div class="startup-field-header">
+                                <label class="startup-field-label" for="{{ field.id_for_label }}">
+                                    {{ field.label }}{% if field.field.required %} *{% endif %}
+                                </label>
+                            </div>
+                            {{ field }}
+                            {% if field.errors %}<ul class="form-errors">{% for e in field.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <div class="tashkilot-nav">
+                    <button type="button" class="btn btn-primary btn-lg" data-goto-step="2">Keyingi →</button>
+                </div>
+            </div>
+
+            <!-- 2-11 qadamlar: muammo kategoriyalari -->
+            {% for step in steps %}
+                <div class="form-step tashkilot-step" data-step="{{ step.number }}">
+                    <div class="tashkilot-step-header">
+                        <span class="tashkilot-step-icon">{{ step.icon }}</span>
+                        <div>
+                            <span class="tashkilot-step-number">{{ step.number }}-qadam</span>
+                            <h2 class="tashkilot-step-title">{{ step.title }}</h2>
+                        </div>
+                    </div>
+
+                    <div class="tashkilot-question-card">
+                        <p class="tashkilot-question-text">{{ step.question }}</p>
+                    </div>
+
+                    {{ step.field }}
+                    {% if step.field.errors %}<ul class="form-errors">{% for e in step.field.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+
+                    <div class="tashkilot-nav">
+                        <button type="button" class="btn btn-outline btn-lg" data-goto-step="{{ step.number|add:'-1' }}">← Oldingi</button>
+                        {% if forloop.last %}
+                            <button type="submit" class="btn btn-accent btn-lg">✅ Yuborish</button>
+                        {% else %}
+                            <button type="button" class="btn btn-primary btn-lg" data-goto-step="{{ step.number|add:'1' }}">Keyingi →</button>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        </form>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/multistep.js' %}" defer></script>
+{% endblock %}

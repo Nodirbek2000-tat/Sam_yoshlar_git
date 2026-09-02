@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block title %}Kirish — sam-yosh tadbirkor.uz{% endblock %}
+
+{% block content %}
+<section class="auth-page">
+    <div class="auth-card tg-card animate-slide-up">
+        <div class="auth-head">
+            <span class="auth-icon tg-icon">✈️</span>
+            <h1 class="auth-title">Telegram orqali kirish</h1>
+            <p class="auth-subtitle">Botga raqamingizni yuboring — kod olasiz</p>
+        </div>
+
+        <a href="{{ bot_link }}" target="_blank" rel="noopener" class="tg-open">
+            ✈️ Botni ochish — @{{ bot_username }}
+        </a>
+
+        <form method="post" novalidate class="tg-code-form">
+            {% csrf_token %}
+
+            {% if form.code.errors %}
+                <div class="alert alert-error">
+                    {% for error in form.code.errors %}{{ error }}{% endfor %}
+                </div>
+            {% endif %}
+
+            <label class="form-label" for="{{ form.code.id_for_label }}">Kodni kiriting</label>
+            {{ form.code }}
+
+            <button type="submit" class="btn btn-primary btn-lg auth-submit">Kirish →</button>
+        </form>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // 6 ta raqam kiritilishi bilan avtomatik yuboramiz
+    (function () {
+        const input = document.querySelector('.tg-code-input');
+        if (!input) return;
+
+        input.addEventListener('input', () => {
+            input.value = input.value.replace(/\D/g, '').slice(0, 6);
+            if (input.value.length === 6) input.form.submit();
+        });
+    })();
+</script>
+{% endblock %}

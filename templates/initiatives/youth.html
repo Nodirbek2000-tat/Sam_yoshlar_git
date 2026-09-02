@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+
+{% block title %}Yoshlar tashabbuslari — sam-yosh tadbirkor.uz{% endblock %}
+
+{% block content %}
+<section class="yoshlar-form-hero">
+    <div class="container">
+        <div class="yoshlar-form-hero-content">
+            <a href="{% url 'initiatives:index' %}" class="tashabbuslar-back-link">← Tashabbuslar sahifasiga qaytish</a>
+            <span class="yoshlar-form-hero-icon">👥</span>
+            <h1 class="yoshlar-form-hero-title">Yoshlar tashabbuslari</h1>
+            <p class="yoshlar-form-hero-subtitle">
+                Tashkilotlar muammolarini ko'ring va o'zingizning innovatsion yechimlaringizni taklif qiling
+            </p>
+        </div>
+    </div>
+</section>
+
+<section class="yoshlar-form-section">
+    <div class="container container-narrow">
+        {% if selected %}
+            <div class="yoshlar-selected-card">
+                <div class="yoshlar-selected-header">
+                    <span>Tanlangan muammo:</span>
+                    <a href="{% url 'initiatives:youth' %}" class="btn btn-ghost btn-sm">✕ Boshqasini tanlash</a>
+                </div>
+                <div class="yoshlar-selected-problem">
+                    <div class="yoshlar-problem-header">
+                        <strong class="yoshlar-problem-org">{{ selected.organization.name }}</strong>
+                        <span class="yoshlar-problem-sphere">{{ selected.organization.get_sphere_display }}</span>
+                    </div>
+                    <p class="yoshlar-problem-text">{{ selected.description }}</p>
+                    <div class="yoshlar-problem-footer">
+                        <span class="badge badge-primary">{{ selected.icon }} {{ selected.get_category_display }}</span>
+                        <span class="yoshlar-problem-solutions">💡 {{ selected.solutions_count }} ta yechim taklif etilgan</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="yoshlar-solution-form">
+                <h2 class="yoshlar-solution-title">🚀 Yechimingizni taklif qiling</h2>
+
+                <form method="post" enctype="multipart/form-data" novalidate>
+                    {% csrf_token %}
+                    <input type="hidden" name="problem_id" value="{{ selected.pk }}">
+
+                    {% for field in form %}
+                        <div class="startup-field">
+                            <div class="startup-field-header">
+                                <label class="startup-field-label" for="{{ field.id_for_label }}">
+                                    {{ field.label }}{% if field.field.required %} *{% endif %}
+                                </label>
+                            </div>
+                            {{ field }}
+                            {% if field.errors %}<ul class="form-errors">{% for e in field.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+                        </div>
+                    {% endfor %}
+
+                    <button type="submit" class="btn btn-accent btn-lg">✅ Yechimni yuborish</button>
+                </form>
+            </div>
+        {% else %}
+            <div class="yoshlar-problems-header">
+                <h2 class="yoshlar-problems-title">📋 Tashkilotlar muammolari</h2>
+                <p class="yoshlar-problems-subtitle">
+                    Quyidagi muammolardan birini tanlang va o'zingizning yechimingizni taklif qiling
+                </p>
+            </div>
+
+            {% if problems %}
+                <div class="yoshlar-problems-list">
+                    {% for problem in problems %}
+                        <a href="{% url 'initiatives:youth_problem' problem.pk %}" class="yoshlar-problem-card scroll-reveal">
+                            <div class="yoshlar-problem-header">
+                                <strong class="yoshlar-problem-org">{{ problem.organization.name }}</strong>
+                                <span class="yoshlar-problem-sphere">{{ problem.organization.get_sphere_display }}</span>
+                                <span class="yoshlar-problem-time">{{ problem.age_label }}</span>
+                            </div>
+                            <p class="yoshlar-problem-text">{{ problem.description|truncatechars:220 }}</p>
+                            <div class="yoshlar-problem-footer">
+                                <span class="badge badge-primary">{{ problem.icon }} {{ problem.get_category_display }}</span>
+                                <span class="yoshlar-problem-solutions">💡 {{ problem.solution_count }} ta yechim taklif etilgan</span>
+                            </div>
+                        </a>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <div class="empty-state-icon">📋</div>
+                    <div class="empty-state-title">Hozircha muammolar yo'q</div>
+                    <div class="empty-state-text">Tashkilotlar muammo kiritishi bilan bu yerda paydo bo'ladi.</div>
+                </div>
+            {% endif %}
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

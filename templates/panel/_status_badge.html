@@ -1,0 +1,4 @@
+{% if status == 'approved' or status == 'done' %}<span class="panel-badge panel-badge-success">{{ label }}</span>
+{% elif status == 'rejected' %}<span class="panel-badge panel-badge-error">{{ label }}</span>
+{% elif status == 'review' %}<span class="panel-badge panel-badge-info">{{ label }}</span>
+{% else %}<span class="panel-badge panel-badge-warning">{{ label }}</span>{% endif %}

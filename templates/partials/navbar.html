@@ -1,0 +1,51 @@
+<nav class="navbar" id="navbar">
+    <div class="container navbar-inner">
+        <a href="{% url 'core:home' %}" class="navbar-brand">
+            <span class="nav-icon">🏛️</span> sam-yosh tadbirkor.uz
+        </a>
+
+        <div class="navbar-menu" id="navbar-menu">
+            <a href="{% url 'core:home' %}" class="navbar-link {% if request.path == '/' %}active{% endif %}">
+                <span class="nav-icon">🏠</span> Bosh sahifa
+            </a>
+            <a href="{% url 'core:about' %}" class="navbar-link {% if '/kengash-haqida' in request.path %}active{% endif %}">
+                <span class="nav-icon">ℹ️</span> Kengash haqida
+            </a>
+            <a href="{% url 'content:news_list' %}" class="navbar-link {% if '/yangiliklar' in request.path %}active{% endif %}">
+                <span class="nav-icon">📰</span> Yangiliklar
+            </a>
+            <a href="{% url 'content:event_list' %}" class="navbar-link {% if '/tadbirlar' in request.path %}active{% endif %}">
+                <span class="nav-icon">📅</span> Tadbirlar
+            </a>
+            <a href="{% url 'content:announcement_list' %}" class="navbar-link {% if '/elonlar' in request.path %}active{% endif %}">
+                <span class="nav-icon">📢</span> E'lonlar
+            </a>
+            <a href="{% url 'abroad:list' %}" class="navbar-link {% if '/chet-eldagi' in request.path %}active{% endif %}">
+                <span class="nav-icon">🌍</span> Chet eldagi tengdoshim
+            </a>
+        </div>
+
+        <div class="navbar-actions">
+            {% if user.is_authenticated %}
+                {% if user.is_superuser or user.is_staff and user.is_verified and user.role == 'admin' %}
+                    <a href="{% url 'panel:dashboard' %}" class="btn btn-outline btn-sm nav-panel-btn"
+                       title="Boshqaruv paneli">⚙️ <span>Panel</span></a>
+                {% endif %}
+                <a href="{% url 'cabinet:dashboard' %}" class="nav-user" title="{{ user.full_name }} — kabinet">
+                    {% if user.avatar %}
+                        <img src="{{ user.avatar.url }}" alt="{{ user.full_name }}">
+                    {% else %}
+                        {{ user.initials }}
+                    {% endif %}
+                </a>
+                <form method="post" action="{% url 'accounts:logout' %}" style="display:inline">
+                    {% csrf_token %}
+                    <button type="submit" class="nav-logout" title="Chiqish" aria-label="Chiqish">⏻</button>
+                </form>
+            {% else %}
+                <a href="{% url 'accounts:login' %}" class="btn btn-primary btn-sm">✈️ Kirish</a>
+            {% endif %}
+            <button class="menu-toggle" id="menu-toggle" aria-label="Menyu">☰</button>
+        </div>
+    </div>
+</nav>

@@ -1,0 +1,103 @@
+{% extends 'cabinet/base_cabinet.html' %}
+
+{% block title %}Tashabbuslarim — Kabinet{% endblock %}
+{% block cabinet_title %}✨ Tashabbuslarim{% endblock %}
+{% block cabinet_subtitle %}Bildirgan g'oyalaringiz, ular to'plagan ovoz va o'rinlar{% endblock %}
+
+{% block cabinet_content %}
+{% if initiatives %}
+    <div class="cab-stats">
+        <div class="cab-stat" data-tone="primary">
+            <span class="cab-stat-icon">✨</span>
+            <div>
+                <div class="cab-stat-value">{{ initiatives|length }}</div>
+                <div class="cab-stat-label">Tashabbus</div>
+            </div>
+        </div>
+        <div class="cab-stat" data-tone="success">
+            <span class="cab-stat-icon">👍</span>
+            <div>
+                <div class="cab-stat-value">{{ total_votes }}</div>
+                <div class="cab-stat-label">Jami ovoz</div>
+            </div>
+        </div>
+        <div class="cab-stat" data-tone="info">
+            <span class="cab-stat-icon">💬</span>
+            <div>
+                <div class="cab-stat-value">{{ total_comments }}</div>
+                <div class="cab-stat-label">Kelgan taklif</div>
+            </div>
+        </div>
+        <div class="cab-stat" data-tone="accent">
+            <span class="cab-stat-icon">🏆</span>
+            <div>
+                <div class="cab-stat-value">#{{ best_place }}</div>
+                <div class="cab-stat-label">Eng yaxshi o'rin</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="my-initiatives">
+        {% for idea in initiatives %}
+            <article class="my-initiative" style="--dir-color: {{ idea.direction_info.color }}">
+                <div class="my-initiative-place">
+                    <span class="my-initiative-rank">#{{ idea.place }}</span>
+                    <span class="my-initiative-rank-label">o'rin</span>
+                </div>
+
+                <div class="my-initiative-body">
+                    <div class="my-initiative-tags">
+                        <span class="my-initiative-tag">{{ idea.direction_info.name }}</span>
+                        <span class="my-initiative-tag">{{ idea.kind_icon }} {{ idea.get_kind_display }}</span>
+                        {% if idea.status == 'approved' %}
+                            <span class="badge badge-success">Tasdiqlangan</span>
+                        {% elif idea.status == 'rejected' %}
+                            <span class="badge badge-error">Rad etilgan</span>
+                        {% else %}
+                            <span class="badge badge-warning">{{ idea.get_status_display }}</span>
+                        {% endif %}
+                        {% if not idea.is_published %}<span class="badge badge-error">Yashirilgan</span>{% endif %}
+                    </div>
+
+                    <h3 class="my-initiative-title">
+                        <a href="{% url 'initiatives:initiative_detail' idea.pk %}" target="_blank" rel="noopener">
+                            {{ idea.title }}
+                        </a>
+                    </h3>
+
+                    <p class="my-initiative-text">{{ idea.description|truncatechars:150 }}</p>
+
+                    {% if idea.admin_note %}
+                        <div class="my-initiative-note">
+                            <strong>Admin izohi:</strong> {{ idea.admin_note }}
+                        </div>
+                    {% endif %}
+
+                    <div class="my-initiative-foot">
+                        <span class="my-initiative-metric">👍 <b>{{ idea.vote_count }}</b> ovoz</span>
+                        <span class="my-initiative-metric">💬 <b>{{ idea.comment_total }}</b> taklif</span>
+                        <span class="my-initiative-metric">📅 {{ idea.created_at|date:"d.m.Y" }}</span>
+
+                        <form method="post" action="{% url 'initiatives:initiative_delete' idea.pk %}"
+                              class="my-initiative-delete"
+                              onsubmit="return confirm('«{{ idea.title|escapejs }}» o\'chirilsinmi? Ovozlar ham yo\'qoladi.')">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-ghost btn-sm">🗑 O'chirish</button>
+                        </form>
+                    </div>
+                </div>
+            </article>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="empty-state">
+        <div class="empty-state-icon">✨</div>
+        <div class="empty-state-title">Hali tashabbus bildirmagansiz</div>
+        <div class="empty-state-text">
+            Muammo, g'oya yoki taklifingizni bildiring — boshqalar ovoz beradi va
+            eng kuchli g'oyalar yuqoriga chiqadi.
+        </div>
+        <a href="{% url 'initiatives:initiative_create' %}" class="btn btn-primary">Tashabbus bildirish →</a>
+    </div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,71 @@
+{% extends 'panel/base_panel.html' %}
+
+{% block title %}{{ title }}{% endblock %}
+{% block page_title %}{{ title }}{% endblock %}
+{% block page_subtitle %}{{ subtitle }}{% endblock %}
+
+{% block header_actions %}
+    <a href="{% url back_url %}" class="panel-btn panel-btn-ghost">← Orqaga</a>
+    {% if extra_link %}
+        <a href="{% url extra_link.0 extra_link.1 %}" class="panel-btn panel-btn-outline">{{ extra_link.2 }}</a>
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="panel-card">
+    <div class="panel-card-body">
+        <form method="post" enctype="multipart/form-data" novalidate>
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+                <div class="panel-alert panel-alert-error">
+                    {% for error in form.non_field_errors %}{{ error }}{% endfor %}
+                </div>
+            {% endif %}
+
+            <div class="panel-form-grid">
+                {% for field in form %}
+                    {% if field.field.widget.input_type == 'checkbox' %}
+                        <div class="panel-field">
+                            <label class="panel-check-row">
+                                {{ field }}<span>{{ field.label }}</span>
+                            </label>
+                            {% if field.errors %}<ul class="panel-errors">{% for e in field.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+                        </div>
+                    {% else %}
+                        <div class="panel-field {% if field.name == 'body' or field.name == 'description' or field.name == 'excerpt' or field.name == 'bio' or field.name == 'tagline' or field.name == 'mission' or field.name == 'vision' %}panel-field-wide{% endif %}">
+                            <label class="panel-label" for="{{ field.id_for_label }}">
+                                {{ field.label }}{% if field.field.required %} *{% endif %}
+                            </label>
+                            {{ field }}
+                            {% if field.name == 'image' and object.image %}
+                                <img src="{{ object.image.url }}" alt="" class="panel-preview-img">
+                            {% elif field.name == 'photo' and object.photo %}
+                                <img src="{{ object.photo.url }}" alt="" class="panel-preview-img">
+                            {% endif %}
+                            {% if field.help_text %}<small class="panel-table-meta">{{ field.help_text }}</small>{% endif %}
+                            {% if field.errors %}<ul class="panel-errors">{% for e in field.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+
+            <div class="panel-form-foot">
+                <button type="submit" class="panel-btn panel-btn-primary">
+                    {% if object %}💾 Saqlash{% else %}✓ Qo'shish{% endif %}
+                </button>
+                <a href="{% url back_url %}" class="panel-btn panel-btn-ghost">Bekor qilish</a>
+                <span class="panel-spacer"></span>
+            </div>
+        </form>
+
+        {% if object and delete_url %}
+            <form method="post" action="{% url delete_url object.pk %}" style="margin-top:14px"
+                  onsubmit="return confirm('Rostdan ham o\'chirilsinmi? Bu amalni qaytarib bo\'lmaydi.')">
+                {% csrf_token %}
+                <button type="submit" class="panel-btn panel-btn-danger">🗑 O'chirish</button>
+            </form>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

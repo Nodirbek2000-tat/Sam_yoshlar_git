@@ -1,0 +1,96 @@
+{% extends 'panel/base_panel.html' %}
+
+{% block title %}Tadbirlar{% endblock %}
+{% block page_title %}Tadbirlar{% endblock %}
+{% block page_subtitle %}Jami {{ page_obj.paginator.count }} ta tadbir{% endblock %}
+
+{% block header_actions %}
+    <a href="{% url 'panel:event_create' %}" class="panel-btn panel-btn-primary">+ Yangi tadbir</a>
+{% endblock %}
+
+{% block content %}
+<form method="get" class="panel-toolbar">
+    <div class="panel-search">
+        <span class="panel-search-icon">🔍</span>
+        <input type="search" name="q" value="{{ search }}" class="panel-input" placeholder="Tadbir nomi...">
+    </div>
+    <button type="submit" class="panel-btn panel-btn-outline">Qidirish</button>
+</form>
+
+<div class="panel-card">
+    {% if page_obj.object_list %}
+        <div class="panel-table-wrap">
+            <table class="panel-table">
+                <thead>
+                    <tr>
+                        <th style="width:70px"></th>
+                        <th>Tadbir</th>
+                        <th>Sana va vaqt</th>
+                        <th>Manzil</th>
+                        <th>Ishtirokchilar</th>
+                        <th>Holat</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for event in page_obj %}
+                        <tr>
+                            <td>
+                                {% if event.image %}
+                                    <img src="{{ event.image.url }}" alt="" class="panel-thumb">
+                                {% else %}
+                                    <div class="panel-thumb">📅</div>
+                                {% endif %}
+                            </td>
+                            <td><div class="panel-table-title">{{ event.title|truncatechars:50 }}</div></td>
+                            <td>{{ event.starts_at|date:"d.m.Y" }}<div class="panel-table-meta">{{ event.starts_at|date:"H:i" }}</div></td>
+                            <td>{{ event.location|truncatechars:34 }}</td>
+                            <td style="min-width:130px">
+                                <div class="panel-table-meta">{{ event.reg_count }} / {{ event.capacity }}</div>
+                                <div class="panel-progress">
+                                    <div class="panel-progress-fill" style="width: {{ event.fill_percent }}%"></div>
+                                </div>
+                            </td>
+                            <td>
+                                {% if event.is_past %}
+                                    <span class="panel-badge panel-badge-gray">O'tgan</span>
+                                {% elif event.is_full %}
+                                    <span class="panel-badge panel-badge-warning">To'lgan</span>
+                                {% else %}
+                                    <span class="panel-badge panel-badge-success">Ochiq</span>
+                                {% endif %}
+                                {% if not event.is_published %}
+                                    <span class="panel-badge panel-badge-gray">Yashirin</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <div class="panel-table-actions">
+                                    <a href="{% url 'panel:event_registrations' event.pk %}"
+                                       class="panel-btn panel-btn-ghost panel-btn-sm"
+                                       title="Ishtirokchilar">👥 {{ event.reg_count }}</a>
+                                    <a href="{% url 'panel:event_edit' event.pk %}"
+                                       class="panel-btn panel-btn-outline panel-btn-sm">Tahrirlash</a>
+                                    <form method="post" action="{% url 'panel:event_delete' event.pk %}"
+                                          onsubmit="return confirm('«{{ event.title|escapejs }}» o\'chirilsinmi?\n\n{{ event.reg_count }} ta yozilish ham o\'chadi. Bu amalni qaytarib bo\'lmaydi.')">
+                                        {% csrf_token %}
+                                        <button type="submit" class="panel-btn panel-btn-danger panel-btn-sm"
+                                                title="O'chirish">🗑</button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% include 'panel/_pagination.html' with qs=""|add:"q="|add:search|add:"&" %}
+    {% else %}
+        <div class="panel-empty">
+            <div class="panel-empty-icon">📅</div>
+            <div class="panel-empty-title">Tadbirlar yo'q</div>
+            <div class="panel-empty-text">Yangi tadbir qo'shing — foydalanuvchilar unga yozila oladi.</div>
+            <a href="{% url 'panel:event_create' %}" class="panel-btn panel-btn-primary">+ Tadbir qo'shish</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

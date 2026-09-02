@@ -1,0 +1,137 @@
+{% extends 'base.html' %}
+
+{% block title %}Kengash haqida — sam-yosh tadbirkor.uz{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <div class="container">
+        <h1 class="page-header-title">Kengash Haqida</h1>
+        <p class="page-header-subtitle">{{ site.mission }}</p>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <div class="grid grid-2">
+            <div class="card">
+                <div class="card-body">
+                    <span class="home-menu-card-icon">🎯</span>
+                    <h2 class="card-title">Maqsadimiz</h2>
+                    <p class="card-text">{{ site.mission }}</p>
+
+                    {% if tasks %}
+                        <h3 class="about-subtitle">Vazifalari:</h3>
+                        <ul class="task-list">
+                            {% for task in tasks %}
+                                <li class="task-item"><span class="task-check">✅</span>{{ task.text }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <span class="home-menu-card-icon">👁️</span>
+                    <h2 class="card-title">Viziyamiz</h2>
+                    <p class="card-text">{{ site.vision }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-2 about-docs">
+            <div class="card">
+                <div class="card-body">
+                    <h3 class="card-title">📋 Nizom</h3>
+                    <p class="card-text">Kengash nizomi va asosiy hujjatlar bilan tanishing.</p>
+                    {% if site.charter_file %}
+                        <a href="{{ site.charter_file.url }}" class="btn btn-outline" download>📄 Nizomni yuklab olish</a>
+                    {% else %}
+                        <button class="btn btn-outline" disabled>📄 Tez orada</button>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-body">
+                    <h3 class="card-title">📂 Hujjatlar</h3>
+                    <p class="card-text">Hisobotlar, qarorlar va boshqa rasmiy hujjatlar.</p>
+                    <a href="{% url 'content:announcement_list' %}" class="btn btn-outline">📁 Hujjatlarni ko'rish</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% if heads %}
+<section class="section section-alt">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">Rahbariyat</h2>
+            <p class="section-subtitle">Kengash rahbarlari</p>
+        </div>
+        <div class="grid grid-2">
+            {% for leader in heads %}
+                <article class="card leader-card scroll-reveal">
+                    <div class="card-body">
+                        <div class="leader-avatar">
+                            {% if leader.photo %}
+                                <img src="{{ leader.photo.url }}" alt="{{ leader.full_name }}">
+                            {% else %}
+                                <span>{{ leader.initials }}</span>
+                            {% endif %}
+                        </div>
+                        <h3 class="card-title">{{ leader.full_name }}</h3>
+                        <span class="badge badge-primary">{{ leader.position }}</span>
+                        {% if leader.bio %}<p class="card-text">{{ leader.bio }}</p>{% endif %}
+                    </div>
+                </article>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{% if members %}
+<section class="section">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">Kengash A'zolari</h2>
+        </div>
+        <div class="grid grid-4">
+            {% for member in members %}
+                <article class="card leader-card leader-card-sm scroll-reveal">
+                    <div class="card-body">
+                        <div class="leader-avatar leader-avatar-sm">
+                            {% if member.photo %}
+                                <img src="{{ member.photo.url }}" alt="{{ member.full_name }}">
+                            {% else %}
+                                <span>{{ member.initials }}</span>
+                            {% endif %}
+                        </div>
+                        <h3 class="card-title">{{ member.full_name }}</h3>
+                        <p class="card-text">{{ member.position }}</p>
+                        {% if member.region %}
+                            <div class="card-meta"><span>📍 {{ member.get_region_display }}</span></div>
+                        {% endif %}
+                    </div>
+                </article>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<section class="section section-alt">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">Hududiy Tuzilma</h2>
+            <p class="section-subtitle">Kengash barcha viloyatlarda faoliyat yuritadi</p>
+        </div>
+        <div class="region-grid">
+            {% for value, label in regions %}
+                <div class="region-item">📍 {{ label }}</div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}

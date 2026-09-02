@@ -1,0 +1,156 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ initiative.title }} — Yoshlar tashabbuslari{% endblock %}
+
+{% block extra_css %}
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'css/voice.css' %}">
+{% endblock %}
+
+{% block body_class %}voice-theme{% endblock %}
+{% block footer %}{% endblock %}
+{% block messages %}{% endblock %}
+
+{% block content %}
+<div class="voice-page" style="--cat-color: {{ direction.color }}; --cat-accent: {{ direction.accent }};">
+    <div class="voice-wrap voice-wrap-narrow">
+
+        <a href="{% url 'initiatives:youth_direction' direction.id %}" class="voice-back">
+            ← {{ direction.name }} reytingiga qaytish
+        </a>
+
+        {% if messages %}
+            <div class="voice-flash">{% for message in messages %}<span>{{ message }}</span>{% endfor %}</div>
+        {% endif %}
+
+        <article class="voice-detail" data-initiative="{{ initiative.pk }}">
+            <aside class="voice-detail-scene">
+                <div class="voice-canvas">
+                    <svg viewBox="95 45 710 465" preserveAspectRatio="xMidYMid meet"
+                         data-scene="{{ direction.scene }}"
+                         data-scene-id="d{{ initiative.pk }}"
+                         data-votes="{{ initiative.vote_count }}"
+                         data-max="{{ direction.max }}"
+                         data-unit="{{ direction.unit }}"
+                         data-color="{{ direction.color }}"
+                         data-accent="{{ direction.accent }}"></svg>
+                    <div class="voice-fly"></div>
+                    <span class="voice-hud tl"></span><span class="voice-hud tr"></span>
+                    <span class="voice-hud bl"></span><span class="voice-hud br"></span>
+                </div>
+                <div class="voice-scene-meta">
+                    <span class="voice-scene-name">{{ direction.title }}</span>
+                    <span class="voice-scene-label">{{ initiative.vote_count }} / {{ direction.max }} {{ direction.unit }}</span>
+                </div>
+            </aside>
+            <div class="voice-detail-main">
+                <div class="voice-row-tags">
+                    <span class="voice-tag voice-tag-dir"><span class="voice-tag-dot"></span>{{ direction.name }}</span>
+                    <span class="voice-tag">{{ initiative.kind_icon }} {{ initiative.get_kind_display }}</span>
+                    <span class="voice-tag voice-tag-rank">#{{ rank }}-o'rin</span>
+                </div>
+
+                <h1 class="voice-detail-title">{{ initiative.title }}</h1>
+
+                <div class="voice-detail-author">
+                    <span class="voice-avatar">{{ initiative.author_label|slice:":2"|upper }}</span>
+                    <div>
+                        <div class="voice-detail-author-name">{{ initiative.author_label }}</div>
+                        <div class="voice-detail-author-meta">
+                            {{ initiative.created_at|date:"d.m.Y" }}
+                            {% if initiative.region %} · {{ initiative.get_region_display }}{% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="voice-detail-body">{{ initiative.description|linebreaks }}</div>
+
+                {% if initiative.expected_result %}
+                    <div class="voice-detail-block">
+                        <h3>Kutilayotgan natija</h3>
+                        <p>{{ initiative.expected_result|linebreaksbr }}</p>
+                    </div>
+                {% endif %}
+
+                <div class="voice-row-actions">
+                    <button type="button"
+                            class="voice-vote-btn {% if initiative.voted %}voted{% endif %}"
+                            data-vote-url="{% url 'initiatives:vote' initiative.pk %}"
+                            {% if initiative.voted %}disabled{% endif %}>
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"
+                             stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M7 10v11H3V10zM7 10l5-8a2.5 2.5 0 013.5 3L14 10h5.5a2.5 2.5 0 012.4 3.2l-2 7A2.5 2.5 0 0117.5 22H7"/>
+                        </svg>
+                        <span class="voice-vote-count">{{ initiative.vote_count }}</span>
+                        <span class="voice-vote-word">{% if initiative.voted %}Ovoz berdingiz{% else %}Ovoz berish{% endif %}</span>
+                    </button>
+                    <a href="#takliflar" class="voice-comment-btn">💬 {{ comments|length }} taklif</a>
+                </div>
+            </div>
+
+        </article>
+
+        <section class="voice-comments" id="takliflar">
+            <div class="voice-section-head">
+                <h2 class="voice-section-title">💬 Takliflar</h2>
+                <span class="voice-section-count">{{ comments|length }} ta</span>
+            </div>
+
+            <form method="post" class="voice-comment-form" novalidate>
+                {% csrf_token %}
+                <div class="voice-field">
+                    <label class="voice-label" for="{{ form.author_name.id_for_label }}">Ismingiz</label>
+                    {{ form.author_name }}
+                    {% if form.author_name.errors %}<ul class="voice-errors">{% for e in form.author_name.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+                </div>
+                <div class="voice-field">
+                    <label class="voice-label" for="{{ form.text.id_for_label }}">Taklifingiz</label>
+                    {{ form.text }}
+                    {% if form.text.errors %}<ul class="voice-errors">{% for e in form.text.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+                </div>
+                <button type="submit" class="voice-cta" style="margin-bottom:0">Taklifni yuborish</button>
+            </form>
+
+            {% if comments %}
+                <div class="voice-comment-list">
+                    {% for comment in comments %}
+                        <div class="voice-comment">
+                            <span class="voice-avatar">{{ comment.initials }}</span>
+                            <div>
+                                <div class="voice-comment-head">
+                                    <strong>{{ comment.author_label }}</strong>
+                                    <span>{{ comment.created_at|date:"d.m.Y H:i" }}</span>
+                                </div>
+                                <p class="voice-comment-text">{{ comment.text|linebreaksbr }}</p>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="voice-empty">Hali taklif yo'q — birinchi bo'lib fikringizni yozing.</div>
+            {% endif %}
+        </section>
+
+        {% if siblings %}
+            <section class="voice-siblings">
+                <h2 class="voice-section-title">Shu yo'nalishdagi boshqa tashabbuslar</h2>
+                <div class="voice-sibling-grid">
+                    {% for item in siblings %}
+                        <a href="{% url 'initiatives:initiative_detail' item.pk %}" class="voice-sibling">
+                            <span class="voice-sibling-votes">{{ item.vote_count }} ovoz</span>
+                            <span class="voice-sibling-title">{{ item.title|truncatechars:64 }}</span>
+                        </a>
+                    {% endfor %}
+                </div>
+            </section>
+        {% endif %}
+    </div>
+
+    <div class="voice-toast" id="voice-toast"></div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/voice.js' %}" defer></script>
+{% endblock %}

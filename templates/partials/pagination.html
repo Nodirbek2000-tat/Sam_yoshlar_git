@@ -1,0 +1,22 @@
+{% if is_paginated %}
+<div class="pagination">
+    {% if page_obj.has_previous %}
+        <a href="?{% if request.GET.kategoriya %}kategoriya={{ request.GET.kategoriya }}&{% endif %}{% if request.GET.turi %}turi={{ request.GET.turi }}&{% endif %}{% if request.GET.holat %}holat={{ request.GET.holat }}&{% endif %}{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}page={{ page_obj.previous_page_number }}"
+           class="pagination-btn">←</a>
+    {% endif %}
+
+    {% for num in paginator.page_range %}
+        {% if num == page_obj.number %}
+            <span class="pagination-btn active">{{ num }}</span>
+        {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+            <a href="?{% if request.GET.kategoriya %}kategoriya={{ request.GET.kategoriya }}&{% endif %}{% if request.GET.turi %}turi={{ request.GET.turi }}&{% endif %}{% if request.GET.holat %}holat={{ request.GET.holat }}&{% endif %}{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}page={{ num }}"
+               class="pagination-btn">{{ num }}</a>
+        {% endif %}
+    {% endfor %}
+
+    {% if page_obj.has_next %}
+        <a href="?{% if request.GET.kategoriya %}kategoriya={{ request.GET.kategoriya }}&{% endif %}{% if request.GET.turi %}turi={{ request.GET.turi }}&{% endif %}{% if request.GET.holat %}holat={{ request.GET.holat }}&{% endif %}{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}page={{ page_obj.next_page_number }}"
+           class="pagination-btn">→</a>
+    {% endif %}
+</div>
+{% endif %}

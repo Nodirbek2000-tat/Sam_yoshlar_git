@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% block title %}Yangiliklar — sam-yosh tadbirkor.uz{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <div class="container">
+        <h1 class="page-header-title">Yangiliklar</h1>
+        <p class="page-header-subtitle">Kengash faoliyati va tadbirkorlik olamidagi yangiliklar</p>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <form method="get" class="search-bar">
+            <span class="search-icon">🔍</span>
+            <input type="search" name="q" value="{{ search }}" class="form-input"
+                   placeholder="Yangiliklar ichidan qidiring...">
+            {% if active_category %}<input type="hidden" name="kategoriya" value="{{ active_category }}">{% endif %}
+        </form>
+
+        <div class="tabs">
+            <a href="?{% if search %}q={{ search }}{% endif %}"
+               class="tab {% if not active_category %}active{% endif %}">Barchasi</a>
+            {% for value, label in categories %}
+                <a href="?kategoriya={{ value }}{% if search %}&q={{ search }}{% endif %}"
+                   class="tab {% if active_category == value %}active{% endif %}">{{ label }}</a>
+            {% endfor %}
+        </div>
+
+        {% if news_list %}
+            <div class="grid grid-3">
+                {% for news in news_list %}
+                    <a href="{{ news.get_absolute_url }}" class="card news-card scroll-reveal">
+                        {% if news.image %}
+                            <img src="{{ news.image.url }}" alt="{{ news.title }}" class="card-img">
+                        {% else %}
+                            <div class="card-img card-img-placeholder">📰</div>
+                        {% endif %}
+                        <div class="card-body">
+                            <span class="badge badge-primary">{{ news.get_category_display }}</span>
+                            <h3 class="card-title">{{ news.title }}</h3>
+                            <p class="card-text">{{ news.excerpt|truncatechars:130 }}</p>
+                            <div class="card-meta">
+                                <span>📅 {{ news.published_at|date:"Y-m-d" }}</span>
+                                {% if news.display_author %}<span>✍️ {{ news.display_author }}</span>{% endif %}
+                            </div>
+                        </div>
+                    </a>
+                {% endfor %}
+            </div>
+
+            {% include 'partials/pagination.html' %}
+        {% else %}
+            <div class="empty-state">
+                <div class="empty-state-icon">📰</div>
+                <div class="empty-state-title">Yangiliklar topilmadi</div>
+                <div class="empty-state-text">Tanlangan kategoriya bo'yicha hozircha yangilik yo'q.</div>
+            </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

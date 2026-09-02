@@ -1,0 +1,89 @@
+services:
+
+  db:
+    image: postgres:16-alpine
+    container_name: samyosh_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DB_NAME:-samyosh}
+      POSTGRES_USER: ${DB_USER:-samyosh}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD .env da ko'rsatilishi shart}
+    volumes:
+      # Ma'lumotlar shu yerda saqlanadi — konteyner o'chsa ham yo'qolmaydi
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-samyosh} -d ${DB_NAME:-samyosh}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  web:
+    build: .
+    container_name: samyosh_web
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      USE_SQLITE: 0
+      USE_WHITENOISE: 1
+    volumes:
+      - static_files:/app/staticfiles
+      - media_files:/app/media
+    depends_on:
+      db:
+        condition: service_healthy
+    expose:
+      - 8000
+
+  bot:
+    # Dockerfile bot papkasining o'zida turadi
+    build: ../Sma_yoshlar_bot/sam_yoshlar_bot
+    container_name: samyosh_bot
+    restart: unless-stopped
+    env_file: ../Sma_yoshlar_bot/.env
+    environment:
+      # Bot saytga shu manzil orqali murojaat qiladi
+      SITE_URL: ${SITE_URL:-https://samyosh.uz}
+    depends_on:
+      - web
+    profiles: ["bot"]
+
+  nginx:
+    image: nginx:1.27-alpine
+    container_name: samyosh_nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./docker/nginx:/etc/nginx/conf.d:ro
+      - static_files:/var/www/static:ro
+      - media_files:/var/www/media:ro
+      - certbot_conf:/etc/letsencrypt:ro
+      - certbot_www:/var/www/certbot:ro
+    depends_on:
+      - web
+    # Sertifikat yangilangach nginx o'zini qayta yuklaydi (har 12 soatda)
+    command: >
+      /bin/sh -c "while :; do sleep 12h & wait $${!}; nginx -s reload; done &
+                  nginx -g 'daemon off;'"
+
+  certbot:
+    image: certbot/certbot:latest
+    container_name: samyosh_certbot
+    restart: unless-stopped
+    volumes:
+      - certbot_conf:/etc/letsencrypt
+      - certbot_www:/var/www/certbot
+    # Har 12 soatda sertifikatni tekshiradi va muddati yaqinlashsa yangilaydi
+    entrypoint: >
+      /bin/sh -c "trap exit TERM; while :; do certbot renew --webroot -w /var/www/certbot --quiet;
+                  sleep 12h & wait $${!}; done"
+
+volumes:
+  postgres_data:      # baza — hech qachon o'chmaydi
+  static_files:
+  media_files:
+  certbot_conf:       # SSL sertifikatlar
+  certbot_www:        # ACME tekshiruvi uchun

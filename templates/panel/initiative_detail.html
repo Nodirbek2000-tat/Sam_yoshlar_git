@@ -1,0 +1,171 @@
+{% extends 'panel/base_panel.html' %}
+
+{% block title %}{{ initiative.title }}{% endblock %}
+{% block page_title %}{{ initiative.title }}{% endblock %}
+{% block page_subtitle %}{{ initiative.direction_data.name }} · #{{ rank }}-o'rin · {{ initiative.vote_count }} ovoz{% endblock %}
+
+{% block header_actions %}
+    <a href="{% url 'panel:initiatives' %}" class="panel-btn panel-btn-ghost">← Tashabbuslar</a>
+    <a href="/tashabbuslar/ovoz/{{ initiative.direction }}/#taklif-{{ initiative.pk }}"
+       target="_blank" rel="noopener" class="panel-btn panel-btn-outline">Saytda ↗</a>
+{% endblock %}
+
+{% block content %}
+<div class="panel-grid panel-grid-2">
+    <div class="panel-card">
+        <div class="panel-card-head">
+            <h2 class="panel-card-title">{{ initiative.kind_icon }} {{ initiative.get_kind_display }}</h2>
+            <span class="panel-badge" style="background: {{ initiative.direction_data.color }}22; color: {{ initiative.direction_data.color }}">
+                {{ initiative.direction_data.name }}
+            </span>
+        </div>
+        <div class="panel-card-body">
+            {% if initiative.summary %}
+                <div class="panel-section-title">Qisqa mazmun</div>
+                <p>{{ initiative.summary }}</p>
+            {% endif %}
+
+            <div class="panel-section-title">Batafsil tavsif</div>
+            <div class="panel-quote">{{ initiative.description }}</div>
+
+            {% if initiative.expected_result %}
+                <div class="panel-section-title">Kutilayotgan natija</div>
+                <div class="panel-quote">{{ initiative.expected_result }}</div>
+            {% endif %}
+
+            <div class="panel-section-title">Muallif</div>
+            <div style="display:flex; align-items:center; gap:11px">
+                <span class="panel-avatar">{{ initiative.author_label|slice:":2"|upper }}</span>
+                <div>
+                    <div class="panel-list-title">
+                        {% if initiative.author %}
+                            <a href="{% url 'panel:user_detail' initiative.author.pk %}">{{ initiative.author_label }}</a>
+                        {% else %}
+                            {{ initiative.author_label }}
+                        {% endif %}
+                    </div>
+                    <div class="panel-list-meta">
+                        {{ initiative.author_phone|default:"telefon yo'q" }}
+                        {% if initiative.author_email %} · {{ initiative.author_email }}{% endif %}
+                        {% if initiative.region %} · {{ initiative.get_region_display }}{% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div>
+        <div class="panel-card">
+            <div class="panel-card-head"><h2 class="panel-card-title">Moderatsiya</h2></div>
+            <div class="panel-card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="panel-field" style="margin-bottom:16px">
+                        <label class="panel-label" for="status">Holat</label>
+                        <select name="status" id="status" class="panel-input panel-select">
+                            {% for value, label in statuses %}
+                                <option value="{{ value }}" {% if initiative.status == value %}selected{% endif %}>{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="panel-field" style="margin-bottom:16px">
+                        <label class="panel-label" for="admin_note">Admin izohi</label>
+                        <textarea name="admin_note" id="admin_note" rows="4"
+                                  class="panel-input panel-textarea">{{ initiative.admin_note }}</textarea>
+                    </div>
+
+                    <label class="panel-check-row" style="margin-bottom:16px">
+                        <input type="checkbox" name="is_published" {% if initiative.is_published %}checked{% endif %}>
+                        <span>Saytda ko'rinsin</span>
+                    </label>
+
+                    <button type="submit" class="panel-btn panel-btn-primary">💾 Saqlash</button>
+                    <p class="panel-list-meta" style="margin-top:10px">
+                        Holat o'zgarsa, muallifga bildirishnoma boradi.
+                    </p>
+                </form>
+            </div>
+        </div>
+
+        <div class="panel-card" style="margin-top:18px">
+            <div class="panel-card-head">
+                <h2 class="panel-card-title">🗳 Ovozni sozlash</h2>
+                <span class="panel-badge panel-badge-success">{{ initiative.vote_count }}</span>
+            </div>
+            <div class="panel-card-body">
+                <div class="panel-vote-tools">
+                    {% for step in vote_steps %}
+                        <form method="post" action="{% url 'panel:initiative_votes' initiative.pk %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="delta" value="{{ step.value }}">
+                            <button type="submit" class="panel-btn panel-btn-sm {{ step.css }}">{{ step.label }}</button>
+                        </form>
+                    {% endfor %}
+                </div>
+
+                <form method="post" action="{% url 'panel:initiative_votes' initiative.pk %}"
+                      class="panel-vote-exact">
+                    {% csrf_token %}
+                    <input type="number" name="exact" min="0" class="panel-input"
+                           placeholder="Aniq son" value="{{ initiative.vote_count }}">
+                    <button type="submit" class="panel-btn panel-btn-primary">O'rnatish</button>
+                </form>
+
+                <p class="panel-list-meta" style="margin-top:10px">
+                    Qo'lda qo'shilgan ovozlar haqiqiy ovozlar bilan birga hisoblanadi.
+                    Foydalanuvchilar baribir bir marta ovoz bera oladi.
+                </p>
+            </div>
+        </div>
+
+        <div class="panel-card" style="margin-top:18px">
+            <div class="panel-card-head">
+                <h2 class="panel-card-title">💬 Takliflar</h2>
+                <span class="panel-badge panel-badge-info">{{ comments|length }}</span>
+            </div>
+            <div class="panel-list">
+                {% for comment in comments %}
+                    <div class="panel-list-item">
+                        <span class="panel-avatar">{{ comment.initials }}</span>
+                        <div class="panel-list-main">
+                            <div class="panel-list-title">{{ comment.author_label }}</div>
+                            <div class="panel-list-meta">{{ comment.text }}</div>
+                        </div>
+                        <span class="panel-list-meta">{{ comment.created_at|date:"d.m.Y" }}</span>
+                    </div>
+                {% empty %}
+                    <div class="panel-empty">
+                        <div class="panel-empty-icon">💬</div>
+                        <div class="panel-empty-text">Hali taklif berilmagan.</div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="panel-card" style="margin-top:18px">
+            <div class="panel-card-head">
+                <h2 class="panel-card-title">🗳 Ovoz berganlar</h2>
+                <span class="panel-badge panel-badge-success">{{ initiative.vote_count }}</span>
+            </div>
+            <div class="panel-list">
+                {% for vote in voters %}
+                    <div class="panel-list-item">
+                        <div class="panel-list-main">
+                            <div class="panel-list-title">
+                                {% if vote.user %}{{ vote.user.full_name }}{% else %}Mehmon{% endif %}
+                            </div>
+                            <div class="panel-list-meta">{{ vote.created_at|date:"d.m.Y H:i" }}</div>
+                        </div>
+                    </div>
+                {% empty %}
+                    <div class="panel-empty">
+                        <div class="panel-empty-icon">🗳</div>
+                        <div class="panel-empty-text">Hali ro'yxatga olingan ovoz yo'q.</div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

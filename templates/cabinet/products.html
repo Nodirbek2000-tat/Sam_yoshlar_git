@@ -1,0 +1,58 @@
+{% extends 'cabinet/base_cabinet.html' %}
+
+{% block title %}Mahsulotlar — Kabinet{% endblock %}
+{% block cabinet_title %}Mahsulotlar{% endblock %}
+{% block cabinet_subtitle %}Korxonangiz mahsulot va xizmatlari{% endblock %}
+
+{% block cabinet_content %}
+<div class="card">
+    <div class="card-body">
+        <h2 class="card-title">Yangi mahsulot qo'shish</h2>
+        <form method="post" enctype="multipart/form-data" novalidate>
+            {% csrf_token %}
+            <div class="form-grid">
+                {% for field in form %}
+                    <div class="form-group {% if field.name == 'description' %}form-group-wide{% endif %}">
+                        <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                        {{ field }}
+                        {% if field.errors %}<ul class="form-errors">{% for e in field.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+            <button type="submit" class="btn btn-primary">+ Qo'shish</button>
+        </form>
+    </div>
+</div>
+
+{% if products %}
+    <div class="grid grid-3">
+        {% for product in products %}
+            <article class="card">
+                {% if product.image %}
+                    <img src="{{ product.image.url }}" alt="{{ product.name }}" class="card-img">
+                {% else %}
+                    <div class="card-img card-img-placeholder">📦</div>
+                {% endif %}
+                <div class="card-body">
+                    <h3 class="card-title">{{ product.name }}</h3>
+                    <p class="card-text">{{ product.description|truncatechars:100 }}</p>
+                    {% if product.price %}
+                        <strong class="product-price">{{ product.price|floatformat:0 }} so'm / {{ product.unit }}</strong>
+                    {% endif %}
+                    <form method="post" action="{% url 'cabinet:product_delete' product.pk %}"
+                          onsubmit="return confirm('Mahsulot o\'chirilsinmi?')">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-ghost btn-sm">🗑 O'chirish</button>
+                    </form>
+                </div>
+            </article>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="empty-state">
+        <div class="empty-state-icon">📦</div>
+        <div class="empty-state-title">Mahsulotlar yo'q</div>
+        <div class="empty-state-text">Yuqoridagi forma orqali birinchi mahsulotingizni qo'shing.</div>
+    </div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ announcement.title }} — sam-yosh tadbirkor.uz{% endblock %}
+
+{% block content %}
+<section class="section article-section">
+    <div class="container container-narrow">
+        <a href="{% url 'content:announcement_list' %}" class="tashabbuslar-back-link">← E'lonlarga qaytish</a>
+
+        <div class="announcement-head">
+            <span class="badge badge-accent">{{ announcement.icon }} {{ announcement.get_type_display }}</span>
+            <span class="badge {% if announcement.is_expired %}badge-error{% else %}badge-success{% endif %}">
+                {{ announcement.status_label }}
+            </span>
+        </div>
+
+        <h1 class="article-title">{{ announcement.title }}</h1>
+
+        <div class="article-meta">
+            <span>📅 Joylangan: {{ announcement.posted_at|date:"d.m.Y" }}</span>
+            {% if announcement.deadline %}
+                <span>⏰ Muddat: {{ announcement.deadline|date:"d.m.Y" }}</span>
+            {% endif %}
+        </div>
+
+        <div class="article-body">{{ announcement.body|linebreaks }}</div>
+
+        {% if announcement.file %}
+            <a href="{{ announcement.file.url }}" class="btn btn-primary btn-lg" download>
+                📄 Hujjatni yuklab olish
+            </a>
+        {% endif %}
+
+        {% if not announcement.is_expired %}
+            <div class="event-cta">
+                <p class="event-cta-note">Ushbu imkoniyatdan foydalanish uchun murojaat yuboring.</p>
+                <a href="{% url 'cabinet:appeals' %}" class="btn btn-accent btn-lg">Murojaat yuborish →</a>
+            </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

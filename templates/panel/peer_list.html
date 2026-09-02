@@ -1,0 +1,126 @@
+{% extends 'panel/base_panel.html' %}
+
+{% block title %}Chet eldagi tengdoshlar{% endblock %}
+{% block page_title %}Chet eldagi tengdoshlar{% endblock %}
+{% block page_subtitle %}Anketalarni ko'rib chiqing va tasdiqlang{% endblock %}
+
+{% block header_actions %}
+    <a href="/chet-eldagi-tengdoshim/" target="_blank" rel="noopener"
+       class="panel-btn panel-btn-primary">Saytda ko'rish ↗</a>
+{% endblock %}
+
+{% block content %}
+<div class="panel-grid panel-grid-4">
+    <div class="panel-stat" data-tone="primary">
+        <span class="panel-stat-icon">🌍</span>
+        <div class="panel-stat-value">{{ page_obj.paginator.count }}</div>
+        <div class="panel-stat-label">Jami anketa</div>
+    </div>
+    <div class="panel-stat" data-tone="accent">
+        <span class="panel-stat-icon">⏳</span>
+        <div class="panel-stat-value">{{ pending }}</div>
+        <div class="panel-stat-label">Tasdiq kutmoqda</div>
+    </div>
+    <div class="panel-stat" data-tone="success">
+        <span class="panel-stat-icon">✓</span>
+        <div class="panel-stat-value">{{ approved }}</div>
+        <div class="panel-stat-label">Tasdiqlangan</div>
+    </div>
+    <div class="panel-stat" data-tone="info">
+        <span class="panel-stat-icon">🗺️</span>
+        <div class="panel-stat-value">{{ countries }}</div>
+        <div class="panel-stat-label">Davlat</div>
+    </div>
+</div>
+
+<form method="get" class="panel-toolbar" style="margin-top:18px">
+    <div class="panel-search">
+        <span class="panel-search-icon">🔍</span>
+        <input type="search" name="q" value="{{ search }}" class="panel-input"
+               placeholder="Ism, universitet yoki shahar...">
+    </div>
+    <select name="holat" class="panel-input panel-select" style="max-width:200px" onchange="this.form.submit()">
+        <option value="">Barcha holatlar</option>
+        {% for value, label in statuses %}
+            <option value="{{ value }}" {% if active_status == value %}selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+    </select>
+    <button type="submit" class="panel-btn panel-btn-outline">Qidirish</button>
+</form>
+
+<div class="panel-card">
+    {% if page_obj.object_list %}
+        <div class="panel-table-wrap">
+            <table class="panel-table">
+                <thead>
+                    <tr>
+                        <th>Tengdosh</th>
+                        <th>Davlat</th>
+                        <th>Nima qilyapti</th>
+                        <th>Aloqa</th>
+                        <th>Holat</th>
+                        <th style="width:230px">Amal</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for peer in page_obj %}
+                        <tr>
+                            <td>
+                                <div style="display:flex; align-items:center; gap:11px">
+                                    <span class="panel-avatar">
+                                        {% if peer.photo %}<img src="{{ peer.photo.url }}" alt="">{% else %}{{ peer.initials }}{% endif %}
+                                    </span>
+                                    <div>
+                                        <div class="panel-table-title">{{ peer.full_name }}</div>
+                                        <div class="panel-table-meta">{{ peer.institution|default:"—" }}</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="panel-badge" style="background: {{ peer.country_color }}22; color: {{ peer.country_color }}">{{ peer.flag }}</span> {{ peer.get_country_display }}
+                                <div class="panel-table-meta">{{ peer.city|default:"—" }}</div>
+                            </td>
+                            <td>
+                                <span class="panel-badge panel-badge-primary">
+                                    {{ peer.purpose_icon }} {{ peer.get_purpose_display }}
+                                </span>
+                                <div class="panel-table-meta">{{ peer.field|default:"" }}</div>
+                            </td>
+                            <td>
+                                <div class="panel-table-meta">
+                                    {% if peer.telegram %}{{ peer.telegram }}<br>{% endif %}
+                                    {% if peer.email %}{{ peer.email }}<br>{% endif %}
+                                    {{ peer.phone|default:"" }}
+                                </div>
+                            </td>
+                            <td>
+                                {% include 'panel/_status_badge.html' with status=peer.status label=peer.get_status_display %}
+                                {% if not peer.is_published %}<span class="panel-badge panel-badge-gray">Yashirin</span>{% endif %}
+                            </td>
+                            <td>
+                                <form method="post" action="{% url 'panel:peer_status' peer.pk %}"
+                                      class="panel-inline-form">
+                                    {% csrf_token %}
+                                    <select name="status" class="panel-input panel-select">
+                                        {% for value, label in statuses %}
+                                            <option value="{{ value }}" {% if peer.status == value %}selected{% endif %}>{{ label }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <button type="submit" class="panel-btn panel-btn-outline panel-btn-sm">✓</button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% include 'panel/_pagination.html' with qs=""|add:"q="|add:search|add:"&holat="|add:active_status|add:"&" %}
+    {% else %}
+        <div class="panel-empty">
+            <div class="panel-empty-icon">🌍</div>
+            <div class="panel-empty-title">Anketa yo'q</div>
+            <div class="panel-empty-text">Chet eldagi yurtdoshlar anketa to'ldirgach shu yerda ko'rinadi.</div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
