@@ -170,7 +170,7 @@ MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 # Email (dev — konsolga chiqadi)
 
 EMAIL_BACKEND = env('EMAIL_BACKEND', 'django.core.mail.backends.console.EmailBackend')
-DEFAULT_FROM_EMAIL = env('DEFAULT_FROM_EMAIL', 'sam-yosh tadbirkor <info@samyosh.uz>')
+DEFAULT_FROM_EMAIL = env('DEFAULT_FROM_EMAIL', 'sam-yosh tadbirkor <info@mentadbirkor.uz>')
 
 
 # Xavfsizlik (production)

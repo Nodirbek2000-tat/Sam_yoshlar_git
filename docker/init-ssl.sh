@@ -4,13 +4,31 @@
 # Ishlatish:  ./docker/init-ssl.sh sizning@email.uz
 set -e
 
-DOMAIN="samyosh.uz"
+DOMAIN="${DOMAIN:-mentadbirkor.uz}"
 EMAIL="${1:-}"
 
 if [ -z "$EMAIL" ]; then
     echo "Email ko'rsating:  ./docker/init-ssl.sh sizning@email.uz"
     exit 1
 fi
+
+# Xato bo'lsa ham konfiguratsiya yarim holatda qolib ketmasin
+restore() {
+    [ -f docker/nginx/samyosh-initial.conf ] &&         mv docker/nginx/samyosh-initial.conf docker/nginx/samyosh-initial.conf.disabled
+    [ -f docker/nginx/samyosh.conf.off ] &&         mv docker/nginx/samyosh.conf.off docker/nginx/samyosh.conf
+    return 0
+}
+
+fail() {
+    echo ""
+    echo "XATO: sertifikat olinmadi."
+    echo "Tekshiring:  dig +short $DOMAIN   ->  server IP bilan bir xil bo'lishi kerak"
+    restore
+    docker compose up -d nginx >/dev/null 2>&1 || true
+    exit 1
+}
+
+trap fail INT TERM
 
 echo "→ 1/3  Vaqtinchalik nginx (faqat 80-port) ishga tushirilmoqda..."
 mv docker/nginx/samyosh.conf docker/nginx/samyosh.conf.off 2>/dev/null || true
@@ -25,11 +43,11 @@ docker compose run --rm certbot certonly \
     -d "$DOMAIN" -d "www.$DOMAIN" \
     --email "$EMAIL" \
     --agree-tos --no-eff-email \
-    --non-interactive
+    --non-interactive || fail
 
 echo "→ 3/3  To'liq konfiguratsiyaga qaytilmoqda..."
-mv docker/nginx/samyosh-initial.conf docker/nginx/samyosh-initial.conf.disabled
-mv docker/nginx/samyosh.conf.off docker/nginx/samyosh.conf
+trap - INT TERM
+restore
 
 docker compose up -d
 

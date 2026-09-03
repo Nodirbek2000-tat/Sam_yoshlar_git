@@ -30,7 +30,7 @@ class Command(BaseCommand):
         site = SiteSetting.load()
         site.address = "Toshkent sh., Amir Temur ko'chasi, 4"
         site.phone = "+998 71 123 45 67"
-        site.email = "info@samyosh.uz"
+        site.email = "info@mentadbirkor.uz"
         site.work_hours = "Du-Ju: 9:00 — 18:00"
         site.telegram_url = "https://t.me/"
         site.instagram_url = "https://instagram.com/"

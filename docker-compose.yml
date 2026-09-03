@@ -37,14 +37,15 @@ services:
       - 8000
 
   bot:
-    # Dockerfile bot papkasining o'zida turadi
-    build: ../Sma_yoshlar_bot/sam_yoshlar_bot
+    # Bot repo'si loyihaning yonida turadi (Dockerfile o'sha yerda).
+    # Boshqa papka bo'lsa .env da BOT_PATH ni ko'rsating.
+    build: ${BOT_PATH:-../sam_yoshlar_bot_git}
     container_name: samyosh_bot
     restart: unless-stopped
-    env_file: ../Sma_yoshlar_bot/.env
+    env_file: ${BOT_PATH:-../sam_yoshlar_bot_git}/.env
     environment:
       # Bot saytga shu manzil orqali murojaat qiladi
-      SITE_URL: ${SITE_URL:-https://samyosh.uz}
+      SITE_URL: ${SITE_URL:-https://mentadbirkor.uz}
     depends_on:
       - web
     profiles: ["bot"]

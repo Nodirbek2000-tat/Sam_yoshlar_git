@@ -1,4 +1,4 @@
-# Serverga qo'yish — samyosh.uz
+# Serverga qo'yish — mentadbirkor.uz
 
 Docker + nginx + PostgreSQL + avtomatik SSL (Let's Encrypt).
 
@@ -20,7 +20,7 @@ Serverda Docker va Docker Compose bo'lishi kerak:
 curl -fsSL https://get.docker.com | sh
 ```
 
-Domen **samyosh.uz** va **www.samyosh.uz** server IP manziliga
+Domen **mentadbirkor.uz** va **www.mentadbirkor.uz** server IP manziliga
 (`A` yozuv) yo'naltirilgan bo'lsin. Bu shart — certbot shuni tekshiradi.
 
 ## 2. Sozlash
@@ -55,7 +55,7 @@ Skript o'zi:
 3. To'liq HTTPS konfiguratsiyaga o'tadi
 4. Hamma xizmatlarni ishga tushiradi
 
-Tayyor: **https://samyosh.uz**
+Tayyor: **https://mentadbirkor.uz**
 
 ## 4. Admin yaratish
 
@@ -79,7 +79,7 @@ BOT_TOKEN=BotFather bergan token
 ADMINS=telegram_id
 ip=localhost
 
-SITE_URL=https://samyosh.uz
+SITE_URL=https://mentadbirkor.uz
 API_SECRET=<Django .env dagi TELEGRAM_API_SECRET bilan bir xil>
 ```
 
