@@ -4,15 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}sam-yosh tadbirkor.uz — Yosh Tadbirkorlar Kengashi{% endblock %}</title>
-    <meta name="description" content="{% block description %}O'zbekiston yosh tadbirkorlarini birlashtiruvchi, qo'llab-quvvatlovchi va rivojlantirishga xizmat qiluvchi yagona axborot platformasi.{% endblock %}">
+    <meta name="description" content="{% block description %}Yoshlarni birlashtiruvchi, qo'llab-quvvatlovchi va rivojlantirishga xizmat qiluvchi yagona axborot platformasi.{% endblock %}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/icons.css' %}">
     <link rel="stylesheet" href="{% static 'css/samyosh.css' %}">
     <link rel="stylesheet" href="{% static 'css/enhance.css' %}">
+    <link rel="stylesheet" href="{% static 'css/home.css' %}">
     {% block extra_css %}{% endblock %}
 </head>
 <body class="{% block body_class %}{% endblock %}">
+    {% include 'partials/icons.html' %}
     {% include 'partials/navbar.html' %}
 
     <main id="main">

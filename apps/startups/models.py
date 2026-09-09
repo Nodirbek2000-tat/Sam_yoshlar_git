@@ -18,16 +18,16 @@ class StartupSphere(models.TextChoices):
 
 
 STARTUP_SPHERE_ICONS = {
-    StartupSphere.IT: '💻',
-    StartupSphere.FINTECH: '💳',
-    StartupSphere.EDTECH: '🎓',
-    StartupSphere.AGROTECH: '🌾',
-    StartupSphere.MEDTECH: '🩺',
-    StartupSphere.ECOMMERCE: '🛒',
-    StartupSphere.LOGISTICS: '🚚',
-    StartupSphere.GREEN: '🌱',
-    StartupSphere.MEDIA: '🎬',
-    StartupSphere.OTHER: '✨',
+    StartupSphere.IT: 'ic-computer',
+    StartupSphere.FINTECH: 'ic-card',
+    StartupSphere.EDTECH: 'ic-graduation',
+    StartupSphere.AGROTECH: 'ic-wheat',
+    StartupSphere.MEDTECH: 'ic-stethoscope',
+    StartupSphere.ECOMMERCE: 'ic-cart',
+    StartupSphere.LOGISTICS: 'ic-truck',
+    StartupSphere.GREEN: 'ic-seedling',
+    StartupSphere.MEDIA: 'ic-video',
+    StartupSphere.OTHER: 'ic-spark',
 }
 
 
@@ -80,4 +80,4 @@ class Startup(TimeStampedModel):
 
     @property
     def sphere_icon(self):
-        return STARTUP_SPHERE_ICONS.get(self.sphere, '🚀')
+        return STARTUP_SPHERE_ICONS.get(self.sphere, 'ic-rocket')

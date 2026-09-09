@@ -8,13 +8,15 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/icons.css' %}">
     <link rel="stylesheet" href="{% static 'css/panel.css' %}">
 </head>
 <body class="panel-body">
+{% include 'partials/icons.html' %}
 
 <aside class="panel-sidebar" id="panel-sidebar">
     <div class="panel-brand">
-        <span class="panel-brand-mark">⚙️</span>
+        <span class="panel-brand-mark"><svg class="ic"><use href="#ic-settings"/></svg></span>
         <div>
             <div class="panel-brand-title">Boshqaruv</div>
             <div class="panel-brand-sub">sam-yosh tadbirkor.uz</div>
@@ -23,70 +25,70 @@
 
     <nav class="panel-nav">
         <a href="{% url 'panel:dashboard' %}" class="panel-link {% if active == 'dashboard' %}active{% endif %}">
-            <span class="panel-link-icon">📊</span> Dashboard
+            <span class="panel-link-icon"><svg class="ic"><use href="#ic-chart"/></svg></span> Dashboard
         </a>
 
         <div class="panel-nav-title">Kontent</div>
         <a href="{% url 'panel:news' %}" class="panel-link {% if active == 'news' %}active{% endif %}">
-            <span class="panel-link-icon">📰</span> Yangiliklar
+            <span class="panel-link-icon"><svg class="ic"><use href="#ic-news"/></svg></span> Yangiliklar
         </a>
         <a href="{% url 'panel:events' %}" class="panel-link {% if active == 'events' %}active{% endif %}">
-            <span class="panel-link-icon">📅</span> Tadbirlar
+            <span class="panel-link-icon"><svg class="ic"><use href="#ic-calendar"/></svg></span> Tadbirlar
         </a>
         <a href="{% url 'panel:announcements' %}" class="panel-link {% if active == 'announcements' %}active{% endif %}">
-            <span class="panel-link-icon">📢</span> E'lonlar
+            <span class="panel-link-icon"><svg class="ic"><use href="#ic-megaphone"/></svg></span> E'lonlar
         </a>
 
         <div class="panel-nav-title">Foydalanuvchilar</div>
         <a href="{% url 'panel:users' %}" class="panel-link {% if active == 'users' %}active{% endif %}">
-            <span class="panel-link-icon">👥</span> Hisoblar
+            <span class="panel-link-icon"><svg class="ic"><use href="#ic-users"/></svg></span> Hisoblar
         </a>
         <a href="{% url 'panel:appeals' %}" class="panel-link {% if active == 'appeals' %}active{% endif %}">
-            <span class="panel-link-icon">📨</span> Murojaatlar
+            <span class="panel-link-icon"><svg class="ic"><use href="#ic-mail"/></svg></span> Murojaatlar
         </a>
         <a href="{% url 'panel:suggestions' %}" class="panel-link {% if active == 'suggestions' %}active{% endif %}">
-            <span class="panel-link-icon">💡</span> Takliflar
+            <span class="panel-link-icon"><svg class="ic"><use href="#ic-bulb"/></svg></span> Takliflar
         </a>
 
         <div class="panel-nav-title">Yoshlar Ovozi</div>
         <a href="{% url 'panel:voice' %}" class="panel-link {% if active == 'voice' %}active{% endif %}">
-            <span class="panel-link-icon">✨</span> Tashabbuslar
+            <span class="panel-link-icon"><svg class="ic"><use href="#ic-spark"/></svg></span> Tashabbuslar
         </a>
         <a href="{% url 'panel:import' %}" class="panel-link {% if active == 'import' %}active{% endif %}">
-            <span class="panel-link-icon">📥</span> JSON import
+            <span class="panel-link-icon"><svg class="ic"><use href="#ic-inbox"/></svg></span> JSON import
         </a>
 
         <a href="{% url 'panel:peers' %}" class="panel-link {% if active == 'peers' %}active{% endif %}">
-            <span class="panel-link-icon">🌍</span> Chet eldagilar
+            <span class="panel-link-icon"><svg class="ic"><use href="#ic-globe"/></svg></span> Chet eldagilar
         </a>
 
         <div class="panel-nav-title">Loyihalar</div>
         <a href="{% url 'panel:startups' %}" class="panel-link {% if active == 'startups' %}active{% endif %}">
-            <span class="panel-link-icon">🚀</span> StartUplar
+            <span class="panel-link-icon"><svg class="ic"><use href="#ic-rocket"/></svg></span> StartUplar
         </a>
         <a href="{% url 'panel:problems' %}" class="panel-link {% if active == 'problems' %}active{% endif %}">
-            <span class="panel-link-icon">🏛️</span> Muammolar
+            <span class="panel-link-icon"><svg class="ic"><use href="#ic-bank"/></svg></span> Muammolar
         </a>
         <a href="{% url 'panel:solutions' %}" class="panel-link {% if active == 'solutions' %}active{% endif %}">
-            <span class="panel-link-icon">🌟</span> Yechimlar
+            <span class="panel-link-icon"><svg class="ic"><use href="#ic-star"/></svg></span> Yechimlar
         </a>
 
         <div class="panel-nav-title">Tizim</div>
         <a href="{% url 'panel:settings' %}" class="panel-link {% if active == 'settings' %}active{% endif %}">
-            <span class="panel-link-icon">⚙️</span> Sayt sozlamalari
+            <span class="panel-link-icon"><svg class="ic"><use href="#ic-settings"/></svg></span> Sayt sozlamalari
         </a>
     </nav>
 
     <div class="panel-sidebar-foot">
         <a href="{% url 'core:home' %}" class="panel-link panel-link-muted">
-            <span class="panel-link-icon">🌐</span> Saytga qaytish
+            <span class="panel-link-icon"><svg class="ic"><use href="#ic-globe"/></svg></span> Saytga qaytish
         </a>
     </div>
 </aside>
 
 <div class="panel-main">
     <header class="panel-header">
-        <button class="panel-burger" id="panel-burger" aria-label="Menyu">☰</button>
+        <button class="panel-burger" id="panel-burger" aria-label="Menyu"><svg class="ic"><use href="#ic-menu"/></svg></button>
 
         <div class="panel-header-titles">
             <h1 class="panel-title">{% block page_title %}Dashboard{% endblock %}</h1>

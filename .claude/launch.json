@@ -6,6 +6,12 @@
       "runtimeExecutable": "venv/Scripts/python.exe",
       "runtimeArgs": ["manage.py", "runserver", "8000"],
       "port": 8000
+    },
+    {
+      "name": "front",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "--prefix", "E:/Sma_yoshlar_bot/sam_yoshlar_front"],
+      "port": 3000
     }
   ]
 }

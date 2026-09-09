@@ -1,27 +1,28 @@
 <nav class="navbar" id="navbar">
     <div class="container navbar-inner">
         <a href="{% url 'core:home' %}" class="navbar-brand">
-            <span class="nav-icon">🏛️</span> sam-yosh tadbirkor.uz
+            <svg class="ic ic-lg"><use href="#ic-bank"/></svg>
+            <span>sam-yosh tadbirkor.uz</span>
         </a>
 
         <div class="navbar-menu" id="navbar-menu">
             <a href="{% url 'core:home' %}" class="navbar-link {% if request.path == '/' %}active{% endif %}">
-                <span class="nav-icon">🏠</span> Bosh sahifa
-            </a>
-            <a href="{% url 'core:about' %}" class="navbar-link {% if '/kengash-haqida' in request.path %}active{% endif %}">
-                <span class="nav-icon">ℹ️</span> Kengash haqida
+                <svg class="ic"><use href="#ic-home"/></svg> Bosh sahifa
             </a>
             <a href="{% url 'content:news_list' %}" class="navbar-link {% if '/yangiliklar' in request.path %}active{% endif %}">
-                <span class="nav-icon">📰</span> Yangiliklar
+                <svg class="ic"><use href="#ic-news"/></svg> Yangiliklar
             </a>
             <a href="{% url 'content:event_list' %}" class="navbar-link {% if '/tadbirlar' in request.path %}active{% endif %}">
-                <span class="nav-icon">📅</span> Tadbirlar
+                <svg class="ic"><use href="#ic-calendar"/></svg> Tadbirlar
             </a>
             <a href="{% url 'content:announcement_list' %}" class="navbar-link {% if '/elonlar' in request.path %}active{% endif %}">
-                <span class="nav-icon">📢</span> E'lonlar
+                <svg class="ic"><use href="#ic-megaphone"/></svg> E'lonlar
+            </a>
+            <a href="{% url 'initiatives:index' %}" class="navbar-link {% if '/tashabbuslar' in request.path %}active{% endif %}">
+                <svg class="ic"><use href="#ic-spark"/></svg> Tashabbuslar
             </a>
             <a href="{% url 'abroad:list' %}" class="navbar-link {% if '/chet-eldagi' in request.path %}active{% endif %}">
-                <span class="nav-icon">🌍</span> Chet eldagi tengdoshim
+                <svg class="ic"><use href="#ic-globe"/></svg> Chet eldagi tengdoshim
             </a>
         </div>
 
@@ -29,7 +30,9 @@
             {% if user.is_authenticated %}
                 {% if user.is_superuser or user.is_staff and user.is_verified and user.role == 'admin' %}
                     <a href="{% url 'panel:dashboard' %}" class="btn btn-outline btn-sm nav-panel-btn"
-                       title="Boshqaruv paneli">⚙️ <span>Panel</span></a>
+                       title="Boshqaruv paneli">
+                        <svg class="ic"><use href="#ic-settings"/></svg> <span>Panel</span>
+                    </a>
                 {% endif %}
                 <a href="{% url 'cabinet:dashboard' %}" class="nav-user" title="{{ user.full_name }} — kabinet">
                     {% if user.avatar %}
@@ -40,12 +43,18 @@
                 </a>
                 <form method="post" action="{% url 'accounts:logout' %}" style="display:inline">
                     {% csrf_token %}
-                    <button type="submit" class="nav-logout" title="Chiqish" aria-label="Chiqish">⏻</button>
+                    <button type="submit" class="nav-logout" title="Chiqish" aria-label="Chiqish">
+                        <svg class="ic"><use href="#ic-power"/></svg>
+                    </button>
                 </form>
             {% else %}
-                <a href="{% url 'accounts:login' %}" class="btn btn-primary btn-sm">✈️ Kirish</a>
+                <a href="{% url 'accounts:login' %}" class="btn btn-primary btn-sm">
+                    <svg class="ic"><use href="#ic-send"/></svg> Kirish
+                </a>
             {% endif %}
-            <button class="menu-toggle" id="menu-toggle" aria-label="Menyu">☰</button>
+            <button class="menu-toggle" id="menu-toggle" aria-label="Menyu" aria-expanded="false">
+                <svg class="ic ic-lg"><use href="#ic-menu"/></svg>
+            </button>
         </div>
     </div>
 </nav>

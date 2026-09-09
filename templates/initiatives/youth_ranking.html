@@ -81,7 +81,7 @@
 
                         <div class="voice-place">
                             <span class="voice-place-num voice-live-rank">#{{ idea.place }}</span>
-                            {% if idea.place == 1 %}<span class="voice-place-crown">👑</span>{% endif %}
+                            {% if idea.place == 1 %}<span class="voice-place-crown"><svg class="ic"><use href="#ic-crown"/></svg></span>{% endif %}
                         </div>
 
                         <div class="voice-row-scene">
@@ -108,8 +108,8 @@
                                 <span class="voice-tag voice-tag-dir">
                                     <span class="voice-tag-dot"></span>{{ idea.direction_info.name }}
                                 </span>
-                                <span class="voice-tag">{{ idea.kind_icon }} {{ idea.get_kind_display }}</span>
-                                {% if idea.region %}<span class="voice-tag">📍 {{ idea.get_region_display }}</span>{% endif %}
+                                <span class="voice-tag"><svg class="ic"><use href="#{{ idea.kind_icon }}"/></svg> {{ idea.get_kind_display }}</span>
+                                {% if idea.region %}<span class="voice-tag"><svg class="ic"><use href="#ic-pin"/></svg> {{ idea.get_region_display }}</span>{% endif %}
                             </div>
 
                             <h2 class="voice-row-title">
@@ -121,13 +121,18 @@
                             <div class="voice-row-stats">
                                 <span class="voice-stat"><b>{{ idea.vote_count }}</b> ovoz</span>
                                 <span class="voice-stat"><b>{{ idea.comment_total }}</b> taklif</span>
-                                <span class="voice-stat voice-stat-author">✍️ {{ idea.author_label }}</span>
+                                <span class="voice-stat voice-stat-author"><svg class="ic"><use href="#ic-pen"/></svg> {{ idea.author_label }}</span>
                             </div>
 
                             <div class="voice-row-actions">
                                 <button type="button"
                                         class="voice-vote-btn {% if idea.voted %}voted{% endif %}"
-                                        data-vote-url="{% url 'initiatives:vote' idea.pk %}"
+                                        {% if user.is_authenticated %}
+                                            data-vote-url="{% url 'initiatives:vote' idea.pk %}"
+                                        {% else %}
+                                            data-login-url="{% url 'accounts:login' %}?next={% url 'initiatives:initiative_detail' idea.pk %}"
+                                            title="Ovoz berish uchun tizimga kiring"
+                                        {% endif %}
                                         {% if idea.voted %}disabled{% endif %}>
                                     <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"
                                          stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -167,7 +172,7 @@
             {% endif %}
         {% else %}
             <div class="voice-empty voice-empty-big">
-                <span class="voice-empty-icon">✨</span>
+                <span class="voice-empty-icon"><svg class="ic"><use href="#ic-spark"/></svg></span>
                 <h2>{% if active %}Bu yo'nalishda hali tashabbus yo'q{% else %}Hali tashabbus bildirilmagan{% endif %}</h2>
                 <p>Birinchi bo'ling — g'oyangiz reytingda birinchi o'rinni egallaydi.</p>
                 <a href="{% url 'initiatives:initiative_create_direction' active.id|default:'eco' %}" class="voice-cta">

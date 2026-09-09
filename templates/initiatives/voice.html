@@ -81,7 +81,7 @@
                                 <span class="voice-rank-badge">#{{ forloop.counter }}</span>
 
                                 <div class="voice-idea-body">
-                                    <h3 class="voice-idea-title">{{ idea.kind_icon }} {{ idea.title }}</h3>
+                                    <h3 class="voice-idea-title"><svg class="ic"><use href="#{{ idea.kind_icon }}"/></svg> {{ idea.title }}</h3>
                                     <div class="voice-idea-meta">
                                         <span>{{ idea.get_kind_display }}</span>
                                         <span>· {{ idea.author_label }}</span>
@@ -96,7 +96,12 @@
 
                                 <button type="button"
                                         class="voice-vote {% if idea.voted %}voted{% endif %}"
-                                        data-vote-url="{% url 'initiatives:vote' idea.pk %}"
+                                        {% if user.is_authenticated %}
+                                            data-vote-url="{% url 'initiatives:vote' idea.pk %}"
+                                        {% else %}
+                                            data-login-url="{% url 'accounts:login' %}?next={% url 'initiatives:initiative_detail' idea.pk %}"
+                                            title="Ovoz berish uchun tizimga kiring"
+                                        {% endif %}
                                         {% if idea.voted %}disabled{% endif %}
                                         aria-label="Ovoz berish">
                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -135,7 +140,7 @@
                         <strong id="voice-direction-votes">{{ active_stats.votes }}</strong>
                         <span>ovoz · {{ active.title }}</span>
                     </div>
-                    <span class="voice-hint">Ovoz berganingizda sahna o'sadi 🌱</span>
+                    <span class="voice-hint">Ovoz berganingizda sahna o'sadi <svg class="ic"><use href="#ic-seedling"/></svg></span>
                 </div>
             </section>
         </main>

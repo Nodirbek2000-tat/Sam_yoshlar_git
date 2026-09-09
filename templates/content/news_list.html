@@ -13,7 +13,7 @@
 <section class="section">
     <div class="container">
         <form method="get" class="search-bar">
-            <span class="search-icon">🔍</span>
+            <span class="search-icon"><svg class="ic"><use href="#ic-search"/></svg></span>
             <input type="search" name="q" value="{{ search }}" class="form-input"
                    placeholder="Yangiliklar ichidan qidiring...">
             {% if active_category %}<input type="hidden" name="kategoriya" value="{{ active_category }}">{% endif %}
@@ -35,15 +35,15 @@
                         {% if news.image %}
                             <img src="{{ news.image.url }}" alt="{{ news.title }}" class="card-img">
                         {% else %}
-                            <div class="card-img card-img-placeholder">📰</div>
+                            <div class="card-img card-img-placeholder"><svg class="ic"><use href="#ic-news"/></svg></div>
                         {% endif %}
                         <div class="card-body">
                             <span class="badge badge-primary">{{ news.get_category_display }}</span>
                             <h3 class="card-title">{{ news.title }}</h3>
                             <p class="card-text">{{ news.excerpt|truncatechars:130 }}</p>
                             <div class="card-meta">
-                                <span>📅 {{ news.published_at|date:"Y-m-d" }}</span>
-                                {% if news.display_author %}<span>✍️ {{ news.display_author }}</span>{% endif %}
+                                <span><svg class="ic"><use href="#ic-calendar"/></svg> {{ news.published_at|date:"Y-m-d" }}</span>
+                                {% if news.display_author %}<span><svg class="ic"><use href="#ic-pen"/></svg> {{ news.display_author }}</span>{% endif %}
                             </div>
                         </div>
                     </a>
@@ -53,7 +53,7 @@
             {% include 'partials/pagination.html' %}
         {% else %}
             <div class="empty-state">
-                <div class="empty-state-icon">📰</div>
+                <div class="empty-state-icon"><svg class="ic"><use href="#ic-news"/></svg></div>
                 <div class="empty-state-title">Yangiliklar topilmadi</div>
                 <div class="empty-state-text">Tanlangan kategoriya bo'yicha hozircha yangilik yo'q.</div>
             </div>

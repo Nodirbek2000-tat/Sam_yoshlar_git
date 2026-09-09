@@ -18,7 +18,7 @@
                     </div>
                 {% endfor %}
             </div>
-            <button type="submit" class="btn btn-primary">📄 Hujjat yuklash</button>
+            <button type="submit" class="btn btn-primary"><svg class="ic"><use href="#ic-doc"/></svg> Hujjat yuklash</button>
         </form>
     </div>
 </div>
@@ -39,7 +39,7 @@
                 {% for document in documents %}
                     <tr>
                         <td>
-                            <a href="{{ document.file.url }}" target="_blank" rel="noopener">📄 {{ document.title }}</a>
+                            <a href="{{ document.file.url }}" target="_blank" rel="noopener"><svg class="ic"><use href="#ic-doc"/></svg> {{ document.title }}</a>
                             {% if document.note %}<div class="mini-list-meta">{{ document.note }}</div>{% endif %}
                         </td>
                         <td><span class="badge badge-info">{{ document.get_type_display }}</span></td>
@@ -49,7 +49,7 @@
                             <form method="post" action="{% url 'cabinet:document_delete' document.pk %}"
                                   onsubmit="return confirm('Hujjat o\'chirilsinmi?')">
                                 {% csrf_token %}
-                                <button type="submit" class="btn btn-ghost btn-sm">🗑</button>
+                                <button type="submit" class="btn btn-ghost btn-sm"><svg class="ic"><use href="#ic-trash"/></svg></button>
                             </form>
                         </td>
                     </tr>
@@ -59,7 +59,7 @@
     </div>
 {% else %}
     <div class="empty-state">
-        <div class="empty-state-icon">📄</div>
+        <div class="empty-state-icon"><svg class="ic"><use href="#ic-doc"/></svg></div>
         <div class="empty-state-title">Hujjatlar yo'q</div>
         <div class="empty-state-text">Birinchi hujjatingizni yuklang.</div>
     </div>

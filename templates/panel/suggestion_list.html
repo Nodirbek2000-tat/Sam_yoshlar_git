@@ -30,7 +30,7 @@
                                 <a href="{% url 'panel:user_detail' suggestion.user.pk %}">{{ suggestion.user.full_name }}</a>
                             </td>
                             <td>{{ suggestion.created_at|date:"d.m.Y" }}</td>
-                            <td>👍 {{ suggestion.votes }}</td>
+                            <td><svg class="ic"><use href="#ic-vote"/></svg> {{ suggestion.votes }}</td>
                             <td>{% include 'panel/_status_badge.html' with status=suggestion.status label=suggestion.get_status_display %}</td>
                             <td>
                                 <form method="post" action="{% url 'panel:suggestion_status' suggestion.pk %}"
@@ -52,7 +52,7 @@
         {% include 'panel/_pagination.html' %}
     {% else %}
         <div class="panel-empty">
-            <div class="panel-empty-icon">💡</div>
+            <div class="panel-empty-icon"><svg class="ic"><use href="#ic-bulb"/></svg></div>
             <div class="panel-empty-title">Takliflar yo'q</div>
             <div class="panel-empty-text">Foydalanuvchilar kabinetdan taklif yuborishi mumkin.</div>
         </div>

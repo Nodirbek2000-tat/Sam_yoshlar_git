@@ -17,12 +17,12 @@ class PeerPurpose(models.TextChoices):
 
 
 PURPOSE_ICONS = {
-    PeerPurpose.STUDY: '🎓',
-    PeerPurpose.WORK: '💼',
-    PeerPurpose.BUSINESS: '🚀',
-    PeerPurpose.RESEARCH: '🔬',
-    PeerPurpose.INTERNSHIP: '📋',
-    PeerPurpose.OTHER: '✨',
+    PeerPurpose.STUDY: 'ic-graduation',
+    PeerPurpose.WORK: 'ic-briefcase',
+    PeerPurpose.BUSINESS: 'ic-rocket',
+    PeerPurpose.RESEARCH: 'ic-microscope',
+    PeerPurpose.INTERNSHIP: 'ic-clipboard',
+    PeerPurpose.OTHER: 'ic-spark',
 }
 
 
@@ -85,7 +85,7 @@ class Peer(TimeStampedModel):
 
     @property
     def purpose_icon(self):
-        return PURPOSE_ICONS.get(self.purpose, '✨')
+        return PURPOSE_ICONS.get(self.purpose, 'ic-spark')
 
     @property
     def initials(self):

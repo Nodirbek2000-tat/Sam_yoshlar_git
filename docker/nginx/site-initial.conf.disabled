@@ -1,0 +1,19 @@
+# SERTIFIKAT OLISHDAN OLDIN ishlatiladi (`init-ssl.sh` o'zi almashtiradi).
+#
+# Faqat 80-port: certbot domenni tekshirib, sertifikat berishi uchun.
+# Sertifikat olingach `site.conf` qaytariladi va HTTPS yoqiladi.
+
+server {
+    listen 80;
+    listen [::]:80;
+    server_name mentadbirkor.uz www.mentadbirkor.uz;
+
+    location /.well-known/acme-challenge/ {
+        root /var/www/certbot;
+    }
+
+    location / {
+        return 200 "Sertifikat olinmoqda...\n";
+        add_header Content-Type text/plain;
+    }
+}

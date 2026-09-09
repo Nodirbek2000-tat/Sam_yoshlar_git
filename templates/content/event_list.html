@@ -14,8 +14,8 @@
     <div class="container">
         <div class="tabs">
             <a href="?" class="tab {% if active_filter == 'all' %}active{% endif %}">Barchasi</a>
-            <a href="?holat=kelasi" class="tab {% if active_filter == 'kelasi' %}active{% endif %}">📅 Kelasi</a>
-            <a href="?holat=otgan" class="tab {% if active_filter == 'otgan' %}active{% endif %}">✅ O'tgan</a>
+            <a href="?holat=kelasi" class="tab {% if active_filter == 'kelasi' %}active{% endif %}"><svg class="ic"><use href="#ic-calendar"/></svg> Kelasi</a>
+            <a href="?holat=otgan" class="tab {% if active_filter == 'otgan' %}active{% endif %}"><svg class="ic"><use href="#ic-check"/></svg> O'tgan</a>
         </div>
 
         {% if events %}
@@ -40,8 +40,8 @@
                             <p class="card-text">{{ event.description|truncatechars:120 }}</p>
 
                             <div class="card-meta">
-                                <span>🕐 {{ event.starts_at|date:"H:i" }}</span>
-                                <span>📍 {{ event.location }}</span>
+                                <span><svg class="ic"><use href="#ic-clock"/></svg> {{ event.starts_at|date:"H:i" }}</span>
+                                <span><svg class="ic"><use href="#ic-pin"/></svg> {{ event.location }}</span>
                             </div>
 
                             <div class="event-capacity">
@@ -49,7 +49,7 @@
                                     <div class="event-capacity-fill" style="width: {{ event.fill_percent }}%"></div>
                                 </div>
                                 <span class="event-capacity-text">
-                                    👥 {{ event.registered_count }}/{{ event.capacity }} ishtirokchi
+                                    <svg class="ic"><use href="#ic-users"/></svg> {{ event.registered_count }}/{{ event.capacity }} ishtirokchi
                                 </span>
                             </div>
 
@@ -62,7 +62,7 @@
             {% include 'partials/pagination.html' %}
         {% else %}
             <div class="empty-state">
-                <div class="empty-state-icon">📅</div>
+                <div class="empty-state-icon"><svg class="ic"><use href="#ic-calendar"/></svg></div>
                 <div class="empty-state-title">Tadbirlar topilmadi</div>
                 <div class="empty-state-text">Hozircha bu bo'limda tadbir yo'q.</div>
             </div>

@@ -1,0 +1,263 @@
+{
+  "organizations": [
+    {
+      "name": "Samarqand viloyati hokimligi",
+      "sphere": "davlat",
+      "contact_person": "Bahodir Ismoilov",
+      "phone": "+998662331245",
+      "email": "murojaat@samarkand.uz",
+      "region": "samarqand",
+      "employees": 320,
+      "problems": [
+        {
+          "category": "technology",
+          "description": "Fuqarolar murojaati qog'ozda yuradi. Har bir ariza bo'limdan bo'limga qo'lda o'tadi, kim qachon olgani hech qayerda qayd etilmaydi. O'rtacha javob muddati 12 kun, holbuki qonun bo'yicha 5 kun. Rahbariyat qaysi ariza qayerda turganini faqat so'rab-surishtirib biladi.",
+          "created_at": "2026-03-14",
+          "solutions": [
+            {
+              "author_name": "Akmal Raxmonov",
+              "title": "Bir oynali raqamli murojaat tizimi",
+              "description": "Har bir arizaga muddat va mas'ul biriktiriladi. Muddat tugashiga ikki kun qolganda mas'ulga avtomatik eslatma boradi, tugagach rahbarga xabar ketadi. Fuqaro o'z arizasini SMS'dagi havola orqali kuzatib turadi.",
+              "technologies": "Django, PostgreSQL, Telegram bot",
+              "expected_result": "Javob muddati 12 kundan 4 kunga tushadi, kechikkan arizalar ro'yxati har kuni rahbar stolida bo'ladi.",
+              "like_count": 24,
+              "created_at": "2026-03-20"
+            },
+            {
+              "author_name": "Nilufar Karimova",
+              "title": "QR bilan navbatsiz topshirish",
+              "description": "Qabulxonaga kelgan fuqaro hujjatini skanerlaydi va QR oladi. Keyingi safar navbatga turmasdan, kod orqali holatini biladi.",
+              "technologies": "Mobil ilova, QR",
+              "expected_result": "Qabulxonadagi navbat ikki barobar qisqaradi.",
+              "like_count": 11,
+              "created_at": "2026-03-25"
+            },
+            {
+              "author_name": "Sardor Mamatqulov",
+              "title": "Takroriy murojaatlarni ajratish",
+              "description": "Bir xil mavzudagi murojaatlarni avtomatik guruhlash. Agar bitta ko'chadan 20 ta ariza kelsa, bu alohida muammo sifatida ko'rinadi.",
+              "technologies": "Matn tahlili",
+              "expected_result": "Tizimli muammolar bitta-bitta ariza sifatida emas, umumiy holda hal qilinadi.",
+              "like_count": 8
+            }
+          ]
+        },
+        {
+          "category": "human",
+          "description": "Yosh mutaxassislar ishga kirgach bir yildan oshmay ketib qoladi. So'nggi ikki yilda 40 nafardan 27 tasi ishdan bo'shadi. Sababi so'ralganda: vazifalar tushunarsiz, o'sish yo'li ko'rinmaydi, tajribali xodimdan o'rganish imkoni yo'q.",
+          "created_at": "2026-04-08",
+          "solutions": [
+            {
+              "author_name": "Kamola Tosheva",
+              "title": "Har bir yangi xodimga mentor",
+              "description": "Birinchi uch oy davomida tajribali xodim biriktiriladi, haftada bir marta yarim soatlik suhbat o'tkaziladi. Uchinchi oy oxirida ikkalasi ham qisqacha hisobot beradi.",
+              "expected_result": "Birinchi yilda ishdan bo'shash 60 foizdan 25 foizga tushadi.",
+              "like_count": 19,
+              "created_at": "2026-04-12"
+            },
+            {
+              "author_name": "Jasur Toshmatov",
+              "title": "Lavozim o'sish jadvali",
+              "description": "Har bir lavozim uchun keyingi bosqichga o'tish shartlari yozib qo'yiladi — qanday ko'nikma, qancha muddat, qaysi natija kerak.",
+              "expected_result": "Yosh xodim nima uchun ishlayotganini va qayerga borishini biladi.",
+              "like_count": 6
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "AgroTech Solutions MChJ",
+      "sphere": "qishloq_xojaligi",
+      "contact_person": "Rustam Ergashev",
+      "phone": "+998901445566",
+      "email": "info@agrotech.uz",
+      "region": "buxoro",
+      "employees": 45,
+      "problems": [
+        {
+          "category": "main",
+          "description": "Yig'ilgan hosilni saqlaydigan sovuq ombor yo'q. Pomidor va uzum uch kun ichida sotilishi kerak, aks holda nobud bo'ladi. Shu sababli fermerlar narxni pasaytirib bo'lsa ham tezroq sotishga majbur — yozda daromad 30-40 foizga kamayadi.",
+          "created_at": "2026-05-06",
+          "solutions": [
+            {
+              "author_name": "Doston Yo'ldoshev",
+              "title": "Quyoshda ishlaydigan modul sovutgich",
+              "description": "Konteyner o'lchamidagi sovutgich modul, tomiga quyosh paneli o'rnatiladi. Elektr tarmog'iga ulanish shart emas, dalaga olib borish mumkin. Bitta modul 8 tonna hosilni ikki hafta saqlaydi.",
+              "technologies": "Quyosh paneli, issiqlik nasosi, harorat sensori",
+              "expected_result": "Hosil yo'qotilishi 30 foizdan 8 foizga tushadi, fermer narx tushishini kutmaydi.",
+              "like_count": 31,
+              "created_at": "2026-05-11"
+            },
+            {
+              "author_name": "Feruza Sattorova",
+              "title": "Ombor kooperativi",
+              "description": "Bir tumandagi 15-20 fermer birlashib bitta katta omborni ijaraga oladi. Xarajat bo'linadi, har biriga alohida bo'lim ajratiladi.",
+              "expected_result": "Bitta fermerga tushadigan xarajat 8 barobar kamayadi.",
+              "like_count": 17,
+              "created_at": "2026-05-14"
+            },
+            {
+              "author_name": "Sanjar Ibrohimov",
+              "title": "Oldindan xaridor topish platformasi",
+              "description": "Hosil pishishidan bir oy oldin restoran va do'konlar bilan shartnoma tuziladi. Saqlash muammosi umuman tug'ilmaydi.",
+              "technologies": "Veb platforma",
+              "expected_result": "Hosilning yarmi terilgunicha sotilgan bo'ladi.",
+              "like_count": 9
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "MedService klinikasi",
+      "sphere": "tibbiyot",
+      "contact_person": "Gulnora Ahmedova",
+      "phone": "+998712009988",
+      "email": "reception@medservice.uz",
+      "region": "toshkent_shahri",
+      "employees": 130,
+      "problems": [
+        {
+          "category": "customers",
+          "description": "Bemorlar navbatda o'rtacha ikki soat kutadi. Yozilish telefon orqali, ro'yxat qog'ozda. Shifokor kechiksa yoki favqulodda holat bo'lsa, kutayotganlarga hech kim xabar bermaydi — odamlar bekorga o'tiradi va janjal chiqadi.",
+          "created_at": "2026-02-19",
+          "solutions": [
+            {
+              "author_name": "Otabek Qodirov",
+              "title": "Onlayn yozilish va jonli navbat",
+              "description": "Bemor telefonidan vaqt tanlaydi. Navbati yaqinlashganda SMS keladi, kechikish bo'lsa yangi vaqt yuboriladi. Kutish zalidagi ekranda navbat raqamlari chiqadi.",
+              "technologies": "Veb, SMS shlyuz",
+              "expected_result": "Kutish vaqti ikki soatdan 25 daqiqaga tushadi.",
+              "like_count": 28,
+              "created_at": "2026-02-24"
+            },
+            {
+              "author_name": "Zulfiya Mirzayeva",
+              "title": "Shifokor jadvalini ochiq qilish",
+              "description": "Har bir shifokorning bo'sh vaqtlari saytda ko'rinadi. Bemor o'zi tanlaydi, registratorga qo'ng'iroq qilish shart emas.",
+              "expected_result": "Registratura yuki uch barobar kamayadi.",
+              "like_count": 14
+            }
+          ]
+        },
+        {
+          "category": "communication",
+          "description": "Tahlil natijalari bo'limlar orasida qog'ozda yuradi. Bemor natijani olish uchun qayta kelishi kerak, ba'zan qog'oz yo'qoladi va tahlil qaytadan topshiriladi.",
+          "created_at": "2026-03-02",
+          "solutions": [
+            {
+              "author_name": "Malika Yo'ldosheva",
+              "title": "Natijani SMS havola orqali yuborish",
+              "description": "Laboratoriya natijani tizimga kiritishi bilan bemorga havola boradi. Havola bir marta ochiladi va bir oydan keyin o'chadi.",
+              "technologies": "Veb, SMS",
+              "expected_result": "Bemor qayta kelmaydi, yo'qolgan natija muammosi yo'qoladi.",
+              "like_count": 22,
+              "created_at": "2026-03-06"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "EduCenter ta'lim markazi",
+      "sphere": "talim",
+      "contact_person": "Sevara Umarova",
+      "phone": "+998935001122",
+      "email": "hello@educenter.uz",
+      "region": "fargona",
+      "employees": 28,
+      "problems": [
+        {
+          "category": "customers",
+          "description": "Kursga yozilgan o'quvchilarning uchdan biri o'rtada tashlab ketadi. Sabab so'ralganda ko'pchilik «qiziq bo'lmay qoldi» yoki «o'zim tushunmadim» deydi. Kim orqada qolayotganini o'qituvchi faqat imtihonda biladi — u paytda kech.",
+          "created_at": "2026-06-03",
+          "solutions": [
+            {
+              "author_name": "Javohir Abdullayev",
+              "title": "Har darsdan keyin ikki daqiqalik test",
+              "description": "Dars oxirida uchta savol beriladi. Natija darhol o'qituvchiga ko'rinadi — kim tushunmaganini o'sha kuni biladi va keyingi darsgacha yordam beradi.",
+              "technologies": "Telegram bot",
+              "expected_result": "Kursni tashlab ketish 33 foizdan 12 foizga tushadi.",
+              "like_count": 26,
+              "created_at": "2026-06-08"
+            },
+            {
+              "author_name": "Nodira Usmonova",
+              "title": "Guruhdagi juftlik tizimi",
+              "description": "Har bir o'quvchiga guruhdan bitta sherik biriktiriladi. Biri kelmasa ikkinchisi xabar beradi va o'tgan darsni tushuntiradi.",
+              "expected_result": "Darsga qatnashish oshadi, o'quvchi guruhga bog'lanib qoladi.",
+              "like_count": 13
+            },
+            {
+              "author_name": "Bekzod Sultonov",
+              "title": "Darsni yozib qo'yish",
+              "description": "Har bir dars yoziladi va faqat o'sha guruh ko'radigan qilib joylanadi. Kelmagan o'quvchi ortda qolmaydi.",
+              "technologies": "Video hosting",
+              "expected_result": "Kasal bo'lgan yoki ishi chiqqan o'quvchi kursdan chiqib ketmaydi.",
+              "like_count": 7
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "LogiTrans yuk tashish",
+      "sphere": "logistika",
+      "contact_person": "Ilhom Qosimov",
+      "phone": "+998977112244",
+      "email": "dispatch@logitrans.uz",
+      "region": "toshkent",
+      "employees": 210,
+      "problems": [
+        {
+          "category": "bottlenecks",
+          "description": "Mashinalarning uchdan biri bo'sh qaytadi. Dispetcher qaytish yo'lida yuk borligini bilmaydi — mijozlar telefon orqali murojaat qiladi, ro'yxat esa bitta odamning daftarida. Yiliga taxminan 400 ming kilometr bekorga bosib o'tiladi.",
+          "created_at": "2026-04-27",
+          "solutions": [
+            {
+              "author_name": "Sherzod Ahmedov",
+              "title": "Qaytish yo'li uchun yuk birjasi",
+              "description": "Haydovchi qaysi shahardan qaysi shaharga bo'sh qaytayotganini belgilaydi. Shu yo'nalishdagi yuk egalari darhol ko'radi va bog'lanadi.",
+              "technologies": "Mobil ilova, GPS",
+              "expected_result": "Bo'sh qaytish 33 foizdan 12 foizga tushadi, yiliga 250 ming km yoqilg'i tejaladi.",
+              "like_count": 34,
+              "created_at": "2026-05-02"
+            },
+            {
+              "author_name": "Aziza Rahmonova",
+              "title": "Kichik yuklarni birlashtirish",
+              "description": "Bitta yo'nalishdagi mayda yuklar bitta mashinaga to'planadi. Hozir ular alohida-alohida ketmoqda.",
+              "expected_result": "Bitta reysga tushadigan xarajat 20 foizga kamayadi.",
+              "like_count": 15,
+              "created_at": "2026-05-09"
+            }
+          ]
+        },
+        {
+          "category": "finance",
+          "description": "Yoqilg'i xarajati hisobga olinmaydi. Haydovchi cheklarni oy oxirida topshiradi, ularning yarmi yo'qoladi. Qaysi reys foydali, qaysi biri zarar keltirgani aniq emas.",
+          "created_at": "2026-05-15",
+          "solutions": [
+            {
+              "author_name": "Dilshod Karimov",
+              "title": "Chekni telefonda suratga olish",
+              "description": "Haydovchi shoxobchadan chiqqach chekni suratga oladi, ilova summani o'zi o'qiydi va reysga biriktiradi. Qog'oz saqlash shart emas.",
+              "technologies": "Mobil ilova, matn tanish (OCR)",
+              "expected_result": "Har bir reysning haqiqiy tannarxi o'sha kuni ma'lum bo'ladi.",
+              "like_count": 20,
+              "created_at": "2026-05-21"
+            },
+            {
+              "author_name": "Madina Yusupova",
+              "title": "Yoqilg'i kartasi",
+              "description": "Naqd pul o'rniga korporativ karta beriladi. Har bir quyish avtomatik yozib boriladi, chek umuman kerak emas.",
+              "expected_result": "Hisobot qo'lda yig'ilmaydi, yo'qolgan chek muammosi tugaydi.",
+              "like_count": 12
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

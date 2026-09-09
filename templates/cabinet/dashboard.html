@@ -5,7 +5,7 @@
 {% block cabinet_head %}
 <div class="cab-welcome">
     <div class="cab-welcome-inner">
-        <h1 class="cab-welcome-hi">Xush kelibsiz, {{ user.get_short_name }}! 👋</h1>
+        <h1 class="cab-welcome-hi">Xush kelibsiz, {{ user.get_short_name }}! <svg class="ic"><use href="#ic-hand"/></svg></h1>
         <p class="cab-welcome-sub">
             {% if profile_completion < 100 %}
                 Profilingiz {{ profile_completion }}% to'ldirilgan. Uni yakunlang — grantlar,
@@ -15,9 +15,9 @@
             {% endif %}
         </p>
         <div class="cab-welcome-actions">
-            <a href="{% url 'content:event_list' %}" class="cab-welcome-btn solid">📅 Tadbirlarni ko'rish</a>
-            <a href="{% url 'content:announcement_list' %}" class="cab-welcome-btn">📢 Imkoniyatlar</a>
-            <a href="{% url 'cabinet:appeals' %}" class="cab-welcome-btn">📨 Murojaat yuborish</a>
+            <a href="{% url 'content:event_list' %}" class="cab-welcome-btn solid"><svg class="ic"><use href="#ic-calendar"/></svg> Tadbirlarni ko'rish</a>
+            <a href="{% url 'content:announcement_list' %}" class="cab-welcome-btn"><svg class="ic"><use href="#ic-megaphone"/></svg> Imkoniyatlar</a>
+            <a href="{% url 'cabinet:appeals' %}" class="cab-welcome-btn"><svg class="ic"><use href="#ic-mail"/></svg> Murojaat yuborish</a>
         </div>
     </div>
 </div>
@@ -27,7 +27,7 @@
 <div class="cab-stats">
     {% for stat in stats %}
         <a href="{% url stat.url %}" class="cab-stat" data-tone="{{ stat.tone }}">
-            <span class="cab-stat-icon">{{ stat.icon }}</span>
+            <span class="cab-stat-icon"><svg class="ic"><use href="#{{ stat.icon }}"/></svg></span>
             <div>
                 <div class="cab-stat-value">{{ stat.value }}</div>
                 <div class="cab-stat-label">{{ stat.label }}</div>
@@ -55,7 +55,7 @@
                         Yaxshi ketyapsiz! Rasm, qisqacha ma'lumot va biznes tavsifini
                         qo'shsangiz — 100% bo'ladi.
                     {% else %}
-                        Profilingiz to'liq to'ldirilgan. Ajoyib! 🎉
+                        Profilingiz to'liq to'ldirilgan. Ajoyib! <svg class="ic"><use href="#ic-party"/></svg>
                     {% endif %}
                 </p>
             </div>
@@ -64,7 +64,7 @@
 
     <div class="cab-panel">
         <div class="cab-panel-head">
-            <h2 class="cab-panel-title">🏢 Biznes profil</h2>
+            <h2 class="cab-panel-title"><svg class="ic"><use href="#ic-building"/></svg> Biznes profil</h2>
             {% if business %}<a href="{% url 'cabinet:business' %}" class="cab-link-more">Tahrirlash →</a>{% endif %}
         </div>
         <div class="cab-panel-body">
@@ -75,12 +75,12 @@
                     <span class="badge {% if business.status == 'approved' %}badge-success{% else %}badge-warning{% endif %}">
                         {{ business.get_status_display }}
                     </span>
-                    <span class="badge badge-info">📦 {{ business.products.count }} mahsulot</span>
-                    <span class="badge badge-primary">🖼️ {{ business.gallery.count }} rasm</span>
+                    <span class="badge badge-info"><svg class="ic"><use href="#ic-package"/></svg> {{ business.products.count }} mahsulot</span>
+                    <span class="badge badge-primary"><svg class="ic"><use href="#ic-image"/></svg> {{ business.gallery.count }} rasm</span>
                 </div>
             {% else %}
                 <div class="cab-empty">
-                    <div class="cab-empty-icon">🏢</div>
+                    <div class="cab-empty-icon"><svg class="ic"><use href="#ic-building"/></svg></div>
                     <p class="cab-empty-text">
                         Biznes profilingiz hali yo'q. To'ldiring — platformada ko'rinasiz
                         va hamkorlar sizni topadi.
@@ -93,7 +93,7 @@
 
     <div class="cab-panel">
         <div class="cab-panel-head">
-            <h2 class="cab-panel-title">📨 So'nggi murojaatlar</h2>
+            <h2 class="cab-panel-title"><svg class="ic"><use href="#ic-mail"/></svg> So'nggi murojaatlar</h2>
             <a href="{% url 'cabinet:appeals' %}" class="cab-link-more">Barchasi →</a>
         </div>
         <div class="cab-panel-body">
@@ -113,7 +113,7 @@
                 </div>
             {% else %}
                 <div class="cab-empty">
-                    <div class="cab-empty-icon">📨</div>
+                    <div class="cab-empty-icon"><svg class="ic"><use href="#ic-mail"/></svg></div>
                     <p class="cab-empty-text">Hozircha murojaat yo'q. Savolingiz bo'lsa kengashga yozing.</p>
                     <a href="{% url 'cabinet:appeals' %}" class="btn btn-outline btn-sm">Murojaat yuborish →</a>
                 </div>
@@ -123,7 +123,7 @@
 
     <div class="cab-panel">
         <div class="cab-panel-head">
-            <h2 class="cab-panel-title">📅 Yaqinlashayotgan tadbirlar</h2>
+            <h2 class="cab-panel-title"><svg class="ic"><use href="#ic-calendar"/></svg> Yaqinlashayotgan tadbirlar</h2>
             <a href="{% url 'cabinet:events' %}" class="cab-link-more">Barchasi →</a>
         </div>
         <div class="cab-panel-body">
@@ -134,7 +134,7 @@
                             <div class="cab-list-main">
                                 <div class="cab-list-title">{{ reg.event.title }}</div>
                                 <div class="cab-list-meta">
-                                    📅 {{ reg.event.starts_at|date:"d.m.Y H:i" }} · 📍 {{ reg.event.location }}
+                                    <svg class="ic"><use href="#ic-calendar"/></svg> {{ reg.event.starts_at|date:"d.m.Y H:i" }} · <svg class="ic"><use href="#ic-pin"/></svg> {{ reg.event.location }}
                                 </div>
                             </div>
                             <span class="cab-link-more">→</span>
@@ -143,7 +143,7 @@
                 </div>
             {% else %}
                 <div class="cab-empty">
-                    <div class="cab-empty-icon">📅</div>
+                    <div class="cab-empty-icon"><svg class="ic"><use href="#ic-calendar"/></svg></div>
                     <p class="cab-empty-text">Yozilgan tadbirlaringiz yo'q. Kelayotgan tadbirlarni ko'rib chiqing.</p>
                     <a href="{% url 'content:event_list' %}" class="btn btn-outline btn-sm">Tadbirlarni ko'rish →</a>
                 </div>

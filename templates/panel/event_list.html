@@ -11,7 +11,7 @@
 {% block content %}
 <form method="get" class="panel-toolbar">
     <div class="panel-search">
-        <span class="panel-search-icon">🔍</span>
+        <span class="panel-search-icon"><svg class="ic"><use href="#ic-search"/></svg></span>
         <input type="search" name="q" value="{{ search }}" class="panel-input" placeholder="Tadbir nomi...">
     </div>
     <button type="submit" class="panel-btn panel-btn-outline">Qidirish</button>
@@ -39,7 +39,7 @@
                                 {% if event.image %}
                                     <img src="{{ event.image.url }}" alt="" class="panel-thumb">
                                 {% else %}
-                                    <div class="panel-thumb">📅</div>
+                                    <div class="panel-thumb"><svg class="ic"><use href="#ic-calendar"/></svg></div>
                                 {% endif %}
                             </td>
                             <td><div class="panel-table-title">{{ event.title|truncatechars:50 }}</div></td>
@@ -67,14 +67,14 @@
                                 <div class="panel-table-actions">
                                     <a href="{% url 'panel:event_registrations' event.pk %}"
                                        class="panel-btn panel-btn-ghost panel-btn-sm"
-                                       title="Ishtirokchilar">👥 {{ event.reg_count }}</a>
+                                       title="Ishtirokchilar"><svg class="ic"><use href="#ic-users"/></svg> {{ event.reg_count }}</a>
                                     <a href="{% url 'panel:event_edit' event.pk %}"
                                        class="panel-btn panel-btn-outline panel-btn-sm">Tahrirlash</a>
                                     <form method="post" action="{% url 'panel:event_delete' event.pk %}"
                                           onsubmit="return confirm('«{{ event.title|escapejs }}» o\'chirilsinmi?\n\n{{ event.reg_count }} ta yozilish ham o\'chadi. Bu amalni qaytarib bo\'lmaydi.')">
                                         {% csrf_token %}
                                         <button type="submit" class="panel-btn panel-btn-danger panel-btn-sm"
-                                                title="O'chirish">🗑</button>
+                                                title="O'chirish"><svg class="ic"><use href="#ic-trash"/></svg></button>
                                     </form>
                                 </div>
                             </td>
@@ -86,7 +86,7 @@
         {% include 'panel/_pagination.html' with qs=""|add:"q="|add:search|add:"&" %}
     {% else %}
         <div class="panel-empty">
-            <div class="panel-empty-icon">📅</div>
+            <div class="panel-empty-icon"><svg class="ic"><use href="#ic-calendar"/></svg></div>
             <div class="panel-empty-title">Tadbirlar yo'q</div>
             <div class="panel-empty-text">Yangi tadbir qo'shing — foydalanuvchilar unga yozila oladi.</div>
             <a href="{% url 'panel:event_create' %}" class="panel-btn panel-btn-primary">+ Tadbir qo'shish</a>

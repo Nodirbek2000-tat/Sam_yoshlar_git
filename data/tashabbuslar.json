@@ -1,0 +1,3629 @@
+{
+  "initiatives": [
+    {
+      "kind": "idea",
+      "title": "Maktablarda plastik yig'ish punktlari",
+      "description": "Har bir maktab hovlisiga uch bo'limli konteyner qo'yiladi: plastik, qog'oz, shisha. Yig'ilgan chiqindi haftada bir marta qayta ishlash zavodiga topshiriladi, tushgan pul sinf jamg'armasiga o'tadi.",
+      "expected_result": "Bir o'quv yilida 20 tonnaga yaqin plastik qayta ishlanadi, 400 ga yaqin o'quvchi saralash odatini oladi.",
+      "author_name": "Aziz Rahimov",
+      "author_phone": "+998901112233",
+      "region": "samarqand",
+      "vote_count": 287,
+      "created_at": "2026-05-14",
+      "comments": [
+        {
+          "author_name": "Nodira Karimova",
+          "text": "Bizning 24-maktabda o'zimiz shunday qilib ko'rgandik, lekin chiqindini kim olib ketishi hal bo'lmay to'xtab qoldi. Shu qismini oldindan shartnoma bilan mahkamlash kerak.",
+          "created_at": "2026-05-16"
+        },
+        {
+          "author_name": "Sardor Eshonov",
+          "text": "Pulni sinf jamg'armasiga o'tkazish g'oyasi kuchli — bolalar uchun aniq motivatsiya bo'ladi.",
+          "created_at": "2026-05-19"
+        },
+        {
+          "author_name": "Malika Tursunova",
+          "text": "Konteynerlarni bolalar chizgan rasm bilan bezasak, o'zlari qarab turadigan bo'ladi.",
+          "created_at": "2026-06-02"
+        }
+      ],
+      "direction": "eco"
+    },
+    {
+      "kind": "problem",
+      "title": "Shahar chekkasidagi stixiyali axlatxonalar",
+      "description": "Samarqand chekkasidagi bo'sh yerlarga kechasi qurilish chiqindisi va maishiy axlat tashlanadi. Yozda hidi butun mahallaga tarqaladi, yomg'irdan keyin suv bilan ariqqa oqib tushadi.",
+      "expected_result": "Xarita tuzilib 30 ga yaqin nuqta aniqlanadi va ular yoritish hamda kamera nazoratiga olinadi.",
+      "author_name": "Jasur Norqulov",
+      "author_phone": "+998935554411",
+      "region": "samarqand",
+      "vote_count": 341,
+      "created_at": "2026-05-21",
+      "comments": [
+        {
+          "author_name": "Dilshod Ismoilov",
+          "text": "Kamera qo'yish qimmat. Avvaliga oddiy to'siq va yorug'lik ham ko'p narsani hal qiladi, tekshirilgan.",
+          "created_at": "2026-05-23"
+        },
+        {
+          "author_name": "Zebo Hamroyeva",
+          "text": "Mahalla guruhida foto bilan xabar beradigan bot ochsak, odamlarning o'zi joyini yuboradi.",
+          "created_at": "2026-05-28"
+        },
+        {
+          "author_name": "Otabek Yo'ldoshev",
+          "text": "Muammoni tan olish yaxshi, lekin chiqindini qayerga tashlash kerakligini ham aytish kerak. Yaqin atrofda rasmiy poligon yo'q.",
+          "created_at": "2026-06-05"
+        },
+        {
+          "author_name": "Nigora Sattorova",
+          "text": "Bizning mahallada shunday joyga gulzor qilib qo'yishdi, bir yildan beri hech kim axlat tashlamayapti.",
+          "created_at": "2026-06-11"
+        }
+      ],
+      "direction": "eco"
+    },
+    {
+      "kind": "proposal",
+      "title": "Har bir tug'ilgan bolaga bitta ko'chat",
+      "description": "Fuqarolik holati bo'limida bola tug'ilganda ota-onaga ism yozilgan yorliq bilan ko'chat beriladi. Ko'chat mahalladagi ajratilgan yerga ekiladi va oila uni parvarish qiladi.",
+      "expected_result": "Yiliga viloyat bo'yicha 25 mingga yaqin daraxt ekiladi va har birining egasi aniq bo'ladi.",
+      "author_name": "Shohrux Qodirov",
+      "author_phone": "+998977778899",
+      "region": "buxoro",
+      "vote_count": 512,
+      "created_at": "2026-05-30",
+      "comments": [
+        {
+          "author_name": "Gulnoza Rasulova",
+          "text": "Eng muhimi daraxtning egasi bo'lishi. Egasiz ko'chat ikki oyda qurib qoladi.",
+          "created_at": "2026-06-01"
+        },
+        {
+          "author_name": "Bekzod Turg'unov",
+          "text": "Ko'chat turini iqlimga qarab tanlash kerak, aks holda ko'p suv talab qiladigan navlar o'lib ketadi.",
+          "created_at": "2026-06-07"
+        },
+        {
+          "author_name": "Aziza Umarova",
+          "text": "Bolaning ismi yozilgan taxtacha yillar o'tib qaytib keladigan joy bo'ladi. Juda chiroyli.",
+          "created_at": "2026-06-20"
+        }
+      ],
+      "direction": "eco"
+    },
+    {
+      "kind": "idea",
+      "title": "Bozorlarda qog'oz qop kampaniyasi",
+      "description": "Ko'p bozorda sotuvchilar bir martalik plastik xalta beradi. Ularga arzon qog'oz qop yetkazib beruvchi kichik sex ochilsa, narx farqi yo'qoladi va plastik o'z-o'zidan siqib chiqariladi.",
+      "expected_result": "Bitta yirik bozorda oyiga 100 mingdan ortiq plastik xalta ishlatilmaydi.",
+      "author_name": "Kamola Yusupova",
+      "author_phone": "+998901234567",
+      "region": "toshkent_shahri",
+      "vote_count": 156,
+      "created_at": "2026-06-04",
+      "comments": [
+        {
+          "author_name": "Rustam Aliyev",
+          "text": "Qog'oz qop nam mahsulotga to'g'ri kelmaydi. Go'sht va sut uchun boshqa yechim kerak.",
+          "created_at": "2026-06-06"
+        },
+        {
+          "author_name": "Sevara Nazarova",
+          "text": "Sexni bozorning o'zida ochish kerak, logistika xarajati shunda nolga tushadi.",
+          "created_at": "2026-06-15"
+        }
+      ],
+      "direction": "eco"
+    },
+    {
+      "kind": "startup",
+      "title": "Chiqindidan qurilish plitasi",
+      "description": "Plastik chiqindi qum bilan aralashtirilib, yo'lka plitasi va bordyur ishlab chiqariladi. Xomashyo tekin, mahsulot esa oddiy betondan arzonroq va yengilroq chiqadi.",
+      "expected_result": "Kichik sex kuniga 800 dona plita chiqaradi, 12 kishi ish bilan ta'minlanadi.",
+      "author_name": "Doniyor Sobirov",
+      "author_phone": "+998909988776",
+      "region": "namangan",
+      "vote_count": 273,
+      "created_at": "2026-06-12",
+      "comments": [
+        {
+          "author_name": "Ulug'bek Xolmatov",
+          "text": "Sifat sertifikati masalasi bor. Standartdan o'tmasa, hech bir qurilish tashkiloti sotib olmaydi.",
+          "created_at": "2026-06-14"
+        },
+        {
+          "author_name": "Feruza Abdullayeva",
+          "text": "Birinchi buyurtmachi mahalla bo'lishi mumkin, yo'lkalarni ta'mirlashda sinab ko'riladi.",
+          "created_at": "2026-06-22"
+        },
+        {
+          "author_name": "Sanjar Ergashev",
+          "text": "Plastikni eritishda chiqadigan gaz bo'yicha filtr kerak, aks holda ekologiya loyihasi ekologiyaga zarar beradi.",
+          "created_at": "2026-07-01"
+        }
+      ],
+      "direction": "eco"
+    },
+    {
+      "kind": "problem",
+      "title": "Ariqlarga tashlanadigan maishiy chiqindi",
+      "description": "Mahalla ichidan o'tadigan ariqlarga oshxona chiqindisi va butilka tashlanadi. Suv oqmay qolib yozda hasharot ko'payadi, qishloq xo'jaligiga boradigan suv ifloslanadi.",
+      "expected_result": "Tozalash grafigi va mas'ul shaxs belgilanadi, 40 km ariq nazoratga olinadi.",
+      "author_name": "Xurshid Bozorov",
+      "author_phone": "+998944445566",
+      "region": "jizzax",
+      "vote_count": 198,
+      "created_at": "2026-06-18",
+      "comments": [
+        {
+          "author_name": "Madina Qurbonova",
+          "text": "Bizda hasharchilik qilamiz, lekin ikki haftadan keyin yana to'ladi. Doimiy nazorat kerak.",
+          "created_at": "2026-06-21"
+        },
+        {
+          "author_name": "Islom Rahmatullayev",
+          "text": "Ariq bo'yiga panjara emas, o'tqazilgan buta yaxshi ishlaydi, tashlashga qo'l bormaydi.",
+          "created_at": "2026-07-03"
+        }
+      ],
+      "direction": "eco"
+    },
+    {
+      "kind": "idea",
+      "title": "Elektron chiqindi uchun mobil punkt",
+      "description": "Eski telefon, batareya va lampochkani oddiy axlat qutisiga tashlash tuproqni zaharlaydi. Shanba kunlari mahallama-mahalla yuradigan mobil qabul punkti ochiladi.",
+      "expected_result": "Oyiga 2 tonnaga yaqin xavfli chiqindi to'g'ri yo'nalishga boradi.",
+      "author_name": "Ozoda Mirzayeva",
+      "author_phone": "+998903334455",
+      "region": "toshkent",
+      "vote_count": 234,
+      "created_at": "2026-06-25",
+      "comments": [
+        {
+          "author_name": "Temur Sodiqov",
+          "text": "Batareya uchun har bir do'konda kichik quti qo'yish osonroq bo'lardi.",
+          "created_at": "2026-06-27"
+        },
+        {
+          "author_name": "Laziza Yo'ldosheva",
+          "text": "Topshirganga kichik chegirma kuponi berilsa, odam ko'proq keladi.",
+          "created_at": "2026-07-08"
+        },
+        {
+          "author_name": "Javohir Nematov",
+          "text": "Mobil punkt grafigini oldindan e'lon qilish kerak, aks holda odam bexabar qoladi.",
+          "created_at": "2026-07-14"
+        }
+      ],
+      "direction": "eco"
+    },
+    {
+      "kind": "proposal",
+      "title": "Ko'chalarga suv ichadigan quduqcha",
+      "description": "Yozda ko'chada yuradigan odam uchun tekin suv yo'q. Har 500 metrda quyoshda ishlaydigan kichik favvora-quduqcha o'rnatiladi, filtri har oyda almashtiriladi.",
+      "expected_result": "Markaziy ko'chalarda 60 ta nuqta paydo bo'ladi, plastik butilka sotib olish 25 foizga kamayadi.",
+      "author_name": "Muhammadali Ochilov",
+      "author_phone": "+998901010101",
+      "region": "buxoro",
+      "vote_count": 89,
+      "created_at": "2026-07-02",
+      "comments": [
+        {
+          "author_name": "Nilufar Ergasheva",
+          "text": "Suv sifatini kim tekshiradi degan savol turadi. Filtri va tahlil jadvali bo'lishi shart.",
+          "created_at": "2026-07-05"
+        }
+      ],
+      "direction": "eco"
+    },
+    {
+      "kind": "idea",
+      "title": "Maktab hovlilarida mevali bog'",
+      "description": "Manzarali daraxt o'rniga o'rik, olma va shaftoli ekiladi. Bolalar ekish va parvarishni o'rganadi, hosil maktab oshxonasiga tushadi.",
+      "expected_result": "Har bir maktabda 50 tup mevali daraxt, besh yildan keyin oshxonaga tekin meva.",
+      "author_name": "Umida Hakimova",
+      "author_phone": "+998902223344",
+      "region": "andijon",
+      "vote_count": 167,
+      "created_at": "2026-07-11",
+      "comments": [
+        {
+          "author_name": "Bahodir Xudoyberdiyev",
+          "text": "Yozgi ta'tilda kim sug'oradi? Shu masalani hal qilmasak, ko'chatlar quriydi.",
+          "created_at": "2026-07-13"
+        },
+        {
+          "author_name": "Guli Nabiyeva",
+          "text": "Navbatchilik jadvali tuzilsa bo'ladi, ota-onalar ham qatnashadi.",
+          "created_at": "2026-07-19"
+        }
+      ],
+      "direction": "eco"
+    },
+    {
+      "kind": "startup",
+      "title": "Oziq-ovqat chiqindisidan kompost",
+      "description": "Restoran va oshxonalardan chiqadigan oziq-ovqat qoldig'i yig'ilib, kompost o'g'itiga aylantiriladi va fermerlarga sotiladi. Poligonga boradigan yuk kamayadi.",
+      "expected_result": "Yiliga 500 tonna chiqindi o'g'itga aylanadi, 15 ta fermer xo'jaligi kimyoviy o'g'itni kamaytiradi.",
+      "author_name": "Farrux Sattorov",
+      "author_phone": "+998935556677",
+      "region": "samarqand",
+      "vote_count": 145,
+      "created_at": "2026-07-22",
+      "comments": [
+        {
+          "author_name": "Odil Jo'rayev",
+          "text": "Restoranlar chiqindini alohida ajratib berishga rozi bo'ladimi? Shu joyi eng qiyini.",
+          "created_at": "2026-07-25"
+        },
+        {
+          "author_name": "Shahnoza Karimova",
+          "text": "Tekin olib ketiladigan bo'lsa rozi bo'lishadi, ular ham chiqindi uchun pul to'laydi.",
+          "created_at": "2026-08-01"
+        }
+      ],
+      "direction": "eco"
+    },
+    {
+      "kind": "startup",
+      "title": "Fermerlar uchun mikroqarz platformasi",
+      "description": "Fermer ekin ekish oldidan pul topolmay, hosilni oldindan arzonga sotib yuboradi. Platforma hosil hajmi va tarixiga qarab kichik qarz beradi, qaytarish hosil yig'ilgandan keyin bo'ladi.",
+      "expected_result": "Birinchi yilda 500 ta fermer xo'jaligi qamrab olinadi, hosilni arzonga sotish 30 foizga kamayadi.",
+      "author_name": "Bekzod Turg'unov",
+      "author_phone": "+998901112244",
+      "region": "qashqadaryo",
+      "vote_count": 398,
+      "created_at": "2026-05-18",
+      "comments": [
+        {
+          "author_name": "Alisher Nurmatov",
+          "text": "Garov masalasi qanday hal bo'ladi? Bank ham xuddi shu joyda to'xtab qoladi.",
+          "created_at": "2026-05-20"
+        },
+        {
+          "author_name": "Dilnoza Ochilova",
+          "text": "Mahalla kafilligi modelini ko'rib chiqing, Bangladeshda shu bilan ishlagan.",
+          "created_at": "2026-05-26"
+        },
+        {
+          "author_name": "Rustam Ziyodov",
+          "text": "Ob-havo sug'urtasi bilan birga bo'lsa, xavf ikki tomonga taqsimlanadi.",
+          "created_at": "2026-06-08"
+        }
+      ],
+      "direction": "fintech"
+    },
+    {
+      "kind": "idea",
+      "title": "Talabalar uchun bo'lib to'lash kartasi",
+      "description": "Talaba noutbuk yoki kitob olishda butun summani birdan topolmaydi. Stipendiya kelishiga bog'langan, foizsiz to'rt oylik bo'lib to'lash kartasi chiqariladi.",
+      "expected_result": "50 mingga yaqin talaba o'quv jihozini muddatida sotib oladi.",
+      "author_name": "Shahzod Ismoilov",
+      "author_phone": "+998933332211",
+      "region": "toshkent_shahri",
+      "vote_count": 245,
+      "created_at": "2026-05-27",
+      "comments": [
+        {
+          "author_name": "Kamola Yusupova",
+          "text": "Faqat o'quv mahsulotlariga cheklov qo'yilsin, aks holda telefonga sarflanadi.",
+          "created_at": "2026-05-29"
+        },
+        {
+          "author_name": "Aziz Rahimov",
+          "text": "Stipendiya hammada ham yo'q. Shu qismini qanday hal qilasiz?",
+          "created_at": "2026-06-04"
+        }
+      ],
+      "direction": "fintech"
+    },
+    {
+      "kind": "problem",
+      "title": "Naqd puldan chiqa olmayotgan kichik biznes",
+      "description": "Mahalladagi kichik do'konlar terminal o'rnatmaydi, chunki komissiya yuqori va internet uzilib turadi. Natijada aylanma ko'rinmaydi, kredit olishning iloji yo'q.",
+      "expected_result": "Komissiya modeli qayta ko'rib chiqilib, 5 mingdan ortiq do'kon rasmiy aylanmaga o'tadi.",
+      "author_name": "Sherzod Ahmedov",
+      "author_phone": "+998944442211",
+      "region": "fargona",
+      "vote_count": 176,
+      "created_at": "2026-06-09",
+      "comments": [
+        {
+          "author_name": "Nozima Yo'ldosheva",
+          "text": "Offline rejimda ishlaydigan terminal bor, internet kelganda o'zi yuboradi. Shuni tarqatish kerak.",
+          "created_at": "2026-06-12"
+        },
+        {
+          "author_name": "Ilhom Rasulov",
+          "text": "Birinchi yil komissiyani nolga tushirsa, keyin odam o'rganib qoladi.",
+          "created_at": "2026-06-19"
+        },
+        {
+          "author_name": "Sabina Tolipova",
+          "text": "Aylanma ko'ringandan keyin soliq ham ko'payadi degan qo'rquv bor. Shuni tushuntirish kerak.",
+          "created_at": "2026-07-02"
+        }
+      ],
+      "direction": "fintech"
+    },
+    {
+      "kind": "idea",
+      "title": "Bolalarga moliyaviy savodxonlik ilovasi",
+      "description": "8-14 yosh bolalar uchun o'yin shaklidagi ilova: cho'ntak puli rejalashtiriladi, jamg'arma maqsadi qo'yiladi, ota-ona esa ilova orqali kuzatib turadi.",
+      "expected_result": "Birinchi yilda 30 ming bola pulni rejalashtirishni o'rganadi.",
+      "author_name": "Nilufar Ergasheva",
+      "author_phone": "+998903456789",
+      "region": "toshkent_shahri",
+      "vote_count": 312,
+      "created_at": "2026-06-16",
+      "comments": [
+        {
+          "author_name": "Botir Umarov",
+          "text": "Bolaga reklama ko'rsatilmasin, aks holda ilova aksincha ishlaydi.",
+          "created_at": "2026-06-18"
+        },
+        {
+          "author_name": "Zilola Abdurahmonova",
+          "text": "Maktab dasturiga qo'shimcha sifatida kirsa, qamrov ancha kengayadi.",
+          "created_at": "2026-06-24"
+        },
+        {
+          "author_name": "Anvar Karimov",
+          "text": "Real karta bilan bog'lanmasin, virtual ball yetarli. Xavfsizroq.",
+          "created_at": "2026-07-06"
+        },
+        {
+          "author_name": "Dildora Sharipova",
+          "text": "Bizning bola cho'ntak pulini bir kunda sarflab yuboradi. Shunday narsa juda kerak.",
+          "created_at": "2026-07-15"
+        }
+      ],
+      "direction": "fintech"
+    },
+    {
+      "kind": "proposal",
+      "title": "Mahalla jamg'arma kassasi raqamlashtirilsin",
+      "description": "Ko'p mahallada 'qora kassa' an'anasi bor, lekin daftarga yoziladi va bahs chiqadi. Oddiy ilova bilan kim qancha kirgizgani va navbat kimda ekani ochiq ko'rinadi.",
+      "expected_result": "200 ga yaqin mahalla guruhi shaffof hisobga o'tadi.",
+      "author_name": "Gulbahor Nazarova",
+      "author_phone": "+998935557788",
+      "region": "namangan",
+      "vote_count": 134,
+      "created_at": "2026-06-23",
+      "comments": [
+        {
+          "author_name": "Sardor Eshonov",
+          "text": "Ishonch masalasi. Ilova pulni ushlab turmasa, faqat hisob yuritsa — qabul qilishadi.",
+          "created_at": "2026-06-26"
+        },
+        {
+          "author_name": "Muzaffar Aliyev",
+          "text": "Eslatma yuborish funksiyasi bo'lsa kifoya, qolganini odamlar o'zi hal qiladi.",
+          "created_at": "2026-07-04"
+        }
+      ],
+      "direction": "fintech"
+    },
+    {
+      "kind": "startup",
+      "title": "Chet eldagi ishchilar uchun arzon pul o'tkazma",
+      "description": "Migrant ishchilar pul yuborishda 5-7 foiz komissiya to'laydi. Raqamli hamyon orqali o'tkazma komissiyasi 1 foizgacha tushiriladi.",
+      "expected_result": "Yiliga oilalar hisobida 40 milliard so'mga yaqin mablag' tejaladi.",
+      "author_name": "Otabek Yo'ldoshev",
+      "author_phone": "+998901119988",
+      "region": "surxondaryo",
+      "vote_count": 456,
+      "created_at": "2026-07-01",
+      "comments": [
+        {
+          "author_name": "Xurshid Bozorov",
+          "text": "Litsenziya olish eng katta to'siq. Buni loyihaning birinchi bosqichiga qo'yish kerak.",
+          "created_at": "2026-07-03"
+        },
+        {
+          "author_name": "Nargiza Islomova",
+          "text": "Qishloqda naqdga aylantirish nuqtasi bo'lmasa, ilovaning foydasi yo'q.",
+          "created_at": "2026-07-09"
+        },
+        {
+          "author_name": "Jamshid Qobilov",
+          "text": "Akam Koreyadan pul yuboradi, har safar komissiyaga achinamiz. Shu ish chiqsa katta gap.",
+          "created_at": "2026-07-21"
+        }
+      ],
+      "direction": "fintech"
+    },
+    {
+      "kind": "idea",
+      "title": "Yagona kommunal to'lov tarixi",
+      "description": "Foydalanuvchi to'lovlarini bir joyda ko'rmaydi. Yagona kabinet oxirgi 24 oylik gaz, suv, svet sarfini grafik bilan ko'rsatadi va anomaliyani belgilaydi.",
+      "expected_result": "Foydalanuvchi hisob xatosini o'zi topadi, murojaatlar 40 foizga kamayadi.",
+      "author_name": "Ravshan Toshpo'latov",
+      "author_phone": "+998944443322",
+      "region": "buxoro",
+      "vote_count": 187,
+      "created_at": "2026-07-10",
+      "comments": [
+        {
+          "author_name": "Sanobar Yusupova",
+          "text": "Anomaliyani belgilash zo'r. Bizga o'tgan oy uch barobar hisob keldi, isbotlab bo'lmadi.",
+          "created_at": "2026-07-12"
+        },
+        {
+          "author_name": "Farrux Sattorov",
+          "text": "Ma'lumot uch xil tashkilotda. Integratsiya eng qiyin joyi bo'ladi.",
+          "created_at": "2026-07-18"
+        }
+      ],
+      "direction": "fintech"
+    },
+    {
+      "kind": "problem",
+      "title": "Onlayn firibgarlikdan himoya yo'q",
+      "description": "Yoshlar 'tez pul' va'da qiladigan telegram kanallariga pul o'tkazib aldanadi. Qaytarish mexanizmi yo'q, ko'pchilik uyaltib murojaat ham qilmaydi.",
+      "expected_result": "Ogohlantirish tizimi va shikoyat bazasi yaratiladi, aldangan pul qismi qaytariladi.",
+      "author_name": "Zebo Hamroyeva",
+      "author_phone": "+998903338877",
+      "region": "toshkent",
+      "vote_count": 289,
+      "created_at": "2026-07-17",
+      "comments": [
+        {
+          "author_name": "Ulug'bek Xolmatov",
+          "text": "Bank tomonida shubhali o'tkazmani 30 daqiqa ushlab turish funksiyasi kerak.",
+          "created_at": "2026-07-20"
+        },
+        {
+          "author_name": "Aziza Umarova",
+          "text": "Kursdoshim shunday yo'l bilan bir yillik jamg'armasini yo'qotdi. Ogohlantirish juda kerak.",
+          "created_at": "2026-07-27"
+        },
+        {
+          "author_name": "Doniyor Sobirov",
+          "text": "Shikoyat bazasi ochiq bo'lsa, odam pul yuborishdan oldin tekshirib ko'radi.",
+          "created_at": "2026-08-05"
+        }
+      ],
+      "direction": "fintech"
+    },
+    {
+      "kind": "idea",
+      "title": "Kichik biznes uchun avtomatik buxgalteriya",
+      "description": "Do'kon egasi buxgalterga oyiga katta pul to'laydi. Terminal va kassa ma'lumotini o'qib, hisobotni o'zi to'ldiradigan xizmat ochiladi.",
+      "expected_result": "Har bir tadbirkor oyiga 1,5 million so'mgacha tejaydi.",
+      "author_name": "Islom Rahmatullayev",
+      "author_phone": "+998901231234",
+      "region": "andijon",
+      "vote_count": 98,
+      "created_at": "2026-07-26",
+      "comments": [
+        {
+          "author_name": "Madina Qurbonova",
+          "text": "Soliq shakllari tez-tez o'zgaradi, shuni kuzatib turish kerak bo'ladi.",
+          "created_at": "2026-07-29"
+        }
+      ],
+      "direction": "fintech"
+    },
+    {
+      "kind": "proposal",
+      "title": "Startaplar uchun ochiq investitsiya reyestri",
+      "description": "Kim qaysi loyihaga qancha investitsiya qilgani ko'rinmaydi, shuning uchun yangi jamoalar kimga murojaat qilishni bilmaydi. Ochiq reyestr shu bo'shliqni yopadi.",
+      "expected_result": "100 dan ortiq bitim ochiq e'lon qilinadi, yangi jamoalar investorni tez topadi.",
+      "author_name": "Sanjar Ergashev",
+      "author_phone": "+998935551122",
+      "region": "toshkent_shahri",
+      "vote_count": 121,
+      "created_at": "2026-08-03",
+      "comments": [
+        {
+          "author_name": "Feruza Abdullayeva",
+          "text": "Investorlar summani oshkor qilishga rozi bo'lmaydi. Diapazon ko'rsatilsa yetarli.",
+          "created_at": "2026-08-06"
+        },
+        {
+          "author_name": "Temur Sodiqov",
+          "text": "Hech bo'lmasa qaysi soha qancha pul olganini ko'rsak ham katta yordam.",
+          "created_at": "2026-08-12"
+        }
+      ],
+      "direction": "fintech"
+    },
+    {
+      "kind": "startup",
+      "title": "O'zbek tili uchun ovozdan matnga xizmat",
+      "description": "Majlis bayonnomasi, dars va intervyu qo'lda yoziladi. O'zbek tilini yaxshi tushunadigan ovozdan matnga o'giruvchi xizmat shu ishni bir necha daqiqaga qisqartiradi.",
+      "expected_result": "Bir yilda 100 mingdan ortiq soatlik yozuv matnga aylantiriladi.",
+      "author_name": "Javohir Nematov",
+      "author_phone": "+998901113355",
+      "region": "toshkent_shahri",
+      "vote_count": 467,
+      "created_at": "2026-05-16",
+      "comments": [
+        {
+          "author_name": "Nodira Karimova",
+          "text": "Shevalarni ham tushunsin. Xorazm shevasida hech bir tizim ishlamayapti.",
+          "created_at": "2026-05-18"
+        },
+        {
+          "author_name": "Bekzod Turg'unov",
+          "text": "Kirill va lotin ikkalasiga ham chiqarish kerak, ko'p muassasa hali kirillda yozadi.",
+          "created_at": "2026-05-24"
+        },
+        {
+          "author_name": "Sevara Nazarova",
+          "text": "Talabalar uchun tekin tarif bo'lsa, ma'ruza yozib olishda katta yordam bo'lardi.",
+          "created_at": "2026-06-03"
+        },
+        {
+          "author_name": "Rustam Aliyev",
+          "text": "Ma'lumotlar qayerda saqlanadi degan savol muhim. Mahalliy serverda bo'lgani ma'qul.",
+          "created_at": "2026-06-14"
+        }
+      ],
+      "direction": "ai"
+    },
+    {
+      "kind": "idea",
+      "title": "Shifokorga yordam beruvchi tashxis yordamchisi",
+      "description": "Tuman shifoxonasida tor mutaxassis yetishmaydi. Rentgen va tahlil natijasini birlamchi tahlil qiladigan yordamchi shifokorga shubhali holatni ko'rsatib beradi.",
+      "expected_result": "Kech aniqlangan kasallik ulushi sezilarli kamayadi, 200 ga yaqin tuman shifoxonasi qamrab olinadi.",
+      "author_name": "Dilnoza Ochilova",
+      "author_phone": "+998933335544",
+      "region": "qashqadaryo",
+      "vote_count": 378,
+      "created_at": "2026-05-25",
+      "comments": [
+        {
+          "author_name": "Alisher Nurmatov",
+          "text": "Yakuniy qarorni faqat shifokor qabul qilishi kerak, buni interfeysda ham yozib qo'yish shart.",
+          "created_at": "2026-05-27"
+        },
+        {
+          "author_name": "Gulnoza Rasulova",
+          "text": "Mahalliy bemorlar ma'lumotida o'qitilmasa, aniqlik past bo'ladi.",
+          "created_at": "2026-06-02"
+        },
+        {
+          "author_name": "Shohrux Qodirov",
+          "text": "Tuman shifoxonasida internet sekin. Offline ishlaydigan variant kerak.",
+          "created_at": "2026-06-13"
+        }
+      ],
+      "direction": "ai"
+    },
+    {
+      "kind": "proposal",
+      "title": "Maktab uchun shaxsiy o'quv yordamchisi",
+      "description": "Bitta o'qituvchi 35 ta bolaga bir xil tezlikda dars beradi. Yordamchi har bir bolaning xatosini kuzatib, unga mos qo'shimcha mashq beradi.",
+      "expected_result": "Matematika bo'yicha o'zlashtirish o'rtacha 20 foizga oshadi.",
+      "author_name": "Umida Hakimova",
+      "author_phone": "+998902224466",
+      "region": "namangan",
+      "vote_count": 256,
+      "created_at": "2026-06-05",
+      "comments": [
+        {
+          "author_name": "Bahodir Xudoyberdiyev",
+          "text": "O'qituvchining o'rnini bosmasin, faqat yordam bersin. Shu chegara aniq bo'lsin.",
+          "created_at": "2026-06-08"
+        },
+        {
+          "author_name": "Laziza Yo'ldosheva",
+          "text": "Uy vazifasini o'zi yechib beradigan bo'lsa, bola o'rganmaydi. Javob emas, yo'l ko'rsatsin.",
+          "created_at": "2026-06-17"
+        }
+      ],
+      "direction": "ai"
+    },
+    {
+      "kind": "problem",
+      "title": "Davlat xizmatlarida javob kutish uzoq",
+      "description": "Murojaatlar qo'lda taqsimlanadi, bir ariza bir necha bo'lim orasida yuradi. Fuqaro javobni oylab kutadi va qayerda turganini bilmaydi.",
+      "expected_result": "Murojaatlarni avtomatik yo'naltirish javob muddatini o'rtacha uch barobar qisqartiradi.",
+      "author_name": "Ravshan Toshpo'latov",
+      "author_phone": "+998944448899",
+      "region": "buxoro",
+      "vote_count": 203,
+      "created_at": "2026-06-15",
+      "comments": [
+        {
+          "author_name": "Nargiza Islomova",
+          "text": "Avval murojaat shakli soddalashtirilsin, keyin avtomatlashtirilsin.",
+          "created_at": "2026-06-18"
+        },
+        {
+          "author_name": "Jamshid Qobilov",
+          "text": "Har bir bosqichda SMS kelsa ham katta ish bo'lardi.",
+          "created_at": "2026-06-27"
+        },
+        {
+          "author_name": "Sabina Tolipova",
+          "text": "Bir arizam to'rt oy yurdi. Qayerda turganini bilganimda tinchroq bo'lardim.",
+          "created_at": "2026-07-09"
+        }
+      ],
+      "direction": "ai"
+    },
+    {
+      "kind": "idea",
+      "title": "Qishloq xo'jaligi zararkunandasini rasmdan aniqlash",
+      "description": "Fermer barg rasmini yuboradi, tizim kasallik yoki zararkunandani aniqlab, qaysi dori kerakligini aytadi. Keraksiz kimyodan foydalanish kamayadi.",
+      "expected_result": "Hosil yo'qotish 15 foizga kamayadi, dori xarajati sezilarli tushadi.",
+      "author_name": "Odil Jo'rayev",
+      "author_phone": "+998901117766",
+      "region": "andijon",
+      "vote_count": 334,
+      "created_at": "2026-06-22",
+      "comments": [
+        {
+          "author_name": "Xurshid Bozorov",
+          "text": "Telegram bot shaklida bo'lsin, fermer alohida ilova o'rnatmaydi.",
+          "created_at": "2026-06-24"
+        },
+        {
+          "author_name": "Shahnoza Karimova",
+          "text": "Noto'g'ri maslahat berilsa, butun dala nobud bo'lishi mumkin. Ishonch darajasini ko'rsatsin.",
+          "created_at": "2026-07-01"
+        },
+        {
+          "author_name": "Ilhom Rasulov",
+          "text": "Mahalliy agronom bilan birga tekshiruvdan o'tkazish kerak.",
+          "created_at": "2026-07-11"
+        }
+      ],
+      "direction": "ai"
+    },
+    {
+      "kind": "startup",
+      "title": "Yuridik hujjatlarni tekshiruvchi yordamchi",
+      "description": "Kichik tadbirkor shartnomani yurist ko'rmasdan imzolaydi va keyin muammoga tushadi. Xizmat shartnomadagi xavfli bandlarni ajratib ko'rsatadi.",
+      "expected_result": "Yiliga 10 mingdan ortiq shartnoma tekshiriladi, nizolar kamayadi.",
+      "author_name": "Sherzod Ahmedov",
+      "author_phone": "+998933339900",
+      "region": "fargona",
+      "vote_count": 189,
+      "created_at": "2026-06-30",
+      "comments": [
+        {
+          "author_name": "Zilola Abdurahmonova",
+          "text": "Yuristning o'rnini bosolmaydi, lekin savol berishga yordam beradi. Shu ham katta gap.",
+          "created_at": "2026-07-03"
+        },
+        {
+          "author_name": "Botir Umarov",
+          "text": "Bazasini O'zbekiston qonunchiligiga moslash shart, aks holda foydasi yo'q.",
+          "created_at": "2026-07-13"
+        }
+      ],
+      "direction": "ai"
+    },
+    {
+      "kind": "idea",
+      "title": "Ko'zi ojizlar uchun ovozli navigator",
+      "description": "Telefon kamerasi orqali atrofdagi to'siq, svetofor va yozuvlarni ovoz bilan aytib boradigan yordamchi. Ko'chada mustaqil yurish imkonini beradi.",
+      "expected_result": "5 mingdan ortiq inson uchun kundalik harakat osonlashadi.",
+      "author_name": "Aziza Umarova",
+      "author_phone": "+998902225577",
+      "region": "toshkent_shahri",
+      "vote_count": 421,
+      "created_at": "2026-07-08",
+      "comments": [
+        {
+          "author_name": "Dildora Sharipova",
+          "text": "Amakim ko'zi ojiz. Shunday narsa chiqsa, hayoti butunlay o'zgaradi.",
+          "created_at": "2026-07-10"
+        },
+        {
+          "author_name": "Anvar Karimov",
+          "text": "Yozuvlarni o'zbekcha o'qib berishi shart, ingliz tilidagi ilovalar foyda bermayapti.",
+          "created_at": "2026-07-16"
+        },
+        {
+          "author_name": "Muzaffar Aliyev",
+          "text": "Naushnik bilan ishlasin, ko'chada ovoz chiqarish noqulay.",
+          "created_at": "2026-07-24"
+        },
+        {
+          "author_name": "Gulbahor Nazarova",
+          "text": "Bu loyihani albatta qo'llab-quvvatlash kerak. Ovoz berdim.",
+          "created_at": "2026-08-02"
+        }
+      ],
+      "direction": "ai"
+    },
+    {
+      "kind": "proposal",
+      "title": "Arxiv hujjatlarini raqamlashtirish",
+      "description": "Qo'lyozma va eski matbuot arxivda chirib yotibdi. Skanerlash va matnga o'girish orqali ular qidiriladigan ochiq bazaga aylanadi.",
+      "expected_result": "1 milliondan ortiq sahifa qidiruvga ochiq bo'ladi.",
+      "author_name": "Muhammadali Ochilov",
+      "author_phone": "+998901012020",
+      "region": "samarqand",
+      "vote_count": 145,
+      "created_at": "2026-07-19",
+      "comments": [
+        {
+          "author_name": "Nilufar Ergasheva",
+          "text": "Eski imlo va kirill matnlar bilan ishlash alohida masala.",
+          "created_at": "2026-07-22"
+        },
+        {
+          "author_name": "Farrux Sattorov",
+          "text": "Universitet talabalari bilan hamkorlikda qilinsa, tez va arzon bo'ladi.",
+          "created_at": "2026-07-30"
+        }
+      ],
+      "direction": "ai"
+    },
+    {
+      "kind": "problem",
+      "title": "Chaqiruv markazlarida navbat uzun",
+      "description": "Oddiy savolga javob olish uchun ham 20 daqiqa kutiladi. Operatorlarning vaqti takrorlanadigan savollarga ketadi.",
+      "expected_result": "Takroriy savollarning 60 foizi avtomatik javob oladi, kutish vaqti keskin kamayadi.",
+      "author_name": "Nozima Yo'ldosheva",
+      "author_phone": "+998944446677",
+      "region": "toshkent",
+      "vote_count": 112,
+      "created_at": "2026-07-28",
+      "comments": [
+        {
+          "author_name": "Sanobar Yusupova",
+          "text": "Robot javob bermasa, darrov odamga ulasin. Aylanib qolish eng asabiy narsa.",
+          "created_at": "2026-07-31"
+        }
+      ],
+      "direction": "ai"
+    },
+    {
+      "kind": "idea",
+      "title": "Talabalar bitiruv ishida plagiatni aniqlash",
+      "description": "Hozirgi tizimlar o'zbek tilidagi matnda yaxshi ishlamaydi. Mahalliy baza asosidagi tekshiruv ilmiy ishlar sifatini ko'taradi.",
+      "expected_result": "Har yili 60 mingdan ortiq bitiruv ishi sifatli tekshiruvdan o'tadi.",
+      "author_name": "Sardor Eshonov",
+      "author_phone": "+998935553344",
+      "region": "samarqand",
+      "vote_count": 167,
+      "created_at": "2026-08-04",
+      "comments": [
+        {
+          "author_name": "Kamola Yusupova",
+          "text": "Kirill va lotinni bir xil deb ko'rishi kerak, hozir shu joyda aldashadi.",
+          "created_at": "2026-08-07"
+        },
+        {
+          "author_name": "Shahzod Ismoilov",
+          "text": "Bazaga oldingi yillar ishlari ham kirsin, ko'pchilik akadan ko'chiradi.",
+          "created_at": "2026-08-15"
+        }
+      ],
+      "direction": "ai"
+    },
+    {
+      "kind": "problem",
+      "title": "Qishloq maktablarida fan o'qituvchisi yetishmaydi",
+      "description": "Fizika va kimyo darslarini boshqa fan o'qituvchisi olib boradi. Natijada bolalar bu fanlardan universitetga hujjat topshirishga jur'at qilmaydi.",
+      "expected_result": "Onlayn dars va mentorlik orqali 200 ga yaqin qishloq maktabi qamrab olinadi.",
+      "author_name": "Ilhom Rasulov",
+      "author_phone": "+998901114477",
+      "region": "jizzax",
+      "vote_count": 389,
+      "created_at": "2026-05-19",
+      "comments": [
+        {
+          "author_name": "Umida Hakimova",
+          "text": "Onlayn dars internetga bog'liq. Avval maktabga tezkor internet kerak.",
+          "created_at": "2026-05-21"
+        },
+        {
+          "author_name": "Bahodir Xudoyberdiyev",
+          "text": "Yozib olingan darslar ham bo'lsin, jonli efirga ulgurmaganlar keyin ko'radi.",
+          "created_at": "2026-05-28"
+        },
+        {
+          "author_name": "Guli Nabiyeva",
+          "text": "Tajriba ishlarini onlayn ko'rsatib bo'lmaydi, shu qismiga alohida yechim kerak.",
+          "created_at": "2026-06-09"
+        }
+      ],
+      "direction": "edu"
+    },
+    {
+      "kind": "idea",
+      "title": "Maktablarda moliyaviy savodxonlik darsi",
+      "description": "Bola maktabni tugatadi, lekin kredit nima, foiz qanday hisoblanishini bilmaydi. Haftada bir soatlik amaliy mashg'ulot shu bo'shliqni yopadi.",
+      "expected_result": "Har yili 500 mingdan ortiq o'quvchi asosiy moliyaviy tushunchalarni o'rganadi.",
+      "author_name": "Nodira Karimova",
+      "author_phone": "+998933337722",
+      "region": "toshkent_shahri",
+      "vote_count": 302,
+      "created_at": "2026-05-29",
+      "comments": [
+        {
+          "author_name": "Aziz Rahimov",
+          "text": "Darslikni oddiy tilda yozish kerak, iqtisod atamalari bilan to'ldirilsa bola tushunmaydi.",
+          "created_at": "2026-06-01"
+        },
+        {
+          "author_name": "Sevara Nazarova",
+          "text": "Bank xodimlari kelib real misol bilan tushuntirsa yaxshi bo'lardi.",
+          "created_at": "2026-06-10"
+        }
+      ],
+      "direction": "edu"
+    },
+    {
+      "kind": "proposal",
+      "title": "Kasb-hunar kollejlarida real ishlab chiqarish amaliyoti",
+      "description": "Talaba kollejda uch yil o'qib, ishga kirganda hech narsa qilolmaydi. Har bir kollej kamida uch korxona bilan shartnoma tuzib, oxirgi yilni ishlab chiqarishda o'tkazishi kerak.",
+      "expected_result": "Bitiruvchilarning ishga joylashishi 40 foizga oshadi.",
+      "author_name": "Ulug'bek Xolmatov",
+      "author_phone": "+998944441100",
+      "region": "fargona",
+      "vote_count": 274,
+      "created_at": "2026-06-06",
+      "comments": [
+        {
+          "author_name": "Sanjar Ergashev",
+          "text": "Korxona uchun rag'bat bo'lishi kerak, aks holda talabani olishmaydi.",
+          "created_at": "2026-06-09"
+        },
+        {
+          "author_name": "Feruza Abdullayeva",
+          "text": "Amaliyot haqiqiy bo'lsin, hozir ko'pchilik faqat qog'ozda o'taydi.",
+          "created_at": "2026-06-16"
+        },
+        {
+          "author_name": "Doniyor Sobirov",
+          "text": "Men shunday amaliyotdan o'tganman, hozirgi ishimni o'sha yerdan olganman.",
+          "created_at": "2026-06-25"
+        }
+      ],
+      "direction": "edu"
+    },
+    {
+      "kind": "startup",
+      "title": "Ustoz va shogird uchun platforma",
+      "description": "Repetitor topish og'izdan-og'izga bo'ladi, sifat noaniq. Platforma ustozning haqiqiy natijalarini va o'quvchilar bahosini ochiq ko'rsatadi.",
+      "expected_result": "10 mingdan ortiq o'qituvchi va 60 ming o'quvchi bir joyda uchrashadi.",
+      "author_name": "Zilola Abdurahmonova",
+      "author_phone": "+998902226688",
+      "region": "toshkent_shahri",
+      "vote_count": 198,
+      "created_at": "2026-06-14",
+      "comments": [
+        {
+          "author_name": "Anvar Karimov",
+          "text": "Soxta sharh muammosi bo'ladi. Faqat to'lov qilgan o'quvchi baho qo'ysin.",
+          "created_at": "2026-06-17"
+        },
+        {
+          "author_name": "Dildora Sharipova",
+          "text": "Qishloqdagi bolalar uchun narx alohida bo'lsin.",
+          "created_at": "2026-06-26"
+        }
+      ],
+      "direction": "edu"
+    },
+    {
+      "kind": "idea",
+      "title": "Maktab kutubxonalarini jonlantirish",
+      "description": "Kutubxonalarda 30 yillik kitoblar turibdi, bola kirmaydi. Zamonaviy kitob, yumshoq o'rindiq va kitob klubi bilan makon o'zgartiriladi.",
+      "expected_result": "Har bir maktabda o'qish darajasi ikki barobar oshadi.",
+      "author_name": "Malika Tursunova",
+      "author_phone": "+998935558811",
+      "region": "namangan",
+      "vote_count": 156,
+      "created_at": "2026-06-21",
+      "comments": [
+        {
+          "author_name": "Nigora Sattorova",
+          "text": "Kitobni bolalarning o'zi tanlasin. Ro'yxatni yuqoridan tushirish ishlamaydi.",
+          "created_at": "2026-06-24"
+        },
+        {
+          "author_name": "Otabek Yo'ldoshev",
+          "text": "Kitob klubi g'oyasi zo'r. Bizda shunday klub ochilgandan keyin kutubxona to'lib ketdi.",
+          "created_at": "2026-07-02"
+        },
+        {
+          "author_name": "Zebo Hamroyeva",
+          "text": "Audiokitob burchagi ham qo'shilsin.",
+          "created_at": "2026-07-12"
+        }
+      ],
+      "direction": "edu"
+    },
+    {
+      "kind": "problem",
+      "title": "Universitetga kirish uchun tayyorgarlik qimmat",
+      "description": "Repetitorlar oyiga katta pul so'raydi, qishloq bolasi bunga qurbi yetmaydi. Natijada imkoniyat tengsizligi kuchayadi.",
+      "expected_result": "Tekin onlayn tayyorgarlik kursi 100 mingdan ortiq abituriyentga yetib boradi.",
+      "author_name": "Jasur Norqulov",
+      "author_phone": "+998901115599",
+      "region": "surxondaryo",
+      "vote_count": 445,
+      "created_at": "2026-06-29",
+      "comments": [
+        {
+          "author_name": "Dilshod Ismoilov",
+          "text": "Tekin kurslar bor, lekin sifati past. Yaxshi o'qituvchilarni jalb qilish uchun budjet kerak.",
+          "created_at": "2026-07-02"
+        },
+        {
+          "author_name": "Madina Qurbonova",
+          "text": "Test bankiga ochiq kirish ham katta yordam bo'lardi.",
+          "created_at": "2026-07-08"
+        },
+        {
+          "author_name": "Islom Rahmatullayev",
+          "text": "Ukam qishloqdan kirolmay ikki yil yurdi. Bu muammo juda o'rinli.",
+          "created_at": "2026-07-17"
+        },
+        {
+          "author_name": "Nargiza Islomova",
+          "text": "Telegramda savol-javob guruhi ochilsa, o'zaro ham yordamlashishadi.",
+          "created_at": "2026-07-29"
+        }
+      ],
+      "direction": "edu"
+    },
+    {
+      "kind": "proposal",
+      "title": "Har bir maktabda karyera maslahatchisi",
+      "description": "O'quvchi 11-sinfda ham kim bo'lishini bilmaydi, ota-ona xohishiga qarab yo'nalish tanlaydi. Maslahatchi test va suhbat orqali qiziqishni aniqlaydi.",
+      "expected_result": "Yiliga 400 mingdan ortiq o'quvchi ongli tanlov qiladi.",
+      "author_name": "Gulnoza Rasulova",
+      "author_phone": "+998933331199",
+      "region": "buxoro",
+      "vote_count": 187,
+      "created_at": "2026-07-07",
+      "comments": [
+        {
+          "author_name": "Shohrux Qodirov",
+          "text": "Maslahatchi bitta bo'lsa, 800 ta bolaga ulgurmaydi. Guruh mashg'ulotlari kerak.",
+          "created_at": "2026-07-10"
+        },
+        {
+          "author_name": "Aziza Umarova",
+          "text": "Kasblar bo'yicha video ekskursiya qilinsa, bola real ishni ko'radi.",
+          "created_at": "2026-07-20"
+        }
+      ],
+      "direction": "edu"
+    },
+    {
+      "kind": "idea",
+      "title": "Ota-onalar uchun kechki savodxonlik kurslari",
+      "description": "Ko'p ota-ona bolasining uy vazifasiga yordam berolmaydi. Maktabda haftasiga ikki marta kechki bepul kurs ochiladi.",
+      "expected_result": "Har bir maktabda 40-50 ta ota-ona qatnashadi, bolalarning o'zlashtirishi yaxshilanadi.",
+      "author_name": "Sabina Tolipova",
+      "author_phone": "+998944443344",
+      "region": "qashqadaryo",
+      "vote_count": 94,
+      "created_at": "2026-07-15",
+      "comments": [
+        {
+          "author_name": "Rustam Ziyodov",
+          "text": "Ayollar uchun alohida vaqt ajratilsa, qatnashuv ko'proq bo'ladi.",
+          "created_at": "2026-07-18"
+        }
+      ],
+      "direction": "edu"
+    },
+    {
+      "kind": "startup",
+      "title": "Amaliy IT bilim uchun mikro-sertifikat",
+      "description": "Ish beruvchi diplomga emas, ko'nikmaga qaraydi. Qisqa amaliy kurslar va real loyiha asosidagi sertifikat bitiruvchiga ish topishga yordam beradi.",
+      "expected_result": "Bir yilda 5 ming yosh amaliy sertifikat oladi.",
+      "author_name": "Temur Sodiqov",
+      "author_phone": "+998902227799",
+      "region": "toshkent_shahri",
+      "vote_count": 223,
+      "created_at": "2026-07-23",
+      "comments": [
+        {
+          "author_name": "Javohir Nematov",
+          "text": "Sertifikat ish beruvchi tan olsagina qiymatga ega. Kompaniyalar bilan kelishuv kerak.",
+          "created_at": "2026-07-26"
+        },
+        {
+          "author_name": "Laziza Yo'ldosheva",
+          "text": "Loyiha portfoliosi sertifikatdan ko'ra muhimroq. Shuni asosiy qiling.",
+          "created_at": "2026-08-04"
+        }
+      ],
+      "direction": "edu"
+    },
+    {
+      "kind": "idea",
+      "title": "Maktablarda ona tili va adabiyot olimpiadasi jonlantirilsin",
+      "description": "Aniq fanlarga e'tibor kuchli, gumanitar yo'nalish e'tibordan chetda. Yozuvchilar bilan uchrashuv va ijodiy tanlovlar qiziqishni qaytaradi.",
+      "expected_result": "Yiliga 20 mingdan ortiq o'quvchi ijodiy tanlovda qatnashadi.",
+      "author_name": "Muzaffar Aliyev",
+      "author_phone": "+998935556644",
+      "region": "xorazm",
+      "vote_count": 78,
+      "created_at": "2026-08-01",
+      "comments": [
+        {
+          "author_name": "Gulbahor Nazarova",
+          "text": "G'olib ishlari kitob qilib chop etilsa, motivatsiya bo'ladi.",
+          "created_at": "2026-08-05"
+        }
+      ],
+      "direction": "edu"
+    },
+    {
+      "kind": "problem",
+      "title": "Nogironligi bor bolalar uchun bog'cha yo'q",
+      "description": "Tumanda maxsus bog'cha bo'lmagani uchun bunday bolalar uyda qoladi, onasi ishga chiqolmaydi. Oila bir daromadda qoladi va bola jamiyatdan uzoqlashadi.",
+      "expected_result": "Har bir tumanda kamida bitta inklyuziv guruh ochiladi, 300 ga yaqin oila yordam oladi.",
+      "author_name": "Nargiza Islomova",
+      "author_phone": "+998901116688",
+      "region": "surxondaryo",
+      "vote_count": 523,
+      "created_at": "2026-05-17",
+      "comments": [
+        {
+          "author_name": "Dildora Sharipova",
+          "text": "Oddiy bog'chalarga inklyuziv guruh qo'shish arzonroq va foydaliroq. Bolalar birga o'sadi.",
+          "created_at": "2026-05-19"
+        },
+        {
+          "author_name": "Jamshid Qobilov",
+          "text": "Defektolog yetishmaydi. Kadr tayyorlashni ham loyihaga qo'shish kerak.",
+          "created_at": "2026-05-26"
+        },
+        {
+          "author_name": "Aziza Umarova",
+          "text": "Opamning bolasi shu sababdan uyda o'tiribdi. Bu eng og'riqli mavzu.",
+          "created_at": "2026-06-04"
+        },
+        {
+          "author_name": "Muhammadali Ochilov",
+          "text": "Transport masalasi ham bor, ko'p oila bolani olib kelolmaydi.",
+          "created_at": "2026-06-18"
+        }
+      ],
+      "direction": "social"
+    },
+    {
+      "kind": "idea",
+      "title": "Yolg'iz keksalar uchun mahalla ko'ngillilari",
+      "description": "Yolg'iz yashovchi keksalarga do'kon, dorixona va shifokorga borish qiyin. Mahalla yoshlaridan doimiy ko'ngillilar guruhi tuziladi va har biriga uch-to'rt xonadon biriktiriladi.",
+      "expected_result": "Har bir mahallada 20-30 keksa doimiy e'tibor ostiga olinadi.",
+      "author_name": "Zebo Hamroyeva",
+      "author_phone": "+998933334411",
+      "region": "toshkent",
+      "vote_count": 367,
+      "created_at": "2026-05-24",
+      "comments": [
+        {
+          "author_name": "Sardor Eshonov",
+          "text": "Ko'ngillilarni bir marta yig'ib qo'yish yetarli emas, koordinator kerak.",
+          "created_at": "2026-05-27"
+        },
+        {
+          "author_name": "Nodira Karimova",
+          "text": "Bizning mahallada shunday guruh bor, telegramda ishlaydi. Juda samarali.",
+          "created_at": "2026-06-03"
+        },
+        {
+          "author_name": "Bekzod Turg'unov",
+          "text": "Yoshlarga volontyorlik kitobchasi berilsa, universitetga hujjatda foydasi tegadi.",
+          "created_at": "2026-06-15"
+        }
+      ],
+      "direction": "social"
+    },
+    {
+      "kind": "proposal",
+      "title": "Kam ta'minlangan oilalar uchun tekin kiyim almashinuvi",
+      "description": "Ko'p oilada kichrayib qolgan, lekin yaxshi kiyim to'planib qoladi. Mahalla markazida doimiy almashinuv nuqtasi ochiladi, hech kim sadaqa olayotgandek his qilmaydi.",
+      "expected_result": "Yiliga 5 mingdan ortiq oila foydalanadi, chiqindi ham kamayadi.",
+      "author_name": "Guli Nabiyeva",
+      "author_phone": "+998902228855",
+      "region": "namangan",
+      "vote_count": 289,
+      "created_at": "2026-06-02",
+      "comments": [
+        {
+          "author_name": "Malika Tursunova",
+          "text": "Almashinuv deb nomlanishi juda muhim. Odamning izzati saqlanadi.",
+          "created_at": "2026-06-05"
+        },
+        {
+          "author_name": "Umida Hakimova",
+          "text": "Kiyim toza va butun bo'lishi shart, saralovchi ko'ngilli kerak.",
+          "created_at": "2026-06-13"
+        }
+      ],
+      "direction": "social"
+    },
+    {
+      "kind": "problem",
+      "title": "Ish topolmayotgan bitiruvchi yoshlar",
+      "description": "Kollej va universitetni bitirgan yoshlar tajriba yo'qligi sababli ishga olinmaydi, tajriba esa ishlamasdan to'planmaydi. Ko'pchilik migratsiyaga ketadi.",
+      "expected_result": "Amaliyot va subsidiya orqali yiliga 3 ming yoshning birinchi ish joyi ta'minlanadi.",
+      "author_name": "Otabek Yo'ldoshev",
+      "author_phone": "+998944445599",
+      "region": "andijon",
+      "vote_count": 412,
+      "created_at": "2026-06-11",
+      "comments": [
+        {
+          "author_name": "Ilhom Rasulov",
+          "text": "Birinchi olti oy ish haqining yarmini davlat qoplasa, korxona olishga rozi bo'ladi.",
+          "created_at": "2026-06-14"
+        },
+        {
+          "author_name": "Sabina Tolipova",
+          "text": "Menda ham shunday bo'lgan. Tajribasiz olishmaydi, tajribani esa hech kim bermaydi.",
+          "created_at": "2026-06-22"
+        },
+        {
+          "author_name": "Ulug'bek Xolmatov",
+          "text": "Yosh mutaxassisni olgan korxonaga soliq imtiyozi berilsin.",
+          "created_at": "2026-07-01"
+        }
+      ],
+      "direction": "social"
+    },
+    {
+      "kind": "idea",
+      "title": "Mahallada bepul huquqiy maslahat kunlari",
+      "description": "Oddiy odam nizo chiqqanda huquqini bilmaydi, advokatga puli yetmaydi. Oyda bir marta yosh yuristlar mahallaga kelib bepul maslahat beradi.",
+      "expected_result": "Har oyda 1500 ga yaqin fuqaro maslahat oladi, sudgacha yetadigan nizolar kamayadi.",
+      "author_name": "Sherzod Ahmedov",
+      "author_phone": "+998935559911",
+      "region": "fargona",
+      "vote_count": 178,
+      "created_at": "2026-06-19",
+      "comments": [
+        {
+          "author_name": "Zilola Abdurahmonova",
+          "text": "Yosh yuristlar uchun amaliyot ham bo'ladi, ikki tomon yutadi.",
+          "created_at": "2026-06-22"
+        },
+        {
+          "author_name": "Anvar Karimov",
+          "text": "Ko'p savol bir xil bo'ladi. Javoblarni to'plab kitobcha chiqarish kerak.",
+          "created_at": "2026-07-05"
+        }
+      ],
+      "direction": "social"
+    },
+    {
+      "kind": "startup",
+      "title": "Uyda parvarish xizmati platformasi",
+      "description": "Kasal yoki keksa odam uchun ishonchli parvarishchi topish og'ir. Platforma tekshiruvdan o'tgan, guvohnomasi bor xodimlarni oilalar bilan bog'laydi.",
+      "expected_result": "500 ga yaqin ayol rasmiy ish o'rniga ega bo'ladi, 2000 oila xizmat oladi.",
+      "author_name": "Gulbahor Nazarova",
+      "author_phone": "+998901117733",
+      "region": "toshkent_shahri",
+      "vote_count": 234,
+      "created_at": "2026-06-27",
+      "comments": [
+        {
+          "author_name": "Nilufar Ergasheva",
+          "text": "Xodimlarni tekshirish eng muhim qismi. Bu yerda ishonch hamma narsa.",
+          "created_at": "2026-06-30"
+        },
+        {
+          "author_name": "Farrux Sattorov",
+          "text": "Kichik tibbiy tayyorgarlik kursi ham bo'lsin, faqat ro'yxatga olish yetarli emas.",
+          "created_at": "2026-07-11"
+        },
+        {
+          "author_name": "Sanobar Yusupova",
+          "text": "Onamga parvarishchi kerak edi, ishonchli odam topolmadik. Juda kerakli xizmat.",
+          "created_at": "2026-07-22"
+        }
+      ],
+      "direction": "social"
+    },
+    {
+      "kind": "proposal",
+      "title": "Yosh oilalar uchun psixologik yordam markazi",
+      "description": "Ajralishlar soni ortmoqda, sabablarning ko'pi muloqot ko'nikmasi yo'qligida. Nikohdan oldin va keyin bepul maslahat berish tizimi yo'lga qo'yiladi.",
+      "expected_result": "Yiliga 8 mingdan ortiq juftlik maslahat oladi.",
+      "author_name": "Dilnoza Ochilova",
+      "author_phone": "+998933336655",
+      "region": "samarqand",
+      "vote_count": 345,
+      "created_at": "2026-07-06",
+      "comments": [
+        {
+          "author_name": "Shahnoza Karimova",
+          "text": "Psixologga borish uyat degan qarash bor. Buni avval o'zgartirish kerak.",
+          "created_at": "2026-07-09"
+        },
+        {
+          "author_name": "Odil Jo'rayev",
+          "text": "Onlayn anonim maslahat variantidan boshlash osonroq.",
+          "created_at": "2026-07-16"
+        },
+        {
+          "author_name": "Madina Qurbonova",
+          "text": "Nikohdan oldingi kurs majburiy emas, tavsiya shaklida bo'lsin.",
+          "created_at": "2026-07-27"
+        }
+      ],
+      "direction": "social"
+    },
+    {
+      "kind": "idea",
+      "title": "Ko'chada qolgan hayvonlar uchun boshpana",
+      "description": "Daydi itlar muammosi shafqatsiz usullar bilan hal qilinmoqda. Sterilizatsiya va boshpana modeli insonparvarroq va uzoq muddatda arzonroq.",
+      "expected_result": "Har bir yirik shaharda bitta boshpana, yiliga 2000 hayvon sterilizatsiya qilinadi.",
+      "author_name": "Laziza Yo'ldosheva",
+      "author_phone": "+998902229922",
+      "region": "toshkent_shahri",
+      "vote_count": 267,
+      "created_at": "2026-07-14",
+      "comments": [
+        {
+          "author_name": "Javohir Nematov",
+          "text": "Sterilizatsiya qilingan hayvonni belgilash tizimi ham bo'lsin.",
+          "created_at": "2026-07-17"
+        },
+        {
+          "author_name": "Temur Sodiqov",
+          "text": "Ko'ngillilar ko'p, faqat tashkiliy tomoni yo'q edi. Qo'llab-quvvatlayman.",
+          "created_at": "2026-07-25"
+        }
+      ],
+      "direction": "social"
+    },
+    {
+      "kind": "problem",
+      "title": "Qishloqda toza ichimlik suvi navbat bilan keladi",
+      "description": "Suv kuniga ikki soat keladi, oilalar bochkalarda saqlaydi. Yozda suv sifati buziladi va bolalar kasal bo'ladi.",
+      "expected_result": "20 ta qishloqda kunlik uzluksiz ta'minot yo'lga qo'yiladi.",
+      "author_name": "Xurshid Bozorov",
+      "author_phone": "+998944447788",
+      "region": "qashqadaryo",
+      "vote_count": 398,
+      "created_at": "2026-07-21",
+      "comments": [
+        {
+          "author_name": "Rustam Ziyodov",
+          "text": "Quvur eskirgan, avval shuni almashtirish kerak, aks holda bosim ko'tarilmaydi.",
+          "created_at": "2026-07-24"
+        },
+        {
+          "author_name": "Nozima Yo'ldosheva",
+          "text": "Har bir mahallaga hisoblagich qo'yilsa, isrof qayerdaligi ko'rinadi.",
+          "created_at": "2026-08-02"
+        },
+        {
+          "author_name": "Islom Rahmatullayev",
+          "text": "Bizda ham shunday. Kechasi turib suv olamiz.",
+          "created_at": "2026-08-11"
+        }
+      ],
+      "direction": "social"
+    },
+    {
+      "kind": "idea",
+      "title": "Yoshlar uchun ochiq sport maydonchalari",
+      "description": "Mahallalarda bepul sport joyi yo'q, yoshlar podyezdda o'tiradi. Yoritilgan, oddiy jihozli maydoncha kechqurun ham ishlaydi.",
+      "expected_result": "Har bir mahallada bitta maydoncha, kuniga 100 ga yaqin yosh foydalanadi.",
+      "author_name": "Bahodir Xudoyberdiyev",
+      "author_phone": "+998935552233",
+      "region": "jizzax",
+      "vote_count": 189,
+      "created_at": "2026-07-30",
+      "comments": [
+        {
+          "author_name": "Doniyor Sobirov",
+          "text": "Maydonchani kim qarab turadi degan savol muhim. Mas'ul belgilansin.",
+          "created_at": "2026-08-02"
+        },
+        {
+          "author_name": "Feruza Abdullayeva",
+          "text": "Qizlar uchun ham vaqt ajratilsa yaxshi bo'lardi.",
+          "created_at": "2026-08-09"
+        }
+      ],
+      "direction": "social"
+    },
+    {
+      "kind": "startup",
+      "title": "Tomchilatib sug'orish uchun arzon to'plam",
+      "description": "Chet eldan keltirilgan tizim kichik fermerga qimmat. Mahalliy ishlab chiqarish bilan narx uch barobar tushiriladi va o'rnatish xizmati birga beriladi.",
+      "expected_result": "1000 gektar yerda suv sarfi 40 foizga kamayadi.",
+      "author_name": "Odil Jo'rayev",
+      "author_phone": "+998901118844",
+      "region": "qashqadaryo",
+      "vote_count": 456,
+      "created_at": "2026-05-20",
+      "comments": [
+        {
+          "author_name": "Xurshid Bozorov",
+          "text": "Filtr masalasi muhim, bizning suv loyqa, tomchilagich tez tiqiladi.",
+          "created_at": "2026-05-23"
+        },
+        {
+          "author_name": "Shahnoza Karimova",
+          "text": "Bo'lib to'lash bilan berilsa, fermer birdaniga pul topolmaydi.",
+          "created_at": "2026-05-31"
+        },
+        {
+          "author_name": "Ilhom Rasulov",
+          "text": "O'rnatib berish xizmati juda muhim. Ko'pchilik o'zi qilolmaydi.",
+          "created_at": "2026-06-12"
+        }
+      ],
+      "direction": "agro"
+    },
+    {
+      "kind": "idea",
+      "title": "Issiqxonalar uchun umumiy sovutkich ombori",
+      "description": "Fermer hosilni saqlay olmagani uchun arzonga sotib yuboradi. Tumanda umumiy sovutkich ombori bo'lsa, narx tushgan paytda sotish shart bo'lmaydi.",
+      "expected_result": "Hosil yo'qotish 25 foizdan 8 foizga tushadi, fermer daromadi oshadi.",
+      "author_name": "Ravshan Toshpo'latov",
+      "author_phone": "+998933337788",
+      "region": "samarqand",
+      "vote_count": 312,
+      "created_at": "2026-05-28",
+      "comments": [
+        {
+          "author_name": "Farrux Sattorov",
+          "text": "Elektr uzilishi bo'lsa hamma hosil nobud bo'ladi. Generator shart.",
+          "created_at": "2026-05-31"
+        },
+        {
+          "author_name": "Sanobar Yusupova",
+          "text": "Kim boshqaradi degan savol bor. Kooperativ shaklida bo'lgani ma'qul.",
+          "created_at": "2026-06-08"
+        },
+        {
+          "author_name": "Nargiza Islomova",
+          "text": "Bizning tumanda pomidor mavsumida narx besh barobar tushadi. Juda kerak.",
+          "created_at": "2026-06-20"
+        }
+      ],
+      "direction": "agro"
+    },
+    {
+      "kind": "problem",
+      "title": "Tuproq tahlili qilinmaydi",
+      "description": "Fermer o'g'itni ko'z bilan chamalab soladi. Natijada yerga keraksiz kimyo ketadi, hosil esa oshmaydi va tuproq buziladi.",
+      "expected_result": "Har bir tumanda mobil laboratoriya, yiliga 5000 tahlil.",
+      "author_name": "Sanjar Ergashev",
+      "author_phone": "+998944448811",
+      "region": "buxoro",
+      "vote_count": 198,
+      "created_at": "2026-06-07",
+      "comments": [
+        {
+          "author_name": "Odil Jo'rayev",
+          "text": "Tahlil natijasini tushuntirib beradigan agronom ham kerak, qog'ozning o'zi yetarli emas.",
+          "created_at": "2026-06-10"
+        },
+        {
+          "author_name": "Madina Qurbonova",
+          "text": "Narxi arzon bo'lsa, fermer o'zi keladi.",
+          "created_at": "2026-06-19"
+        }
+      ],
+      "direction": "agro"
+    },
+    {
+      "kind": "proposal",
+      "title": "Fermerlar uchun ob-havo ogohlantirish xizmati",
+      "description": "Kutilmagan sovuq yoki jala butun hosilni yo'q qiladi. SMS orqali uch kun oldin ogohlantirish yuborilsa, chora ko'rish mumkin.",
+      "expected_result": "20 mingdan ortiq fermer o'z vaqtida xabar oladi.",
+      "author_name": "Jamshid Qobilov",
+      "author_phone": "+998902221166",
+      "region": "fargona",
+      "vote_count": 267,
+      "created_at": "2026-06-16",
+      "comments": [
+        {
+          "author_name": "Alisher Nurmatov",
+          "text": "Umumiy prognoz emas, tuman darajasida aniq bo'lsin.",
+          "created_at": "2026-06-19"
+        },
+        {
+          "author_name": "Dilnoza Ochilova",
+          "text": "Bahorgi sovuqda o'rikzorimizni yo'qotgandik. Ogohlantirish bo'lsa saqlab qolardik.",
+          "created_at": "2026-06-28"
+        },
+        {
+          "author_name": "Rustam Ziyodov",
+          "text": "Telegram kanal ham bo'lsin, SMS hammaga yetib bormaydi.",
+          "created_at": "2026-07-07"
+        }
+      ],
+      "direction": "agro"
+    },
+    {
+      "kind": "startup",
+      "title": "Chorvachilikda naslchilikni raqamlashtirish",
+      "description": "Naslchilik daftarga yoziladi, ko'p xo'jalikda umuman yozilmaydi. Oddiy ilova har bir mol tarixini saqlaydi va qarindosh chatishtirishning oldini oladi.",
+      "expected_result": "500 ta xo'jalikda sut mahsuldorligi 15 foizga oshadi.",
+      "author_name": "Bekzod Turg'unov",
+      "author_phone": "+998935553355",
+      "region": "surxondaryo",
+      "vote_count": 145,
+      "created_at": "2026-06-24",
+      "comments": [
+        {
+          "author_name": "Islom Rahmatullayev",
+          "text": "Har bir molga birka qo'yish kerak, aks holda ilova ishlamaydi.",
+          "created_at": "2026-06-27"
+        },
+        {
+          "author_name": "Sabina Tolipova",
+          "text": "Veterinar tashrifi ham shu yerda yozilsa, tarix to'liq bo'ladi.",
+          "created_at": "2026-07-06"
+        }
+      ],
+      "direction": "agro"
+    },
+    {
+      "kind": "idea",
+      "title": "Yoshlar uchun kichik issiqxona granti",
+      "description": "Qishloqda ish yo'q, lekin tomorqa bor. 100 kvadrat metrlik issiqxona uchun kichik grant yoshni ish bilan ta'minlaydi.",
+      "expected_result": "1000 ta yosh oila o'z daromad manbaiga ega bo'ladi.",
+      "author_name": "Guli Nabiyeva",
+      "author_phone": "+998901119911",
+      "region": "namangan",
+      "vote_count": 334,
+      "created_at": "2026-07-03",
+      "comments": [
+        {
+          "author_name": "Umida Hakimova",
+          "text": "Grant bilan birga o'qitish ham bo'lsin, aks holda birinchi mavsumda kuyadi.",
+          "created_at": "2026-07-06"
+        },
+        {
+          "author_name": "Bahodir Xudoyberdiyev",
+          "text": "Sotish kanali oldindan hal qilinsin, hosil qolib ketmasin.",
+          "created_at": "2026-07-14"
+        },
+        {
+          "author_name": "Malika Tursunova",
+          "text": "Ukam shu yo'l bilan boshlagan, hozir uch issiqxonasi bor.",
+          "created_at": "2026-07-25"
+        }
+      ],
+      "direction": "agro"
+    },
+    {
+      "kind": "problem",
+      "title": "Vositachilar fermer daromadini yeb qo'yadi",
+      "description": "Fermer dalada kilosini past narxda beradi, bozorda esa narx uch barobar. Fermerning bozorga chiqishga transporti ham, vaqti ham yo'q.",
+      "expected_result": "To'g'ridan-to'g'ri sotuv orqali fermer daromadi 35 foizga oshadi.",
+      "author_name": "Otabek Yo'ldoshev",
+      "author_phone": "+998933338899",
+      "region": "andijon",
+      "vote_count": 421,
+      "created_at": "2026-07-12",
+      "comments": [
+        {
+          "author_name": "Ulug'bek Xolmatov",
+          "text": "Kooperativ tuzilsa, transport ham, savdo ham birgalikda hal bo'ladi.",
+          "created_at": "2026-07-15"
+        },
+        {
+          "author_name": "Feruza Abdullayeva",
+          "text": "Onlayn buyurtma va yetkazish bilan bog'lash kerak.",
+          "created_at": "2026-07-23"
+        },
+        {
+          "author_name": "Doniyor Sobirov",
+          "text": "Vositachi ham keraklidir, lekin foydasi shuncha katta bo'lmasligi kerak.",
+          "created_at": "2026-08-01"
+        },
+        {
+          "author_name": "Zebo Hamroyeva",
+          "text": "Dehqon bozori ochilsa, fermer o'zi sotadi.",
+          "created_at": "2026-08-10"
+        }
+      ],
+      "direction": "agro"
+    },
+    {
+      "kind": "idea",
+      "title": "Quruq mevani sifatli quritish sexi",
+      "description": "Meva ochiq quyoshda changda quritiladi, natijada eksport talabiga javob bermaydi. Quyoshli quritgich sifatni ko'taradi va narxni ikki barobar oshiradi.",
+      "expected_result": "50 ta kichik sex ochiladi, eksport hajmi sezilarli oshadi.",
+      "author_name": "Shohrux Qodirov",
+      "author_phone": "+998944449922",
+      "region": "namangan",
+      "vote_count": 187,
+      "created_at": "2026-07-20",
+      "comments": [
+        {
+          "author_name": "Gulnoza Rasulova",
+          "text": "Sertifikat olish yo'lini ham ko'rsatish kerak, eksportda shu talab qilinadi.",
+          "created_at": "2026-07-23"
+        },
+        {
+          "author_name": "Aziza Umarova",
+          "text": "Quritgichni mahalliy usta yasay oladi, chet eldan olib kelish shart emas.",
+          "created_at": "2026-08-03"
+        }
+      ],
+      "direction": "agro"
+    },
+    {
+      "kind": "proposal",
+      "title": "Yer uchastkalarini raqamli xaritaga tushirish",
+      "description": "Kim qaysi yerdan foydalanayotgani aniq emas, nizolar ko'p. Ochiq raqamli xarita bo'sh yerlarni ham ko'rsatadi.",
+      "expected_result": "Yer bo'yicha nizolar 50 foizga kamayadi, bo'sh yerlar aylanmaga kiradi.",
+      "author_name": "Muhammadali Ochilov",
+      "author_phone": "+998902223377",
+      "region": "jizzax",
+      "vote_count": 112,
+      "created_at": "2026-07-29",
+      "comments": [
+        {
+          "author_name": "Nilufar Ergasheva",
+          "text": "Ochiq ma'lumot bo'lsa, nazorat ham osonlashadi.",
+          "created_at": "2026-08-01"
+        }
+      ],
+      "direction": "agro"
+    },
+    {
+      "kind": "startup",
+      "title": "Asalarichilik uchun mobil monitoring",
+      "description": "Asalari oilasining holatini bilish uchun uyani ochish kerak, bu ariga stress beradi. Kichik sensor harorat va og'irlikni uzatib turadi.",
+      "expected_result": "300 ta asalarichi xo'jaligida hosil 20 foizga oshadi.",
+      "author_name": "Anvar Karimov",
+      "author_phone": "+998935554466",
+      "region": "toshkent",
+      "vote_count": 89,
+      "created_at": "2026-08-06",
+      "comments": [
+        {
+          "author_name": "Muzaffar Aliyev",
+          "text": "Sensor narxi past bo'lishi shart, aks holda faqat yiriklar oladi.",
+          "created_at": "2026-08-09"
+        }
+      ],
+      "direction": "agro"
+    },
+    {
+      "kind": "proposal",
+      "title": "Maktab va poliklinikalarga quyosh panellari",
+      "description": "Byudjet muassasalari elektr uchun katta pul to'laydi, qishloqlarda esa uzilish ko'p. Tomga o'rnatilgan panellar kunduzgi ehtiyojni to'liq qoplaydi.",
+      "expected_result": "500 ta muassasada yillik elektr xarajati yarmiga tushadi.",
+      "author_name": "Ravshan Toshpo'latov",
+      "author_phone": "+998901121212",
+      "region": "buxoro",
+      "vote_count": 478,
+      "created_at": "2026-05-22",
+      "comments": [
+        {
+          "author_name": "Sanjar Ergashev",
+          "text": "Akkumulyator bo'lmasa, kechqurun baribir tarmoqqa bog'liq bo'ladi.",
+          "created_at": "2026-05-25"
+        },
+        {
+          "author_name": "Farrux Sattorov",
+          "text": "Ortiqcha energiyani tarmoqqa sotish imkoni bo'lsa, o'zini tez qoplaydi.",
+          "created_at": "2026-06-02"
+        },
+        {
+          "author_name": "Sanobar Yusupova",
+          "text": "Xizmat ko'rsatish kim zimmasida bo'ladi? Panel changdan tozalanib turishi kerak.",
+          "created_at": "2026-06-14"
+        },
+        {
+          "author_name": "Nozima Yo'ldosheva",
+          "text": "Bizning maktabda qishda svet o'chib qoladi. Juda kerakli taklif.",
+          "created_at": "2026-06-25"
+        }
+      ],
+      "direction": "energy"
+    },
+    {
+      "kind": "idea",
+      "title": "Ko'cha yoritishini quyoshga o'tkazish",
+      "description": "Ko'cha chiroqlari tarmoqdan ishlaydi va ko'p joyda umuman yoqilmaydi. Mustaqil quyoshli chiroqlar kabel tortishni ham talab qilmaydi.",
+      "expected_result": "1000 ta ko'cha chirog'i, yillik tejov sezilarli.",
+      "author_name": "Islom Rahmatullayev",
+      "author_phone": "+998933339911",
+      "region": "jizzax",
+      "vote_count": 289,
+      "created_at": "2026-06-01",
+      "comments": [
+        {
+          "author_name": "Madina Qurbonova",
+          "text": "Bizning ko'chada chiroq yo'q, kechqurun yurish qo'rqinchli.",
+          "created_at": "2026-06-04"
+        },
+        {
+          "author_name": "Xurshid Bozorov",
+          "text": "Chiroqlar o'g'irlanmasligi uchun mahkam o'rnatilsin.",
+          "created_at": "2026-06-13"
+        }
+      ],
+      "direction": "energy"
+    },
+    {
+      "kind": "startup",
+      "title": "Chorva go'ngidan biogaz qurilmasi",
+      "description": "Qishloqda go'ng uyum bo'lib yotadi, gaz esa yetishmaydi. Kichik biogaz qurilmasi oilani gaz bilan ta'minlaydi va o'g'it ham beradi.",
+      "expected_result": "200 ta xo'jalik gaz bilan ta'minlanadi, hidsizlik masalasi hal bo'ladi.",
+      "author_name": "Rustam Ziyodov",
+      "author_phone": "+998944441122",
+      "region": "qashqadaryo",
+      "vote_count": 234,
+      "created_at": "2026-06-10",
+      "comments": [
+        {
+          "author_name": "Jamshid Qobilov",
+          "text": "Qishda harorat pasayganda biogaz ishlab chiqarish tushadi, izolyatsiya kerak.",
+          "created_at": "2026-06-13"
+        },
+        {
+          "author_name": "Nargiza Islomova",
+          "text": "O'rnatishni o'rgatadigan usta kerak, aks holda odam qo'rqadi.",
+          "created_at": "2026-06-21"
+        },
+        {
+          "author_name": "Alisher Nurmatov",
+          "text": "Hindistonda shu model juda yaxshi ishlaydi, tajribasini ko'rish kerak.",
+          "created_at": "2026-07-02"
+        }
+      ],
+      "direction": "energy"
+    },
+    {
+      "kind": "problem",
+      "title": "Qishda elektr uzilishi ishlab chiqarishni to'xtatadi",
+      "description": "Kichik sexlar qishda kuniga bir necha marta uzilish sababli ishlay olmaydi, buyurtma muddati buziladi.",
+      "expected_result": "Sanoat zonalarida alohida liniya va grafik joriy etiladi.",
+      "author_name": "Ulug'bek Xolmatov",
+      "author_phone": "+998902224488",
+      "region": "fargona",
+      "vote_count": 356,
+      "created_at": "2026-06-18",
+      "comments": [
+        {
+          "author_name": "Doniyor Sobirov",
+          "text": "Grafikni oldindan e'lon qilish ham katta yordam bo'ladi, rejalashtirsa bo'ladi.",
+          "created_at": "2026-06-21"
+        },
+        {
+          "author_name": "Feruza Abdullayeva",
+          "text": "Sexlar birgalikda generator olsa, xarajat bo'linadi.",
+          "created_at": "2026-06-30"
+        },
+        {
+          "author_name": "Otabek Yo'ldoshev",
+          "text": "Uzilish sababini ochiq aytishsa, kamroq asabiylashardik.",
+          "created_at": "2026-07-10"
+        }
+      ],
+      "direction": "energy"
+    },
+    {
+      "kind": "idea",
+      "title": "Uy energiyasini tejash bo'yicha bepul audit",
+      "description": "Ko'p uy issiqlikni deraza va tomdan yo'qotadi. Bepul audit qayerdan issiq ketayotganini ko'rsatadi va arzon yechim beradi.",
+      "expected_result": "5 ming xonadonda qish davomida gaz sarfi 20 foizga kamayadi.",
+      "author_name": "Gulbahor Nazarova",
+      "author_phone": "+998935555577",
+      "region": "toshkent",
+      "vote_count": 156,
+      "created_at": "2026-06-26",
+      "comments": [
+        {
+          "author_name": "Temur Sodiqov",
+          "text": "Tepliovizor bilan ko'rsatilsa, odam o'z ko'zi bilan ko'radi va ishonadi.",
+          "created_at": "2026-06-29"
+        },
+        {
+          "author_name": "Laziza Yo'ldosheva",
+          "text": "Audit natijasiga qarab arzon material bilan ta'minlash ham kerak.",
+          "created_at": "2026-07-08"
+        }
+      ],
+      "direction": "energy"
+    },
+    {
+      "kind": "proposal",
+      "title": "Ko'p qavatli uylarda umumiy quyosh tomi",
+      "description": "Bitta xonadon panel qo'ya olmaydi, lekin butun uy birga qo'ysa arzonga tushadi. Tom umumiy mulk sifatida ishlatiladi.",
+      "expected_result": "50 ta ko'p qavatli uyda umumiy joy elektri tekinga tushadi.",
+      "author_name": "Javohir Nematov",
+      "author_phone": "+998901123434",
+      "region": "toshkent_shahri",
+      "vote_count": 198,
+      "created_at": "2026-07-05",
+      "comments": [
+        {
+          "author_name": "Zilola Abdurahmonova",
+          "text": "Qo'shnilar kelishuvi eng qiyin qismi. Namunaviy shartnoma kerak.",
+          "created_at": "2026-07-08"
+        },
+        {
+          "author_name": "Botir Umarov",
+          "text": "Lift va podyezd yorug'ligini qoplasa ham katta tejov.",
+          "created_at": "2026-07-17"
+        }
+      ],
+      "direction": "energy"
+    },
+    {
+      "kind": "startup",
+      "title": "Elektromobil zaryad nuqtalari tarmog'i",
+      "description": "Elektromobillar ko'paydi, lekin viloyatlarda zaryad nuqtasi deyarli yo'q. Yo'l bo'ylab har 100 km da nuqta ochiladi.",
+      "expected_result": "Asosiy yo'llarda 40 ta nuqta, viloyatlararo yurish imkoni ochiladi.",
+      "author_name": "Sherzod Ahmedov",
+      "author_phone": "+998933331133",
+      "region": "toshkent_shahri",
+      "vote_count": 267,
+      "created_at": "2026-07-13",
+      "comments": [
+        {
+          "author_name": "Dilnoza Ochilova",
+          "text": "Tezkor zaryad bo'lsin, sekin nuqta yo'lda foyda bermaydi.",
+          "created_at": "2026-07-16"
+        },
+        {
+          "author_name": "Odil Jo'rayev",
+          "text": "Kafe va dam olish joyi yonida bo'lsa, kutish yoqimli bo'ladi.",
+          "created_at": "2026-07-26"
+        }
+      ],
+      "direction": "energy"
+    },
+    {
+      "kind": "idea",
+      "title": "Issiqxonalarni geotermal suv bilan isitish",
+      "description": "Ba'zi hududlarda yer osti issiq suvi bor, lekin ishlatilmaydi. Issiqxonalarni shu suv bilan isitish gaz sarfini keskin kamaytiradi.",
+      "expected_result": "20 ta issiqxona xo'jaligida isitish xarajati 60 foizga tushadi.",
+      "author_name": "Shahnoza Karimova",
+      "author_phone": "+998944442233",
+      "region": "xorazm",
+      "vote_count": 134,
+      "created_at": "2026-07-22",
+      "comments": [
+        {
+          "author_name": "Muhammadali Ochilov",
+          "text": "Geologik xarita kerak, avval qayerda borligini aniqlash lozim.",
+          "created_at": "2026-07-25"
+        }
+      ],
+      "direction": "energy"
+    },
+    {
+      "kind": "problem",
+      "title": "Eski uylarda isitish tizimi samarasiz",
+      "description": "Sovet davridagi quvurlar issiqlikning yarmini yo'lda yo'qotadi. Odam ko'p to'laydi, lekin uyi sovuq qoladi.",
+      "expected_result": "100 ta uyda quvur almashtirilib, issiqlik yo'qotilishi 35 foizga kamayadi.",
+      "author_name": "Nilufar Ergasheva",
+      "author_phone": "+998902225599",
+      "region": "navoiy",
+      "vote_count": 178,
+      "created_at": "2026-07-31",
+      "comments": [
+        {
+          "author_name": "Muzaffar Aliyev",
+          "text": "Har bir xonadonga hisoblagich qo'yilsa, isrof ham kamayadi.",
+          "created_at": "2026-08-03"
+        },
+        {
+          "author_name": "Anvar Karimov",
+          "text": "Podvaldagi quvurlarni izolyatsiya qilish eng arzon va tez chora.",
+          "created_at": "2026-08-12"
+        }
+      ],
+      "direction": "energy"
+    },
+    {
+      "kind": "idea",
+      "title": "Yoshlar uchun energetika bo'yicha amaliy klub",
+      "description": "Maktab o'quvchilari quyosh va shamol energiyasini faqat kitobda o'qiydi. Amaliy klubda o'zlari kichik panel va generator yig'adi.",
+      "expected_result": "50 ta maktabda klub, 1500 o'quvchi amaliy tajriba oladi.",
+      "author_name": "Umida Hakimova",
+      "author_phone": "+998935556655",
+      "region": "samarqand",
+      "vote_count": 96,
+      "created_at": "2026-08-08",
+      "comments": [
+        {
+          "author_name": "Guli Nabiyeva",
+          "text": "Musobaqa qilinsa, bolalar qiziqib ketadi.",
+          "created_at": "2026-08-11"
+        }
+      ],
+      "direction": "energy"
+    },
+    {
+      "kind": "startup",
+      "title": "Mahalliy ehtiyot qismlar ishlab chiqarish",
+      "description": "Qishloq xo'jaligi texnikasi uchun ehtiyot qism chet eldan keladi, kutish uzoq va narx yuqori. Mahalliy sex eng ko'p talab qilinadigan 20 turni ishlab chiqaradi.",
+      "expected_result": "Kutish muddati oydan uch kunga tushadi, narx 40 foizga arzonlashadi.",
+      "author_name": "Doniyor Sobirov",
+      "author_phone": "+998901125656",
+      "region": "andijon",
+      "vote_count": 312,
+      "created_at": "2026-05-23",
+      "comments": [
+        {
+          "author_name": "Ulug'bek Xolmatov",
+          "text": "Sifat masalasi hal bo'lishi kerak, aks holda fermer ishonmaydi.",
+          "created_at": "2026-05-26"
+        },
+        {
+          "author_name": "Sanjar Ergashev",
+          "text": "Reverse engineering uchun 3D skaner kerak bo'ladi.",
+          "created_at": "2026-06-04"
+        },
+        {
+          "author_name": "Feruza Abdullayeva",
+          "text": "Kafolat berilsa, birinchi mijozlar tez topiladi.",
+          "created_at": "2026-06-16"
+        }
+      ],
+      "direction": "industry"
+    },
+    {
+      "kind": "problem",
+      "title": "Kichik sexlarda mehnat xavfsizligi past",
+      "description": "Ishchilar himoya vositasisiz ishlaydi, jarohat holatlari yashiriladi. Ko'pchilik rasmiy shartnomasiz ishlagani uchun tovon ololmaydi.",
+      "expected_result": "300 ta sexda xavfsizlik auditi o'tkaziladi, jarohatlar sezilarli kamayadi.",
+      "author_name": "Islom Rahmatullayev",
+      "author_phone": "+998933332244",
+      "region": "fargona",
+      "vote_count": 245,
+      "created_at": "2026-06-03",
+      "comments": [
+        {
+          "author_name": "Sabina Tolipova",
+          "text": "Jarima emas, avval o'qitish va yordam kerak. Aks holda yana yashirishadi.",
+          "created_at": "2026-06-06"
+        },
+        {
+          "author_name": "Nargiza Islomova",
+          "text": "Himoya vositalarini arzon yetkazib beruvchi topilsa, sexlar o'zi oladi.",
+          "created_at": "2026-06-15"
+        },
+        {
+          "author_name": "Jamshid Qobilov",
+          "text": "Akam sexda barmog'idan ayrilgan, hech qanday tovon olmagan.",
+          "created_at": "2026-06-27"
+        }
+      ],
+      "direction": "industry"
+    },
+    {
+      "kind": "idea",
+      "title": "Sanoat chiqindilari birjasi",
+      "description": "Bir korxonaning chiqindisi boshqasiga xomashyo bo'lishi mumkin, lekin ular bir-birini topolmaydi. Oddiy birja shu bog'lanishni yaratadi.",
+      "expected_result": "100 ta korxona qatnashadi, poligonga boradigan chiqindi 20 foizga kamayadi.",
+      "author_name": "Ravshan Toshpo'latov",
+      "author_phone": "+998944443311",
+      "region": "toshkent",
+      "vote_count": 189,
+      "created_at": "2026-06-12",
+      "comments": [
+        {
+          "author_name": "Farrux Sattorov",
+          "text": "Transport xarajati hisobga olinsin, aks holda foyda chiqmaydi.",
+          "created_at": "2026-06-15"
+        },
+        {
+          "author_name": "Sanobar Yusupova",
+          "text": "Katalog ochiq bo'lsa, kichik korxonalar ham kirishadi.",
+          "created_at": "2026-06-24"
+        }
+      ],
+      "direction": "industry"
+    },
+    {
+      "kind": "proposal",
+      "title": "Kasb-hunar markazlarida zamonaviy stanoklar",
+      "description": "Talabalar 30 yillik stanokda o'rganadi, ishlab chiqarishda esa boshqa texnika turadi. Bir nechta markazga zamonaviy uskuna qo'yilib, hamma foydalanadi.",
+      "expected_result": "10 ta markaz yangilanadi, yiliga 2000 usta tayyorlanadi.",
+      "author_name": "Bahodir Xudoyberdiyev",
+      "author_phone": "+998902226622",
+      "region": "namangan",
+      "vote_count": 223,
+      "created_at": "2026-06-20",
+      "comments": [
+        {
+          "author_name": "Temur Sodiqov",
+          "text": "Uskunani ishlata oladigan o'qituvchi ham kerak, aks holda changlab yotadi.",
+          "created_at": "2026-06-23"
+        },
+        {
+          "author_name": "Javohir Nematov",
+          "text": "Korxonalar bilan birga sotib olinsa, ular ham foydalanadi.",
+          "created_at": "2026-07-03"
+        },
+        {
+          "author_name": "Laziza Yo'ldosheva",
+          "text": "Kechki smenada tadbirkorlarga ijaraga berilsa, o'zini qoplaydi.",
+          "created_at": "2026-07-14"
+        }
+      ],
+      "direction": "industry"
+    },
+    {
+      "kind": "startup",
+      "title": "To'qimachilik qoldig'idan mahsulot",
+      "description": "Tikuvchilik sexlaridan chiqadigan mato qoldig'i yoqib yuboriladi. Undan sumka, o'yinchoq va izolyatsiya materiali tayyorlash mumkin.",
+      "expected_result": "Oyiga 15 tonna qoldiq qayta ishlanadi, 25 ish o'rni ochiladi.",
+      "author_name": "Zilola Abdurahmonova",
+      "author_phone": "+998935557766",
+      "region": "namangan",
+      "vote_count": 167,
+      "created_at": "2026-06-28",
+      "comments": [
+        {
+          "author_name": "Gulbahor Nazarova",
+          "text": "Dizayn yaxshi bo'lsa, eksportga ham chiqadi.",
+          "created_at": "2026-07-01"
+        },
+        {
+          "author_name": "Dildora Sharipova",
+          "text": "Ayollar uchun uyda ishlash imkoni ham bo'ladi.",
+          "created_at": "2026-07-12"
+        }
+      ],
+      "direction": "industry"
+    },
+    {
+      "kind": "problem",
+      "title": "Eksport uchun sertifikat olish murakkab",
+      "description": "Kichik ishlab chiqaruvchi xalqaro sertifikat talablarini bilmaydi, maslahat qimmat. Natijada mahsulot faqat ichki bozorda qoladi.",
+      "expected_result": "500 ta korxonaga bepul maslahat, eksport qiluvchilar soni ikki barobar oshadi.",
+      "author_name": "Sherzod Ahmedov",
+      "author_phone": "+998901127878",
+      "region": "toshkent_shahri",
+      "vote_count": 145,
+      "created_at": "2026-07-07",
+      "comments": [
+        {
+          "author_name": "Odil Jo'rayev",
+          "text": "Bir marta o'tgan korxona tajribasini boshqalarga o'rgatsa yaxshi bo'lardi.",
+          "created_at": "2026-07-10"
+        },
+        {
+          "author_name": "Shahnoza Karimova",
+          "text": "Hujjatlar ro'yxati oddiy tilda yozilgan qo'llanma kerak.",
+          "created_at": "2026-07-21"
+        }
+      ],
+      "direction": "industry"
+    },
+    {
+      "kind": "idea",
+      "title": "Sanoat zonalarida umumiy laboratoriya",
+      "description": "Har bir kichik korxona o'z laboratoriyasini qura olmaydi. Umumiy sinov laboratoriyasi sifat nazoratini hammaga ochadi.",
+      "expected_result": "60 ta korxona sifat sinovidan muntazam o'tadi.",
+      "author_name": "Alisher Nurmatov",
+      "author_phone": "+998933333355",
+      "region": "qashqadaryo",
+      "vote_count": 98,
+      "created_at": "2026-07-16",
+      "comments": [
+        {
+          "author_name": "Rustam Ziyodov",
+          "text": "Natija rasmiy tan olinishi kerak, aks holda foydasi kam.",
+          "created_at": "2026-07-19"
+        }
+      ],
+      "direction": "industry"
+    },
+    {
+      "kind": "proposal",
+      "title": "Ishlab chiqarishda ayollar ulushini oshirish",
+      "description": "Texnik kasblarda ayollar deyarli yo'q, sabab ko'proq qarash va sharoit. Alohida o'quv guruhlari va bolalar xonasi bu to'siqni kamaytiradi.",
+      "expected_result": "3 yil ichida texnik kasblarda ayollar ulushi ikki barobar oshadi.",
+      "author_name": "Nozima Yo'ldosheva",
+      "author_phone": "+998944445544",
+      "region": "toshkent",
+      "vote_count": 278,
+      "created_at": "2026-07-24",
+      "comments": [
+        {
+          "author_name": "Aziza Umarova",
+          "text": "Bolalar xonasi eng muhim shart. Onalar shu sababdan ishlay olmaydi.",
+          "created_at": "2026-07-27"
+        },
+        {
+          "author_name": "Guli Nabiyeva",
+          "text": "Muvaffaqiyatli ayol ustalar haqida hikoyalar tarqatilsa, misol bo'ladi.",
+          "created_at": "2026-08-05"
+        },
+        {
+          "author_name": "Malika Tursunova",
+          "text": "Ish vaqti moslashuvchan bo'lsa, ko'pchilik keladi.",
+          "created_at": "2026-08-14"
+        }
+      ],
+      "direction": "industry"
+    },
+    {
+      "kind": "startup",
+      "title": "Qadoqlash uchun mahalliy karton ishlab chiqarish",
+      "description": "Qadoqlash materiali import qilinadi, narxi valyutaga bog'liq. Makulaturadan mahalliy karton ishlab chiqarish narxni barqarorlashtiradi.",
+      "expected_result": "Yiliga 8 ming tonna karton, 40 ish o'rni.",
+      "author_name": "Otabek Yo'ldoshev",
+      "author_phone": "+998902228833",
+      "region": "sirdaryo",
+      "vote_count": 134,
+      "created_at": "2026-08-02",
+      "comments": [
+        {
+          "author_name": "Bekzod Turg'unov",
+          "text": "Makulatura yig'ish tizimi avval yo'lga qo'yilishi kerak.",
+          "created_at": "2026-08-05"
+        }
+      ],
+      "direction": "industry"
+    },
+    {
+      "kind": "idea",
+      "title": "Ishlab chiqarish korxonalariga ochiq ekskursiya",
+      "description": "Yoshlar zavodda nima bo'lishini bilmaydi va bu kasblarni tanlamaydi. Oyda bir marta ochiq eshiklar kuni tasavvurni o'zgartiradi.",
+      "expected_result": "Yiliga 10 ming o'quvchi real ishlab chiqarishni ko'radi.",
+      "author_name": "Umida Hakimova",
+      "author_phone": "+998935558877",
+      "region": "andijon",
+      "vote_count": 87,
+      "created_at": "2026-08-10",
+      "comments": [
+        {
+          "author_name": "Nodira Karimova",
+          "text": "Ekskursiyadan keyin amaliyot taklif qilinsa, natija yanada kuchli bo'ladi.",
+          "created_at": "2026-08-13"
+        }
+      ],
+      "direction": "industry"
+    },
+    {
+      "kind": "startup",
+      "title": "Talabalar uchun ish topish platformasi",
+      "description": "Talaba o'qish bilan birga ishlashni xohlaydi, lekin qisqa muddatli va moslashuvchan ish e'lonlari bir joyda emas. Platforma faqat shunday takliflarni to'playdi.",
+      "expected_result": "Yiliga 15 mingdan ortiq talaba qo'shimcha daromadga ega bo'ladi.",
+      "author_name": "Temur Sodiqov",
+      "author_phone": "+998901131313",
+      "region": "toshkent_shahri",
+      "vote_count": 356,
+      "created_at": "2026-05-21",
+      "comments": [
+        {
+          "author_name": "Javohir Nematov",
+          "text": "Ish beruvchini tekshirish shart, aks holda talabani aldashadi.",
+          "created_at": "2026-05-24"
+        },
+        {
+          "author_name": "Laziza Yo'ldosheva",
+          "text": "Dars jadvaliga qarab filtr qo'yish imkoni bo'lsin.",
+          "created_at": "2026-06-02"
+        },
+        {
+          "author_name": "Zilola Abdurahmonova",
+          "text": "To'lov kafolati bo'lsa juda yaxshi bo'lardi, ko'pchilik ishlab pul ololmay qoladi.",
+          "created_at": "2026-06-13"
+        }
+      ],
+      "direction": "startup"
+    },
+    {
+      "kind": "problem",
+      "title": "Startaplar uchun boshlang'ich kapital yo'q",
+      "description": "G'oya bor, jamoa bor, lekin birinchi prototip uchun ham pul topilmaydi. Investorlar tayyor mahsulotni ko'rmasa gaplashmaydi.",
+      "expected_result": "Yiliga 100 ta jamoaga kichik grant, 30 tasi bozorga chiqadi.",
+      "author_name": "Sherzod Ahmedov",
+      "author_phone": "+998933335566",
+      "region": "toshkent_shahri",
+      "vote_count": 467,
+      "created_at": "2026-05-30",
+      "comments": [
+        {
+          "author_name": "Dilnoza Ochilova",
+          "text": "Grant emas, konvertatsiya qilinadigan qarz modeli ham ko'rib chiqilsin.",
+          "created_at": "2026-06-02"
+        },
+        {
+          "author_name": "Alisher Nurmatov",
+          "text": "Pul bilan birga mentor berilsin, faqat pul ko'p holatda yo'qoladi.",
+          "created_at": "2026-06-11"
+        },
+        {
+          "author_name": "Rustam Ziyodov",
+          "text": "Hisobot talab qilinsin, lekin haddan tashqari byurokratiya bo'lmasin.",
+          "created_at": "2026-06-22"
+        },
+        {
+          "author_name": "Odil Jo'rayev",
+          "text": "Ikki marta murojaat qilganman, ikkalasida ham tayyor mahsulot so'rashdi.",
+          "created_at": "2026-07-04"
+        }
+      ],
+      "direction": "startup"
+    },
+    {
+      "kind": "idea",
+      "title": "Viloyatlarda ochiq ish maydonchalari",
+      "description": "Yosh jamoalar uyda ishlaydi, uchrashadigan joy yo'q. Har bir viloyat markazida arzon koworking yoshlarni bir joyga to'playdi.",
+      "expected_result": "14 ta markazda 2000 ga yaqin yosh doimiy ish joyiga ega bo'ladi.",
+      "author_name": "Gulbahor Nazarova",
+      "author_phone": "+998944447744",
+      "region": "samarqand",
+      "vote_count": 278,
+      "created_at": "2026-06-08",
+      "comments": [
+        {
+          "author_name": "Farrux Sattorov",
+          "text": "Tezkor internet va rozetka yetarli, hashamat shart emas.",
+          "created_at": "2026-06-11"
+        },
+        {
+          "author_name": "Sanobar Yusupova",
+          "text": "Kechqurun ham ochiq bo'lsin, ko'pchilik ishdan keyin keladi.",
+          "created_at": "2026-06-20"
+        }
+      ],
+      "direction": "startup"
+    },
+    {
+      "kind": "proposal",
+      "title": "Startaplar uchun soliq ta'tili",
+      "description": "Yangi jamoa birinchi yildan soliq to'lay boshlaydi va tez tugaydi. Birinchi ikki yil imtiyoz omon qolish imkonini beradi.",
+      "expected_result": "500 ga yaqin yangi kompaniya birinchi ikki yilni yengil o'tkazadi.",
+      "author_name": "Bekzod Turg'unov",
+      "author_phone": "+998902231313",
+      "region": "toshkent_shahri",
+      "vote_count": 389,
+      "created_at": "2026-06-17",
+      "comments": [
+        {
+          "author_name": "Ulug'bek Xolmatov",
+          "text": "IT Park modelini boshqa sohalarga ham kengaytirish kerak.",
+          "created_at": "2026-06-20"
+        },
+        {
+          "author_name": "Feruza Abdullayeva",
+          "text": "Imtiyozni suiiste'mol qilmaslik uchun shartlar aniq yozilsin.",
+          "created_at": "2026-06-29"
+        },
+        {
+          "author_name": "Doniyor Sobirov",
+          "text": "Ikki yil kam, uch yil bo'lsa realroq.",
+          "created_at": "2026-07-09"
+        }
+      ],
+      "direction": "startup"
+    },
+    {
+      "kind": "startup",
+      "title": "Mahalliy brendlar uchun onlayn do'kon",
+      "description": "Kichik ishlab chiqaruvchi o'z saytini qura olmaydi, marketplace komissiyasi esa yuqori. Mahalliy brendlarga ixtisoslashgan arzon platforma kerak.",
+      "expected_result": "300 ta brend onlayn savdoni boshlaydi.",
+      "author_name": "Shahnoza Karimova",
+      "author_phone": "+998935559988",
+      "region": "fargona",
+      "vote_count": 198,
+      "created_at": "2026-06-25",
+      "comments": [
+        {
+          "author_name": "Nargiza Islomova",
+          "text": "Yetkazib berish hamkori bo'lmasa, savdo cho'zilib ketadi.",
+          "created_at": "2026-06-28"
+        },
+        {
+          "author_name": "Jamshid Qobilov",
+          "text": "Fotosurat sifati past bo'lsa hech kim sotib olmaydi, foto xizmati ham kerak.",
+          "created_at": "2026-07-07"
+        }
+      ],
+      "direction": "startup"
+    },
+    {
+      "kind": "idea",
+      "title": "Yoshlar uchun startap maktabi",
+      "description": "Ko'pchilik biznesni ochib, birinchi olti oyda yopadi. Amaliy maktab moliya, marketing va huquq asoslarini beradi.",
+      "expected_result": "Yiliga 1000 yosh o'qiydi, biznes omon qolish darajasi oshadi.",
+      "author_name": "Umida Hakimova",
+      "author_phone": "+998901133434",
+      "region": "namangan",
+      "vote_count": 234,
+      "created_at": "2026-07-04",
+      "comments": [
+        {
+          "author_name": "Guli Nabiyeva",
+          "text": "Nazariya emas, real keyslar bilan o'rgatilsin.",
+          "created_at": "2026-07-07"
+        },
+        {
+          "author_name": "Bahodir Xudoyberdiyev",
+          "text": "Muvaffaqiyatsiz tajribalar ham o'rgatilsin, ular ko'proq narsa o'rgatadi.",
+          "created_at": "2026-07-16"
+        },
+        {
+          "author_name": "Malika Tursunova",
+          "text": "Bitiruvchilarga kichik grant tanlovi bo'lsa, motivatsiya kuchayadi.",
+          "created_at": "2026-07-27"
+        }
+      ],
+      "direction": "startup"
+    },
+    {
+      "kind": "problem",
+      "title": "Yaxshi dasturchilar chet elga ketmoqda",
+      "description": "Mahalliy ish haqi raqobatbardosh emas, o'sish imkoniyati cheklangan. Eng kuchli kadrlar 2-3 yil ichida chiqib ketadi.",
+      "expected_result": "Rag'bat va masofaviy ish sharoiti orqali oqim sekinlashtiriladi.",
+      "author_name": "Javohir Nematov",
+      "author_phone": "+998933337799",
+      "region": "toshkent_shahri",
+      "vote_count": 445,
+      "created_at": "2026-07-12",
+      "comments": [
+        {
+          "author_name": "Temur Sodiqov",
+          "text": "Ketishning o'zi yomon emas, qaytishga sharoit yaratish kerak.",
+          "created_at": "2026-07-15"
+        },
+        {
+          "author_name": "Zilola Abdurahmonova",
+          "text": "Chet el kompaniyalari uchun masofaviy ishlash rasmiylashtirilsa, mutaxassis shu yerda qoladi.",
+          "created_at": "2026-07-23"
+        },
+        {
+          "author_name": "Anvar Karimov",
+          "text": "Turar joy va bola bog'chasi masalasi ham qaror qabul qilishda muhim.",
+          "created_at": "2026-08-03"
+        },
+        {
+          "author_name": "Dildora Sharipova",
+          "text": "Akam Germaniyaga ketdi, qaytishni xohlaydi lekin sharoit yo'q deydi.",
+          "created_at": "2026-08-13"
+        }
+      ],
+      "direction": "startup"
+    },
+    {
+      "kind": "proposal",
+      "title": "Davlat xaridlarida startaplarga kvota",
+      "description": "Davlat buyurtmalarini faqat yirik kompaniyalar oladi. Kichik ulush yosh jamoalarga ajratilsa, ular birinchi jiddiy mijozga ega bo'ladi.",
+      "expected_result": "Yiliga 200 ga yaqin startap birinchi yirik shartnomasini oladi.",
+      "author_name": "Muhammadali Ochilov",
+      "author_phone": "+998944449988",
+      "region": "toshkent_shahri",
+      "vote_count": 167,
+      "created_at": "2026-07-20",
+      "comments": [
+        {
+          "author_name": "Nilufar Ergasheva",
+          "text": "Sifat talabi pasaymasligi kerak, faqat kirish imkoni ochilsin.",
+          "created_at": "2026-07-23"
+        },
+        {
+          "author_name": "Muzaffar Aliyev",
+          "text": "Tanlov shartlari soddalashtirilsin, hozir hujjat to'plash bir oy vaqt oladi.",
+          "created_at": "2026-08-01"
+        }
+      ],
+      "direction": "startup"
+    },
+    {
+      "kind": "startup",
+      "title": "Xizmat ko'rsatuvchi ustalar uchun ilova",
+      "description": "Santexnik yoki elektrikni topish tanish orqali bo'ladi, narx oldindan noma'lum. Ilova reyting va aniq narx bilan ustani topib beradi.",
+      "expected_result": "5 mingdan ortiq usta rasmiy daromadga ega bo'ladi.",
+      "author_name": "Islom Rahmatullayev",
+      "author_phone": "+998902233434",
+      "region": "toshkent_shahri",
+      "vote_count": 289,
+      "created_at": "2026-07-28",
+      "comments": [
+        {
+          "author_name": "Sabina Tolipova",
+          "text": "Ustaning ishini kafolatlash mexanizmi bo'lsin.",
+          "created_at": "2026-07-31"
+        },
+        {
+          "author_name": "Xurshid Bozorov",
+          "text": "Ustalarning ko'pi yozishni bilmaydi, ilova juda sodda bo'lishi kerak.",
+          "created_at": "2026-08-08"
+        }
+      ],
+      "direction": "startup"
+    },
+    {
+      "kind": "idea",
+      "title": "Startap g'oyalari uchun ochiq bank",
+      "description": "Ko'p g'oya bir odamning boshida qolib ketadi. Ochiq bankda g'oyani qoldirish mumkin, boshqa jamoa uni amalga oshirishi mumkin.",
+      "expected_result": "1000 dan ortiq g'oya ochiq bo'ladi, 50 tasi loyihaga aylanadi.",
+      "author_name": "Sardor Eshonov",
+      "author_phone": "+998935551313",
+      "region": "buxoro",
+      "vote_count": 112,
+      "created_at": "2026-08-05",
+      "comments": [
+        {
+          "author_name": "Kamola Yusupova",
+          "text": "G'oya muallifiga hurmat ko'rsatilishi kerak, ismi qolsin.",
+          "created_at": "2026-08-08"
+        }
+      ],
+      "direction": "startup"
+    },
+    {
+      "kind": "idea",
+      "title": "Yosh rassomlar uchun ochiq devor loyihasi",
+      "description": "Shaharda bo'sh va xunuk devorlar ko'p. Rassomlarga rasmiy ruxsat berilsa, ular devorni san'at asariga aylantiradi.",
+      "expected_result": "50 ta devor bezatiladi, shahar turistik jozibasi ortadi.",
+      "author_name": "Malika Tursunova",
+      "author_phone": "+998901141414",
+      "region": "samarqand",
+      "vote_count": 334,
+      "created_at": "2026-05-25",
+      "comments": [
+        {
+          "author_name": "Zebo Hamroyeva",
+          "text": "Mavzuni mahalliy tarix bilan bog'lash kerak, aks holda begona ko'rinadi.",
+          "created_at": "2026-05-28"
+        },
+        {
+          "author_name": "Nigora Sattorova",
+          "text": "Rasm tanlovini mahalla ahli bilan kelishish kerak.",
+          "created_at": "2026-06-06"
+        },
+        {
+          "author_name": "Aziza Umarova",
+          "text": "Bo'yoq va jihoz uchun kichik budjet ajratilsa, rassomlar o'zi bajaradi.",
+          "created_at": "2026-06-17"
+        }
+      ],
+      "direction": "creative"
+    },
+    {
+      "kind": "startup",
+      "title": "O'zbek tilidagi audiokitob studiyasi",
+      "description": "O'zbek tilida audiokitob deyarli yo'q, mashinada yoki ishda kitob tinglash imkoni yopiq. Professional studiya shu bo'shliqni to'ldiradi.",
+      "expected_result": "Birinchi yilda 200 ta kitob ovozga o'giriladi.",
+      "author_name": "Anvar Karimov",
+      "author_phone": "+998933339922",
+      "region": "toshkent_shahri",
+      "vote_count": 412,
+      "created_at": "2026-06-02",
+      "comments": [
+        {
+          "author_name": "Dildora Sharipova",
+          "text": "Mualliflik huquqi masalasini avval hal qilish kerak.",
+          "created_at": "2026-06-05"
+        },
+        {
+          "author_name": "Muzaffar Aliyev",
+          "text": "Aktyorlar ovozi bilan bo'lsa, sifati butunlay boshqacha bo'ladi.",
+          "created_at": "2026-06-14"
+        },
+        {
+          "author_name": "Gulbahor Nazarova",
+          "text": "Ko'zi ojizlar uchun ham katta yordam bo'ladi.",
+          "created_at": "2026-06-25"
+        },
+        {
+          "author_name": "Nilufar Ergasheva",
+          "text": "Klassik adabiyotdan boshlansin, talabalarga darrov kerak bo'ladi.",
+          "created_at": "2026-07-06"
+        }
+      ],
+      "direction": "creative"
+    },
+    {
+      "kind": "problem",
+      "title": "Ijodkorlar asarini sotadigan joy yo'q",
+      "description": "Hunarmand va rassomlar asarini faqat tanish orqali sotadi. Doimiy savdo maydoni yo'qligi ko'pchilikni kasbdan voz kechishga majbur qiladi.",
+      "expected_result": "Har bir viloyatda doimiy ijod bozori, 800 ijodkor doimiy daromadga ega bo'ladi.",
+      "author_name": "Guli Nabiyeva",
+      "author_phone": "+998944441414",
+      "region": "buxoro",
+      "vote_count": 267,
+      "created_at": "2026-06-11",
+      "comments": [
+        {
+          "author_name": "Umida Hakimova",
+          "text": "Turistik marshrutga qo'shilsa, savdo o'z-o'zidan bo'ladi.",
+          "created_at": "2026-06-14"
+        },
+        {
+          "author_name": "Bahodir Xudoyberdiyev",
+          "text": "Ijara narxi past bo'lsin, aks holda faqat vositachilar qoladi.",
+          "created_at": "2026-06-23"
+        }
+      ],
+      "direction": "creative"
+    },
+    {
+      "kind": "idea",
+      "title": "Milliy naqshlar raqamli kutubxonasi",
+      "description": "Naqsh namunalari kitoblarda tarqoq, dizaynerlar foydalana olmaydi. Ochiq raqamli kutubxona ularni zamonaviy mahsulotga olib chiqadi.",
+      "expected_result": "5000 dan ortiq naqsh raqamlashtiriladi va bepul beriladi.",
+      "author_name": "Aziza Umarova",
+      "author_phone": "+998902241414",
+      "region": "namangan",
+      "vote_count": 289,
+      "created_at": "2026-06-19",
+      "comments": [
+        {
+          "author_name": "Sardor Eshonov",
+          "text": "Har bir naqshning kelib chiqishi va ma'nosi ham yozilsin.",
+          "created_at": "2026-06-22"
+        },
+        {
+          "author_name": "Kamola Yusupova",
+          "text": "Vektor formatda bo'lsa, dizaynerlar darrov ishlatadi.",
+          "created_at": "2026-07-01"
+        },
+        {
+          "author_name": "Shohrux Qodirov",
+          "text": "Bu boylikni saqlab qolishning eng yaxshi yo'li.",
+          "created_at": "2026-07-12"
+        }
+      ],
+      "direction": "creative"
+    },
+    {
+      "kind": "startup",
+      "title": "Mahalliy multfilm studiyasi",
+      "description": "Bolalar chet el multfilmlarini ko'radi, mahalliy qahramon yo'q. Kichik studiya ertak va tarixiy syujetlar asosida seriallar yaratadi.",
+      "expected_result": "Yiliga 40 ta epizod, milliy qahramonlar paydo bo'ladi.",
+      "author_name": "Javohir Nematov",
+      "author_phone": "+998935561414",
+      "region": "toshkent_shahri",
+      "vote_count": 378,
+      "created_at": "2026-06-27",
+      "comments": [
+        {
+          "author_name": "Laziza Yo'ldosheva",
+          "text": "Ovoz berish va musiqa sifati muhim, shu joyda ko'p loyiha yiqiladi.",
+          "created_at": "2026-06-30"
+        },
+        {
+          "author_name": "Temur Sodiqov",
+          "text": "YouTube kanalidan boshlash arzon va tez natija beradi.",
+          "created_at": "2026-07-09"
+        },
+        {
+          "author_name": "Zilola Abdurahmonova",
+          "text": "Bolam o'zbekcha multfilm so'raydi, topolmayman.",
+          "created_at": "2026-07-20"
+        }
+      ],
+      "direction": "creative"
+    },
+    {
+      "kind": "proposal",
+      "title": "Kutubxona va madaniyat uylarida ijod studiyasi",
+      "description": "Bo'sh turgan madaniyat uylarini kichik studiyaga aylantirish mumkin: ovoz yozish, foto, montaj. Yoshlar tekin foydalanadi.",
+      "expected_result": "60 ta studiya, yiliga 10 mingdan ortiq yosh foydalanadi.",
+      "author_name": "Nodira Karimova",
+      "author_phone": "+998901143434",
+      "region": "andijon",
+      "vote_count": 198,
+      "created_at": "2026-07-05",
+      "comments": [
+        {
+          "author_name": "Otabek Yo'ldoshev",
+          "text": "Jihozni kim qarab turadi degan savol bor, mas'ul kerak.",
+          "created_at": "2026-07-08"
+        },
+        {
+          "author_name": "Feruza Abdullayeva",
+          "text": "Boshlang'ich kurs ham o'tilsa, jihoz behuda turmaydi.",
+          "created_at": "2026-07-18"
+        }
+      ],
+      "direction": "creative"
+    },
+    {
+      "kind": "idea",
+      "title": "Yosh yozuvchilar uchun nashr dasturi",
+      "description": "Yosh muallif kitobini o'z hisobidan chiqarishga majbur, bu ko'pchilikka og'ir. Tanlov asosida yiliga 20 ta kitob bepul nashr qilinadi.",
+      "expected_result": "20 yangi muallif kitobi, kutubxonalarga tekin tarqatiladi.",
+      "author_name": "Sabina Tolipova",
+      "author_phone": "+998933341414",
+      "region": "xorazm",
+      "vote_count": 145,
+      "created_at": "2026-07-13",
+      "comments": [
+        {
+          "author_name": "Nargiza Islomova",
+          "text": "Tahrir va muqova dizayni ham dasturga kirsin.",
+          "created_at": "2026-07-16"
+        },
+        {
+          "author_name": "Jamshid Qobilov",
+          "text": "Elektron variant ham chiqarilsa, qamrov keng bo'ladi.",
+          "created_at": "2026-07-25"
+        }
+      ],
+      "direction": "creative"
+    },
+    {
+      "kind": "problem",
+      "title": "Musiqachilar uchun mualliflik huquqi ishlamaydi",
+      "description": "Qo'shiq ijro etiladi, lekin muallif hech narsa olmaydi. Hisob-kitob tizimi yo'q, sud yo'li uzoq va qimmat.",
+      "expected_result": "Ochiq reestr va avtomatik hisob tizimi joriy etiladi.",
+      "author_name": "Muzaffar Aliyev",
+      "author_phone": "+998944443434",
+      "region": "toshkent_shahri",
+      "vote_count": 223,
+      "created_at": "2026-07-21",
+      "comments": [
+        {
+          "author_name": "Anvar Karimov",
+          "text": "Restoran va radiolar hisobotini avtomatlashtirish kerak.",
+          "created_at": "2026-07-24"
+        },
+        {
+          "author_name": "Gulbahor Nazarova",
+          "text": "Kichik summa bo'lsa ham, muntazam kelsa muallif ishlashda davom etadi.",
+          "created_at": "2026-08-02"
+        }
+      ],
+      "direction": "creative"
+    },
+    {
+      "kind": "startup",
+      "title": "Raqamli dizayn autsorsing markazi",
+      "description": "Chet el buyurtmalari mavjud, lekin yakka dizayner yirik loyihani ololmaydi. Markaz jamoani birlashtirib katta buyurtmani bajaradi.",
+      "expected_result": "150 ta dizayner barqaror buyurtma bilan ta'minlanadi.",
+      "author_name": "Shahnoza Karimova",
+      "author_phone": "+998902243434",
+      "region": "samarqand",
+      "vote_count": 134,
+      "created_at": "2026-07-29",
+      "comments": [
+        {
+          "author_name": "Odil Jo'rayev",
+          "text": "Ingliz tili bo'yicha kurs ham kerak bo'ladi.",
+          "created_at": "2026-08-01"
+        }
+      ],
+      "direction": "creative"
+    },
+    {
+      "kind": "idea",
+      "title": "Ko'chalarda ochiq kino kechalari",
+      "description": "Mahallalarda kechqurun madaniy dam olish yo'q. Yozgi ochiq kino kechasi arzon va odamlarni birlashtiradi.",
+      "expected_result": "Har bir mahallada oyiga bir marta, mingga yaqin tomoshabin.",
+      "author_name": "Nigora Sattorova",
+      "author_phone": "+998935564343",
+      "region": "jizzax",
+      "vote_count": 87,
+      "created_at": "2026-08-06",
+      "comments": [
+        {
+          "author_name": "Malika Tursunova",
+          "text": "Bolalar uchun alohida seans bo'lsin.",
+          "created_at": "2026-08-09"
+        }
+      ],
+      "direction": "creative"
+    },
+    {
+      "kind": "proposal",
+      "title": "Tarixiy binolarni tiklashga yoshlarni jalb qilish",
+      "description": "Mahalliy tarixiy binolar qarovsiz qolmoqda, mutaxassis yetishmaydi. Yoshlar uchun restavratsiya bo'yicha amaliy maktab ochiladi.",
+      "expected_result": "50 ta yosh restavrator tayyorlanadi, 15 ta obyekt tiklanadi.",
+      "author_name": "Shohrux Qodirov",
+      "author_phone": "+998901151515",
+      "region": "buxoro",
+      "vote_count": 356,
+      "created_at": "2026-05-27",
+      "comments": [
+        {
+          "author_name": "Gulnoza Rasulova",
+          "text": "Ustozlar yoshi katta, tajribani hozir olib qolish kerak.",
+          "created_at": "2026-05-30"
+        },
+        {
+          "author_name": "Aziza Umarova",
+          "text": "An'anaviy material va texnologiya saqlansin, beton bilan tiklash zarar keltiradi.",
+          "created_at": "2026-06-08"
+        },
+        {
+          "author_name": "Muhammadali Ochilov",
+          "text": "Bizning mahalladagi madrasa yiqilay deb turibdi.",
+          "created_at": "2026-06-19"
+        }
+      ],
+      "direction": "culture"
+    },
+    {
+      "kind": "idea",
+      "title": "Mahalliy tarix bo'yicha audio-ekskursiya",
+      "description": "Turist va mahalliy aholi shahar tarixini bilmaydi. QR kod orqali ochiladigan audio hikoyalar har bir joyni jonlantiradi.",
+      "expected_result": "100 ta nuqta, uch tilda audio, yiliga 200 ming tinglash.",
+      "author_name": "Kamola Yusupova",
+      "author_phone": "+998933351515",
+      "region": "samarqand",
+      "vote_count": 289,
+      "created_at": "2026-06-05",
+      "comments": [
+        {
+          "author_name": "Sardor Eshonov",
+          "text": "Hikoyalarni mahalliy keksalar aytib bersa, juda ta'sirli bo'ladi.",
+          "created_at": "2026-06-08"
+        },
+        {
+          "author_name": "Nodira Karimova",
+          "text": "Ingliz va rus tili shart, turistlar uchun.",
+          "created_at": "2026-06-17"
+        }
+      ],
+      "direction": "culture"
+    },
+    {
+      "kind": "problem",
+      "title": "An'anaviy hunarmandchilik yo'qolib bormoqda",
+      "description": "Kandakorlik, zardo'zlik va kulolchilik ustalari qariyapti, shogird yo'q. Bir necha yilda butun maktab yo'qolishi mumkin.",
+      "expected_result": "Har bir hunar bo'yicha kamida 10 shogird, ustalarga stipendiya.",
+      "author_name": "Gulnoza Rasulova",
+      "author_phone": "+998944451515",
+      "region": "buxoro",
+      "vote_count": 434,
+      "created_at": "2026-06-13",
+      "comments": [
+        {
+          "author_name": "Bekzod Turg'unov",
+          "text": "Shogirdga stipendiya berilmasa, u boshqa ishga ketadi.",
+          "created_at": "2026-06-16"
+        },
+        {
+          "author_name": "Feruza Abdullayeva",
+          "text": "Mahsulotni sotish kanali ochilsa, hunar o'zini boqadi.",
+          "created_at": "2026-06-25"
+        },
+        {
+          "author_name": "Doniyor Sobirov",
+          "text": "Bobom kulol edi, hech kim davom ettirmadi. Achinarli.",
+          "created_at": "2026-07-05"
+        },
+        {
+          "author_name": "Zebo Hamroyeva",
+          "text": "Maktablarda to'garak ochilsa, bolalar qiziqadi.",
+          "created_at": "2026-07-16"
+        }
+      ],
+      "direction": "culture"
+    },
+    {
+      "kind": "idea",
+      "title": "Kitob o'qish uchun mahalla klublari",
+      "description": "Yoshlar kitob o'qimaydi degan gap ko'p, lekin muhit ham yo'q. Mahalla klubi oyiga bir marta bitta kitobni muhokama qiladi.",
+      "expected_result": "200 ta klub, yiliga 10 ming ishtirokchi.",
+      "author_name": "Umida Hakimova",
+      "author_phone": "+998902251515",
+      "region": "namangan",
+      "vote_count": 178,
+      "created_at": "2026-06-21",
+      "comments": [
+        {
+          "author_name": "Guli Nabiyeva",
+          "text": "Kitobni klubga tekin berish kerak, hamma sotib ololmaydi.",
+          "created_at": "2026-06-24"
+        },
+        {
+          "author_name": "Malika Tursunova",
+          "text": "Muallif bilan onlayn uchrashuv qilinsa, qiziqish oshadi.",
+          "created_at": "2026-07-03"
+        }
+      ],
+      "direction": "culture"
+    },
+    {
+      "kind": "proposal",
+      "title": "Muzeylarga bepul kirish kunlari",
+      "description": "Muzeylar bo'sh turadi, chipta narxi oilalar uchun to'siq. Oyning bir kuni bepul bo'lsa, tashrif keskin ortadi.",
+      "expected_result": "Yiliga 300 mingdan ortiq qo'shimcha tashrif.",
+      "author_name": "Nilufar Ergasheva",
+      "author_phone": "+998935571515",
+      "region": "toshkent_shahri",
+      "vote_count": 245,
+      "created_at": "2026-06-29",
+      "comments": [
+        {
+          "author_name": "Muzaffar Aliyev",
+          "text": "Bepul kunda ekskursovod ham bo'lsin, aks holda odam shunchaki yurib chiqadi.",
+          "created_at": "2026-07-02"
+        },
+        {
+          "author_name": "Anvar Karimov",
+          "text": "Maktablar uchun har doim bepul bo'lishi kerak edi.",
+          "created_at": "2026-07-11"
+        }
+      ],
+      "direction": "culture"
+    },
+    {
+      "kind": "startup",
+      "title": "An'anaviy taomlar retseptlar arxivi",
+      "description": "Har bir hududning o'z taomi bor, lekin retseptlar yozib olinmagan. Video va matn arxivi ularni saqlab qoladi.",
+      "expected_result": "500 ta retsept video bilan hujjatlashtiriladi.",
+      "author_name": "Dildora Sharipova",
+      "author_phone": "+998901153434",
+      "region": "xorazm",
+      "vote_count": 156,
+      "created_at": "2026-07-08",
+      "comments": [
+        {
+          "author_name": "Sabina Tolipova",
+          "text": "Buvilardan yozib olish kerak, ular hali eslaydi.",
+          "created_at": "2026-07-11"
+        },
+        {
+          "author_name": "Nargiza Islomova",
+          "text": "Kitob qilib chiqarilsa, turistlar sovg'a sifatida oladi.",
+          "created_at": "2026-07-20"
+        }
+      ],
+      "direction": "culture"
+    },
+    {
+      "kind": "idea",
+      "title": "Yoshlar uchun teatr abonementi",
+      "description": "Teatrga borish odati yo'qolgan, chipta narxi ham to'siq. Talabalar uchun arzon yillik abonement odatni qaytaradi.",
+      "expected_result": "20 mingdan ortiq talaba yiliga kamida 5 marta teatrga boradi.",
+      "author_name": "Zilola Abdurahmonova",
+      "author_phone": "+998933353434",
+      "region": "toshkent_shahri",
+      "vote_count": 134,
+      "created_at": "2026-07-16",
+      "comments": [
+        {
+          "author_name": "Javohir Nematov",
+          "text": "Zamonaviy spektakllar ham bo'lsin, faqat klassika bilan yoshlar kelmaydi.",
+          "created_at": "2026-07-19"
+        }
+      ],
+      "direction": "culture"
+    },
+    {
+      "kind": "problem",
+      "title": "Milliy cholg'ular unutilmoqda",
+      "description": "Musiqa maktablarida asosan fortepiano va skripka o'qitiladi. Dutor, g'ijjak va nay bo'yicha o'qituvchi kam.",
+      "expected_result": "Har bir musiqa maktabida milliy cholg'u sinfi ochiladi.",
+      "author_name": "Otabek Yo'ldoshev",
+      "author_phone": "+998944453434",
+      "region": "andijon",
+      "vote_count": 198,
+      "created_at": "2026-07-24",
+      "comments": [
+        {
+          "author_name": "Bahodir Xudoyberdiyev",
+          "text": "Cholg'u narxi ham to'siq, ijaraga berish tizimi kerak.",
+          "created_at": "2026-07-27"
+        },
+        {
+          "author_name": "Umida Hakimova",
+          "text": "Zamonaviy uslubda ijro etilsa, yoshlarga yaqinroq bo'ladi.",
+          "created_at": "2026-08-05"
+        }
+      ],
+      "direction": "culture"
+    },
+    {
+      "kind": "idea",
+      "title": "Mahalla darvozalarini milliy uslubda tiklash",
+      "description": "Yangi qurilgan darvozalar bir xil va shaxssiz. An'anaviy naqsh bilan bezatilsa, mahalla o'z qiyofasini topadi.",
+      "expected_result": "100 ta mahalla darvozasi milliy uslubda qayta bezatiladi.",
+      "author_name": "Nigora Sattorova",
+      "author_phone": "+998902253434",
+      "region": "samarqand",
+      "vote_count": 89,
+      "created_at": "2026-08-01",
+      "comments": [
+        {
+          "author_name": "Aziza Umarova",
+          "text": "Hunarmandlarga ish bo'ladi, ikki foyda.",
+          "created_at": "2026-08-04"
+        }
+      ],
+      "direction": "culture"
+    },
+    {
+      "kind": "proposal",
+      "title": "Milliy bayramlarni mahalla darajasida o'tkazish",
+      "description": "Bayramlar markazda katta tadbir shaklida o'tadi, mahalla ahli tomoshabin bo'lib qoladi. Kichik mahalla dasturlari ishtirokni oshiradi.",
+      "expected_result": "1000 ga yaqin mahallada o'z dasturi bo'ladi.",
+      "author_name": "Islom Rahmatullayev",
+      "author_phone": "+998935573434",
+      "region": "jizzax",
+      "vote_count": 112,
+      "created_at": "2026-08-09",
+      "comments": [
+        {
+          "author_name": "Madina Qurbonova",
+          "text": "Bolalar uchun o'yinlar tashkil qilinsa, oilalar keladi.",
+          "created_at": "2026-08-12"
+        }
+      ],
+      "direction": "culture"
+    },
+    {
+      "kind": "problem",
+      "title": "Jamoat transporti jadvali noaniq",
+      "description": "Avtobus qachon kelishi noma'lum, odamlar bekatda 40 daqiqa kutadi. GPS ma'lumoti bor, lekin ochiq emas.",
+      "expected_result": "Real vaqtdagi jadval ochiq bo'ladi, kutish vaqti o'rtacha ikki barobar kamayadi.",
+      "author_name": "Sherzod Ahmedov",
+      "author_phone": "+998901161616",
+      "region": "toshkent_shahri",
+      "vote_count": 489,
+      "created_at": "2026-05-24",
+      "comments": [
+        {
+          "author_name": "Temur Sodiqov",
+          "text": "Ma'lumot ochiq API bo'lib berilsa, dasturchilar o'zi ilova yasaydi.",
+          "created_at": "2026-05-27"
+        },
+        {
+          "author_name": "Laziza Yo'ldosheva",
+          "text": "Bekatlarda tablo ham bo'lsin, hamma smartfon ishlatmaydi.",
+          "created_at": "2026-06-05"
+        },
+        {
+          "author_name": "Javohir Nematov",
+          "text": "Viloyatlarda ham qilinsin, faqat poytaxt emas.",
+          "created_at": "2026-06-16"
+        },
+        {
+          "author_name": "Zilola Abdurahmonova",
+          "text": "Har kuni ishga borishda 30 daqiqa kutaman. Juda kerakli narsa.",
+          "created_at": "2026-06-27"
+        }
+      ],
+      "direction": "smartcity"
+    },
+    {
+      "kind": "idea",
+      "title": "Yo'l muammolari uchun xarita-shikoyat",
+      "description": "Chuqur va buzilgan yo'lni kim tuzatishini topish qiyin. Fuqaro foto va joylashuvni yuboradi, xaritada holat ochiq ko'rinadi.",
+      "expected_result": "Yiliga 20 mingdan ortiq murojaat, bajarilish ochiq nazoratda bo'ladi.",
+      "author_name": "Ravshan Toshpo'latov",
+      "author_phone": "+998933361616",
+      "region": "samarqand",
+      "vote_count": 367,
+      "created_at": "2026-06-03",
+      "comments": [
+        {
+          "author_name": "Farrux Sattorov",
+          "text": "Bajarildi deb belgilanishi uchun foto isbot talab qilinsin.",
+          "created_at": "2026-06-06"
+        },
+        {
+          "author_name": "Sanobar Yusupova",
+          "text": "Ovoz berish bo'lsa, eng ko'p bezovta qiladigan joy birinchi tuzatiladi.",
+          "created_at": "2026-06-15"
+        },
+        {
+          "author_name": "Nozima Yo'ldosheva",
+          "text": "Statistika ochiq bo'lsa, mas'ullar ham javobgar bo'ladi.",
+          "created_at": "2026-06-26"
+        }
+      ],
+      "direction": "smartcity"
+    },
+    {
+      "kind": "proposal",
+      "title": "Svetoforlarni oqim bo'yicha sozlash",
+      "description": "Svetoforlar qat'iy vaqt bilan ishlaydi, tunda ham bo'sh yo'lda kutiladi. Datchik asosidagi sozlash tirbandlikni kamaytiradi.",
+      "expected_result": "50 ta kesishmada kutish vaqti 30 foizga kamayadi.",
+      "author_name": "Bekzod Turg'unov",
+      "author_phone": "+998944461616",
+      "region": "toshkent_shahri",
+      "vote_count": 278,
+      "created_at": "2026-06-12",
+      "comments": [
+        {
+          "author_name": "Ulug'bek Xolmatov",
+          "text": "Piyodalar uchun ham hisobga olinsin, hozir yashil juda qisqa.",
+          "created_at": "2026-06-15"
+        },
+        {
+          "author_name": "Feruza Abdullayeva",
+          "text": "Kechasi sariq chiroqqa o'tish oddiy va arzon yechim.",
+          "created_at": "2026-06-24"
+        }
+      ],
+      "direction": "smartcity"
+    },
+    {
+      "kind": "idea",
+      "title": "Aqlli parkovka tizimi",
+      "description": "Haydovchi bo'sh joy qidirib 15 daqiqa aylanadi, bu tirbandlikni oshiradi. Datchik va ilova bo'sh joyni ko'rsatadi.",
+      "expected_result": "Markazda parkovka qidirish vaqti uch barobar qisqaradi.",
+      "author_name": "Doniyor Sobirov",
+      "author_phone": "+998902261616",
+      "region": "toshkent_shahri",
+      "vote_count": 189,
+      "created_at": "2026-06-20",
+      "comments": [
+        {
+          "author_name": "Otabek Yo'ldoshev",
+          "text": "To'lov ham ilova orqali bo'lsin, naqd bilan muammo ko'p.",
+          "created_at": "2026-06-23"
+        },
+        {
+          "author_name": "Islom Rahmatullayev",
+          "text": "Nogironlar uchun joylar alohida belgilansin.",
+          "created_at": "2026-07-02"
+        }
+      ],
+      "direction": "smartcity"
+    },
+    {
+      "kind": "problem",
+      "title": "Shahar ichida velosiped yo'llari yo'q",
+      "description": "Velosipedda yurish xavfli, alohida yo'lak yo'q. Natijada qisqa masofaga ham mashinada boriladi.",
+      "expected_result": "50 km velosiped yo'lagi quriladi.",
+      "author_name": "Sardor Eshonov",
+      "author_phone": "+998935581616",
+      "region": "samarqand",
+      "vote_count": 312,
+      "created_at": "2026-06-28",
+      "comments": [
+        {
+          "author_name": "Malika Tursunova",
+          "text": "Yo'lak mashina to'xtash joyiga aylanmasligi uchun ajratgich kerak.",
+          "created_at": "2026-07-01"
+        },
+        {
+          "author_name": "Kamola Yusupova",
+          "text": "Ijara velosiped tizimi ham qo'shilsa, foydalanish ko'payadi.",
+          "created_at": "2026-07-10"
+        },
+        {
+          "author_name": "Nodira Karimova",
+          "text": "Ishga velosipedda borardim, lekin yo'lda qo'rqinchli.",
+          "created_at": "2026-07-21"
+        }
+      ],
+      "direction": "smartcity"
+    },
+    {
+      "kind": "idea",
+      "title": "Ko'chalarda bepul Wi-Fi nuqtalari",
+      "description": "Bekat va skverlarda internet yo'q. Bepul nuqtalar talabalar va turistlar uchun katta yordam.",
+      "expected_result": "200 ta nuqta, kuniga 50 mingdan ortiq ulanish.",
+      "author_name": "Guli Nabiyeva",
+      "author_phone": "+998901163434",
+      "region": "buxoro",
+      "vote_count": 156,
+      "created_at": "2026-07-06",
+      "comments": [
+        {
+          "author_name": "Umida Hakimova",
+          "text": "Tezligi past bo'lsa, foydasi bo'lmaydi. Sifat nazorati kerak.",
+          "created_at": "2026-07-09"
+        },
+        {
+          "author_name": "Bahodir Xudoyberdiyev",
+          "text": "Turistik joylarda birinchi navbatda qo'yilsin.",
+          "created_at": "2026-07-18"
+        }
+      ],
+      "direction": "smartcity"
+    },
+    {
+      "kind": "startup",
+      "title": "Kommunal xizmatlar uchun yagona ilova",
+      "description": "Suv, gaz va elektr uchun uchta alohida ilova kerak. Yagona ilova hisoblagich ko'rsatkichi va to'lovni bir joyda hal qiladi.",
+      "expected_result": "500 mingdan ortiq xonadon foydalanadi.",
+      "author_name": "Nilufar Ergasheva",
+      "author_phone": "+998933363434",
+      "region": "toshkent_shahri",
+      "vote_count": 234,
+      "created_at": "2026-07-14",
+      "comments": [
+        {
+          "author_name": "Muzaffar Aliyev",
+          "text": "Hisoblagichni foto bilan yuborish imkoni bo'lsin.",
+          "created_at": "2026-07-17"
+        },
+        {
+          "author_name": "Anvar Karimov",
+          "text": "Qarzdorlik tarixi ham ko'rinsin, hozir bilib bo'lmaydi.",
+          "created_at": "2026-07-26"
+        }
+      ],
+      "direction": "smartcity"
+    },
+    {
+      "kind": "proposal",
+      "title": "Shahar ma'lumotlarini ochiq qilish",
+      "description": "Transport, ekologiya va qurilish ma'lumotlari yopiq. Ochiq ma'lumot dasturchilarga yangi xizmatlar yaratish imkonini beradi.",
+      "expected_result": "50 ta ma'lumotlar to'plami ochiladi.",
+      "author_name": "Javohir Nematov",
+      "author_phone": "+998944463434",
+      "region": "toshkent_shahri",
+      "vote_count": 145,
+      "created_at": "2026-07-22",
+      "comments": [
+        {
+          "author_name": "Temur Sodiqov",
+          "text": "Formati mashina o'qiy oladigan bo'lsin, PDF emas.",
+          "created_at": "2026-07-25"
+        },
+        {
+          "author_name": "Sherzod Ahmedov",
+          "text": "Hackathon o'tkazilsa, birinchi xizmatlar darrov paydo bo'ladi.",
+          "created_at": "2026-08-03"
+        }
+      ],
+      "direction": "smartcity"
+    },
+    {
+      "kind": "idea",
+      "title": "Havo sifati monitoring tarmog'i",
+      "description": "Havo ifloslanishi haqida aniq ma'lumot yo'q, faqat taxminlar. Arzon datchiklar tarmog'i real ko'rsatkichni ochiq ko'rsatadi.",
+      "expected_result": "30 ta nuqtada doimiy o'lchov, ma'lumot ochiq.",
+      "author_name": "Zebo Hamroyeva",
+      "author_phone": "+998902263434",
+      "region": "toshkent_shahri",
+      "vote_count": 398,
+      "created_at": "2026-07-30",
+      "comments": [
+        {
+          "author_name": "Jasur Norqulov",
+          "text": "Qishda smog kuchli, aniq raqam bo'lsa chora ko'rish osonlashadi.",
+          "created_at": "2026-08-02"
+        },
+        {
+          "author_name": "Dilshod Ismoilov",
+          "text": "Maktablarga ham datchik qo'yilsa, ota-onalar bilib turadi.",
+          "created_at": "2026-08-11"
+        },
+        {
+          "author_name": "Nigora Sattorova",
+          "text": "Bolam astma bilan kasal, havo holatini bilish juda muhim.",
+          "created_at": "2026-08-20"
+        }
+      ],
+      "direction": "smartcity"
+    },
+    {
+      "kind": "problem",
+      "title": "Yomg'ir suvi ko'chalarni bosadi",
+      "description": "Kanalizatsiya yomg'irga mo'ljallanmagan, jaladan keyin ko'chalar ko'lga aylanadi. Transport to'xtaydi, do'konlarga suv kiradi.",
+      "expected_result": "Muammoli 40 nuqtada drenaj tizimi yangilanadi.",
+      "author_name": "Xurshid Bozorov",
+      "author_phone": "+998935583434",
+      "region": "toshkent_shahri",
+      "vote_count": 267,
+      "created_at": "2026-08-07",
+      "comments": [
+        {
+          "author_name": "Madina Qurbonova",
+          "text": "Panjaralar tozalanmaydi, avval shuni grafikka qo'yish kerak.",
+          "created_at": "2026-08-10"
+        },
+        {
+          "author_name": "Rustam Ziyodov",
+          "text": "Yashil maydonlar suvni yutadi, asfalt maydonini kamaytirish ham yechim.",
+          "created_at": "2026-08-18"
+        }
+      ],
+      "direction": "smartcity"
+    },
+    {
+      "kind": "problem",
+      "title": "Universitet laboratoriyalari eskirgan",
+      "description": "Talaba tajribani faqat kitobda o'qiydi, chunki reaktiv va uskuna yo'q. Ilmiy ishlar amaliy asosdan mahrum bo'ladi.",
+      "expected_result": "20 ta universitet laboratoriyasi yangilanadi, yiliga 5000 talaba real tajriba o'tkazadi.",
+      "author_name": "Alisher Nurmatov",
+      "author_phone": "+998901171717",
+      "region": "toshkent_shahri",
+      "vote_count": 378,
+      "created_at": "2026-05-26",
+      "comments": [
+        {
+          "author_name": "Dilnoza Ochilova",
+          "text": "Umumiy laboratoriya markazi ochilsa, har bir universitetga alohida qurish shart emas.",
+          "created_at": "2026-05-29"
+        },
+        {
+          "author_name": "Rustam Ziyodov",
+          "text": "Reaktivlarni sotib olish tartibi ham soddalashtirilsin, hozir olti oy ketadi.",
+          "created_at": "2026-06-07"
+        },
+        {
+          "author_name": "Jamshid Qobilov",
+          "text": "Uskuna kelgani bilan ishlatadigan mutaxassis bo'lmasa, changlab yotadi.",
+          "created_at": "2026-06-18"
+        }
+      ],
+      "direction": "science"
+    },
+    {
+      "kind": "idea",
+      "title": "Yosh olimlar uchun ochiq nashr fondi",
+      "description": "Xalqaro jurnalda maqola chop etish qimmat, yosh tadqiqotchi to'lay olmaydi. Fond eng yaxshi ishlarning nashr xarajatini qoplaydi.",
+      "expected_result": "Yiliga 200 ta maqola xalqaro jurnallarda chiqadi.",
+      "author_name": "Muhammadali Ochilov",
+      "author_phone": "+998933371717",
+      "region": "samarqand",
+      "vote_count": 234,
+      "created_at": "2026-06-04",
+      "comments": [
+        {
+          "author_name": "Gulnoza Rasulova",
+          "text": "Yirtqich jurnallardan ehtiyot bo'lish kerak, ro'yxat tuzilsin.",
+          "created_at": "2026-06-07"
+        },
+        {
+          "author_name": "Shohrux Qodirov",
+          "text": "Ingliz tilida tahrir xizmati ham qo'shilsin, ko'p maqola shu sababdan qaytadi.",
+          "created_at": "2026-06-16"
+        }
+      ],
+      "direction": "science"
+    },
+    {
+      "kind": "proposal",
+      "title": "Maktab o'quvchilari uchun ilmiy tanlov",
+      "description": "Olimpiadalar bilim tekshiradi, lekin tadqiqot ko'nikmasini bermaydi. Loyiha tanlovida bola o'zi savol qo'yadi va javob izlaydi.",
+      "expected_result": "Yiliga 3000 ta o'quvchi loyihasi, eng yaxshilari qo'llab-quvvatlanadi.",
+      "author_name": "Umida Hakimova",
+      "author_phone": "+998944471717",
+      "region": "namangan",
+      "vote_count": 289,
+      "created_at": "2026-06-12",
+      "comments": [
+        {
+          "author_name": "Bahodir Xudoyberdiyev",
+          "text": "Mentor biriktirilsin, bola o'zi ilmiy ish yozolmaydi.",
+          "created_at": "2026-06-15"
+        },
+        {
+          "author_name": "Guli Nabiyeva",
+          "text": "Qishloq maktablari uchun alohida nominatsiya bo'lsin, sharoit teng emas.",
+          "created_at": "2026-06-24"
+        },
+        {
+          "author_name": "Malika Tursunova",
+          "text": "G'oliblarga universitetga kirishda imtiyoz berilsa, qiziqish keskin oshadi.",
+          "created_at": "2026-07-05"
+        }
+      ],
+      "direction": "science"
+    },
+    {
+      "kind": "startup",
+      "title": "Ilmiy uskunalar uchun ijara xizmati",
+      "description": "Bitta tadqiqotchi qimmat uskunani sotib ololmaydi, lekin bir necha kunga kerak bo'ladi. Ijara markazi shu ehtiyojni qoplaydi.",
+      "expected_result": "100 dan ortiq tadqiqot guruhi uskunadan foydalanadi.",
+      "author_name": "Sanjar Ergashev",
+      "author_phone": "+998902271717",
+      "region": "toshkent_shahri",
+      "vote_count": 145,
+      "created_at": "2026-06-20",
+      "comments": [
+        {
+          "author_name": "Farrux Sattorov",
+          "text": "Uskunani buzilishdan sug'urtalash masalasi hal bo'lsin.",
+          "created_at": "2026-06-23"
+        },
+        {
+          "author_name": "Sanobar Yusupova",
+          "text": "Operator bilan birga berilsa, xavf kamayadi.",
+          "created_at": "2026-07-02"
+        }
+      ],
+      "direction": "science"
+    },
+    {
+      "kind": "problem",
+      "title": "Ilmiy natijalar ishlab chiqarishga chiqmaydi",
+      "description": "Dissertatsiyalar javonda qolib ketadi, korxonalar esa mahalliy yechim izlaydi. O'rtada bog'lovchi bo'g'in yo'q.",
+      "expected_result": "Texnologiya transfer markazi ochiladi, yiliga 30 ta ishlanma joriy etiladi.",
+      "author_name": "Ulug'bek Xolmatov",
+      "author_phone": "+998935591717",
+      "region": "fargona",
+      "vote_count": 312,
+      "created_at": "2026-06-28",
+      "comments": [
+        {
+          "author_name": "Doniyor Sobirov",
+          "text": "Korxona ehtiyojini oldindan e'lon qilsa, olimlar shu yo'nalishda ishlaydi.",
+          "created_at": "2026-07-01"
+        },
+        {
+          "author_name": "Feruza Abdullayeva",
+          "text": "Patent olish jarayoni ham soddalashtirilishi kerak.",
+          "created_at": "2026-07-10"
+        },
+        {
+          "author_name": "Sherzod Ahmedov",
+          "text": "Olim daromaddan ulush olsa, motivatsiya butunlay boshqacha bo'ladi.",
+          "created_at": "2026-07-21"
+        }
+      ],
+      "direction": "science"
+    },
+    {
+      "kind": "idea",
+      "title": "Ommaviy ilm-fan festivali",
+      "description": "Fan maktabda quruq fan bo'lib qoladi, qiziqarli tomoni ko'rsatilmaydi. Ochiq festivalda tajribalar jonli namoyish etiladi.",
+      "expected_result": "Yiliga 50 mingdan ortiq tashrifchi, bolalarda fanga qiziqish ortadi.",
+      "author_name": "Nodira Karimova",
+      "author_phone": "+998901173434",
+      "region": "samarqand",
+      "vote_count": 198,
+      "created_at": "2026-07-06",
+      "comments": [
+        {
+          "author_name": "Sardor Eshonov",
+          "text": "Universitet talabalari namoyish qilsa, ular uchun ham tajriba bo'ladi.",
+          "created_at": "2026-07-09"
+        },
+        {
+          "author_name": "Kamola Yusupova",
+          "text": "Viloyatlarda ham o'tkazilsin, faqat poytaxtda bo'lmasin.",
+          "created_at": "2026-07-18"
+        }
+      ],
+      "direction": "science"
+    },
+    {
+      "kind": "proposal",
+      "title": "Ayol olimlar uchun qo'llab-quvvatlash dasturi",
+      "description": "Ayollar ilmiy karerani bola tug'ilgandan keyin to'xtatadi. Moslashuvchan grant va qaytish dasturi ularni fanda ushlab qoladi.",
+      "expected_result": "5 yil ichida ayol tadqiqotchilar ulushi sezilarli oshadi.",
+      "author_name": "Dilnoza Ochilova",
+      "author_phone": "+998933373434",
+      "region": "toshkent_shahri",
+      "vote_count": 267,
+      "created_at": "2026-07-14",
+      "comments": [
+        {
+          "author_name": "Aziza Umarova",
+          "text": "Konferensiyalarga bola bilan borish imkoni ham ko'rib chiqilsin.",
+          "created_at": "2026-07-17"
+        },
+        {
+          "author_name": "Gulbahor Nazarova",
+          "text": "Ta'til davrida ilmiy aloqani uzmaslik uchun onlayn seminarlar kerak.",
+          "created_at": "2026-07-26"
+        },
+        {
+          "author_name": "Dildora Sharipova",
+          "text": "Ilmiy ishimni tug'ruqdan keyin tashlaganman. Bunday dastur bo'lganda qolardim.",
+          "created_at": "2026-08-06"
+        }
+      ],
+      "direction": "science"
+    },
+    {
+      "kind": "idea",
+      "title": "Ochiq ilmiy ma'lumotlar bazasi",
+      "description": "Tadqiqot ma'lumotlari mualliflarda qolib ketadi, boshqa olimlar ulardan foydalana olmaydi. Ochiq baza takroriy ishni kamaytiradi.",
+      "expected_result": "1000 dan ortiq ma'lumotlar to'plami ochiq bo'ladi.",
+      "author_name": "Javohir Nematov",
+      "author_phone": "+998944473434",
+      "region": "toshkent_shahri",
+      "vote_count": 112,
+      "created_at": "2026-07-22",
+      "comments": [
+        {
+          "author_name": "Temur Sodiqov",
+          "text": "Ma'lumot formati standartlashtirilsin, aks holda ishlatib bo'lmaydi.",
+          "created_at": "2026-07-25"
+        }
+      ],
+      "direction": "science"
+    },
+    {
+      "kind": "startup",
+      "title": "Maktablar uchun mobil ilmiy laboratoriya",
+      "description": "Qishloq maktabida laboratoriya yo'q. Uskunalar bilan jihozlangan avtobus maktabma-maktab yurib, tajriba darslarini o'tkazadi.",
+      "expected_result": "150 ta maktab, yiliga 20 ming o'quvchi.",
+      "author_name": "Islom Rahmatullayev",
+      "author_phone": "+998902273434",
+      "region": "jizzax",
+      "vote_count": 223,
+      "created_at": "2026-07-30",
+      "comments": [
+        {
+          "author_name": "Madina Qurbonova",
+          "text": "Grafik oldindan e'lon qilinsa, o'qituvchilar tayyorlanadi.",
+          "created_at": "2026-08-02"
+        },
+        {
+          "author_name": "Xurshid Bozorov",
+          "text": "Bitta avtobus kam, kamida har viloyatga bittadan kerak.",
+          "created_at": "2026-08-11"
+        }
+      ],
+      "direction": "science"
+    },
+    {
+      "kind": "problem",
+      "title": "Yosh olimlarga turar joy masalasi",
+      "description": "Ilmiy tadqiqot institutida ish haqi past, ijara narxi yuqori. Yosh mutaxassis ikki yilda xususiy sektorga ketadi.",
+      "expected_result": "Yotoqxona va imtiyozli ijara orqali kadrlar saqlanadi.",
+      "author_name": "Alisher Nurmatov",
+      "author_phone": "+998935593434",
+      "region": "toshkent_shahri",
+      "vote_count": 178,
+      "created_at": "2026-08-08",
+      "comments": [
+        {
+          "author_name": "Rustam Ziyodov",
+          "text": "Bu eng katta sabab. Ish haqi masalasi hal bo'lmasa, qolgani yordam bermaydi.",
+          "created_at": "2026-08-11"
+        },
+        {
+          "author_name": "Jamshid Qobilov",
+          "text": "Institut yonida yotoqxona qurilsa, muammo ancha yengillashadi.",
+          "created_at": "2026-08-19"
+        }
+      ],
+      "direction": "science"
+    },
+    {
+      "kind": "problem",
+      "title": "Sug'orish kanallarida suvning yarmi yo'qoladi",
+      "description": "Tuproq kanallar orqali suv shimilib va bug'lanib ketadi. Dala oxiridagi fermerga suv umuman yetmaydi.",
+      "expected_result": "100 km kanal betonlashtiriladi, suv yo'qotilishi 40 foizga kamayadi.",
+      "author_name": "Odil Jo'rayev",
+      "author_phone": "+998901181818",
+      "region": "qashqadaryo",
+      "vote_count": 445,
+      "created_at": "2026-05-28",
+      "comments": [
+        {
+          "author_name": "Xurshid Bozorov",
+          "text": "Betondan ko'ra plyonka arzonroq va tezroq, sinab ko'rish kerak.",
+          "created_at": "2026-05-31"
+        },
+        {
+          "author_name": "Shahnoza Karimova",
+          "text": "Suv taqsimoti navbati ham shaffof bo'lsin, hozir nizolar ko'p.",
+          "created_at": "2026-06-09"
+        },
+        {
+          "author_name": "Ilhom Rasulov",
+          "text": "Dala oxiridamiz, mavsumda ikki marta suv keladi xolos.",
+          "created_at": "2026-06-20"
+        },
+        {
+          "author_name": "Rustam Ziyodov",
+          "text": "Hisoblagich qo'yilsa, kim qancha olayotgani ko'rinadi.",
+          "created_at": "2026-07-01"
+        }
+      ],
+      "direction": "water"
+    },
+    {
+      "kind": "startup",
+      "title": "Uy uchun arzon suv filtri",
+      "description": "Quvur suvi sifati past, import filtr qimmat. Mahalliy ishlab chiqarish narxni uch barobar tushiradi va kartrij ham shu yerda tayyorlanadi.",
+      "expected_result": "50 ming xonadon toza suv ichadi.",
+      "author_name": "Nilufar Ergasheva",
+      "author_phone": "+998933381818",
+      "region": "buxoro",
+      "vote_count": 289,
+      "created_at": "2026-06-06",
+      "comments": [
+        {
+          "author_name": "Muzaffar Aliyev",
+          "text": "Filtr sifatini mustaqil laboratoriya tekshirsin, sertifikat bo'lsin.",
+          "created_at": "2026-06-09"
+        },
+        {
+          "author_name": "Anvar Karimov",
+          "text": "Kartrij almashtirish eslatmasi bo'lsa yaxshi, odam unutadi.",
+          "created_at": "2026-06-18"
+        },
+        {
+          "author_name": "Gulbahor Nazarova",
+          "text": "Bo'lib to'lash bilan berilsa, ko'p oila oladi.",
+          "created_at": "2026-06-29"
+        }
+      ],
+      "direction": "water"
+    },
+    {
+      "kind": "idea",
+      "title": "Yomg'ir suvini yig'ish tizimi",
+      "description": "Yog'in suvi tomdan oqib ketadi, keyin sug'orish uchun quduq suvi ishlatiladi. Oddiy yig'ish tizimi bog' uchun suvni bepul beradi.",
+      "expected_result": "5 ming xonadonda bog' sug'orish uchun quduq suvi ishlatilmaydi.",
+      "author_name": "Sanobar Yusupova",
+      "author_phone": "+998944481818",
+      "region": "toshkent",
+      "vote_count": 178,
+      "created_at": "2026-06-14",
+      "comments": [
+        {
+          "author_name": "Farrux Sattorov",
+          "text": "Bakni yopiq qilish kerak, aks holda chivin ko'payadi.",
+          "created_at": "2026-06-17"
+        },
+        {
+          "author_name": "Nozima Yo'ldosheva",
+          "text": "Yog'in kam bo'lgan hududda foydasi kam bo'lishi mumkin.",
+          "created_at": "2026-06-26"
+        }
+      ],
+      "direction": "water"
+    },
+    {
+      "kind": "proposal",
+      "title": "Maktab va bog'chalarda suv sifati nazorati",
+      "description": "Bolalar ichadigan suv muntazam tekshirilmaydi. Har chorakda tahlil va natijani ochiq e'lon qilish talab etiladi.",
+      "expected_result": "Barcha ta'lim muassasalarida chorakda bir marta tahlil.",
+      "author_name": "Nargiza Islomova",
+      "author_phone": "+998902281818",
+      "region": "surxondaryo",
+      "vote_count": 356,
+      "created_at": "2026-06-22",
+      "comments": [
+        {
+          "author_name": "Sabina Tolipova",
+          "text": "Natija ota-onalarga ham ko'rinadigan bo'lsin.",
+          "created_at": "2026-06-25"
+        },
+        {
+          "author_name": "Jamshid Qobilov",
+          "text": "Yomon natija chiqsa, nima qilinishi ham yozib qo'yilsin.",
+          "created_at": "2026-07-04"
+        },
+        {
+          "author_name": "Dildora Sharipova",
+          "text": "Bolalarim maktabdan suv ichmaydi, uydan olib boradi. Muammo real.",
+          "created_at": "2026-07-15"
+        }
+      ],
+      "direction": "water"
+    },
+    {
+      "kind": "startup",
+      "title": "Oqava suvni tozalab qayta ishlatish",
+      "description": "Sanoat oqava suvi daryoga tashlanadi. Tozalash moduli suvni texnik ehtiyoj uchun qayta ishlatishga imkon beradi.",
+      "expected_result": "10 ta korxonada suv sarfi 50 foizga kamayadi.",
+      "author_name": "Sanjar Ergashev",
+      "author_phone": "+998935501818",
+      "region": "navoiy",
+      "vote_count": 198,
+      "created_at": "2026-06-30",
+      "comments": [
+        {
+          "author_name": "Ulug'bek Xolmatov",
+          "text": "Korxona uchun iqtisodiy foyda ko'rsatilsa, o'zi o'rnatadi.",
+          "created_at": "2026-07-03"
+        },
+        {
+          "author_name": "Doniyor Sobirov",
+          "text": "Tozalangan suv me'yorini kim nazorat qiladi degan savol muhim.",
+          "created_at": "2026-07-12"
+        }
+      ],
+      "direction": "water"
+    },
+    {
+      "kind": "idea",
+      "title": "Suv tejash bo'yicha maktab dasturi",
+      "description": "Bolalar suvni cheksiz deb o'ylaydi. Oddiy amaliy dars va uy topshiriqlari orqali oila darajasida tejash odati shakllanadi.",
+      "expected_result": "500 maktabda dastur, oilalarda suv sarfi 15 foizga kamayadi.",
+      "author_name": "Guli Nabiyeva",
+      "author_phone": "+998901183434",
+      "region": "namangan",
+      "vote_count": 134,
+      "created_at": "2026-07-08",
+      "comments": [
+        {
+          "author_name": "Umida Hakimova",
+          "text": "Hisoblagich ko'rsatkichini kuzatish topshiriq bo'lsa, bola o'zi qiziqadi.",
+          "created_at": "2026-07-11"
+        }
+      ],
+      "direction": "water"
+    },
+    {
+      "kind": "problem",
+      "title": "Quduqlar qurib bormoqda",
+      "description": "Yer osti suvi sathi pasaymoqda, ba'zi qishloqlarda quduqlar quridi. Aholi suv sotib olishga majbur.",
+      "expected_result": "Monitoring tarmog'i quriladi, muammoli hududlarda muqobil ta'minot yo'lga qo'yiladi.",
+      "author_name": "Islom Rahmatullayev",
+      "author_phone": "+998933383434",
+      "region": "qoraqalpogiston",
+      "vote_count": 412,
+      "created_at": "2026-07-16",
+      "comments": [
+        {
+          "author_name": "Madina Qurbonova",
+          "text": "Qishlog'imizda uch quduq qurigan, suvni mashinada olib kelamiz.",
+          "created_at": "2026-07-19"
+        },
+        {
+          "author_name": "Xurshid Bozorov",
+          "text": "Yer osti suvidan ortiqcha foydalanishni cheklash kerak.",
+          "created_at": "2026-07-28"
+        },
+        {
+          "author_name": "Rustam Ziyodov",
+          "text": "Monitoring ma'lumotlari ochiq bo'lsin, holat qanchalik jiddiyligini bilaylik.",
+          "created_at": "2026-08-08"
+        }
+      ],
+      "direction": "water"
+    },
+    {
+      "kind": "proposal",
+      "title": "Sug'orishda hisoblagich joriy etish",
+      "description": "Suv hajmi hisoblanmaydi, shuning uchun tejashga rag'bat yo'q. Hisoblagich adolatli taqsimot va tejashni birga olib keladi.",
+      "expected_result": "1000 ta xo'jalikda hisob yuritiladi.",
+      "author_name": "Ilhom Rasulov",
+      "author_phone": "+998944483434",
+      "region": "sirdaryo",
+      "vote_count": 167,
+      "created_at": "2026-07-24",
+      "comments": [
+        {
+          "author_name": "Odil Jo'rayev",
+          "text": "Hisoblagich narxi davlat tomonidan qoplansa, fermerlar qarshilik qilmaydi.",
+          "created_at": "2026-07-27"
+        },
+        {
+          "author_name": "Shahnoza Karimova",
+          "text": "Tejagan fermerga rag'bat berilsa, tizim o'zi ishlaydi.",
+          "created_at": "2026-08-05"
+        }
+      ],
+      "direction": "water"
+    },
+    {
+      "kind": "idea",
+      "title": "Ariq va hovuzlarni tozalash hasharlari",
+      "description": "Kichik suv obyektlari loyqa bosgan, oqim to'xtagan. Yoshlar bilan muntazam hasharlar holatni sezilarli yaxshilaydi.",
+      "expected_result": "Yiliga 200 km ariq tozalanadi.",
+      "author_name": "Bahodir Xudoyberdiyev",
+      "author_phone": "+998902283434",
+      "region": "jizzax",
+      "vote_count": 98,
+      "created_at": "2026-08-01",
+      "comments": [
+        {
+          "author_name": "Malika Tursunova",
+          "text": "Bir marta emas, grafik bilan bo'lsin, aks holda yana to'ladi.",
+          "created_at": "2026-08-04"
+        }
+      ],
+      "direction": "water"
+    },
+    {
+      "kind": "startup",
+      "title": "Suv sarfini kuzatuvchi aqlli hisoblagich",
+      "description": "Xonadon suv sarfini oy oxirida biladi, sizib ketishni sezmaydi. Aqlli hisoblagich anomaliyani darrov xabar qiladi.",
+      "expected_result": "20 ming xonadonda sizib ketish tez aniqlanadi.",
+      "author_name": "Temur Sodiqov",
+      "author_phone": "+998935503434",
+      "region": "toshkent_shahri",
+      "vote_count": 145,
+      "created_at": "2026-08-09",
+      "comments": [
+        {
+          "author_name": "Javohir Nematov",
+          "text": "Sizib ketish tunda ko'rinadi, shu vaqtdagi sarfni tahlil qilish yetarli.",
+          "created_at": "2026-08-12"
+        },
+        {
+          "author_name": "Nilufar Ergasheva",
+          "text": "Qo'shni bilan solishtirish ko'rsatilsa, odam o'zi tejay boshlaydi.",
+          "created_at": "2026-08-21"
+        }
+      ],
+      "direction": "water"
+    }
+  ]
+}

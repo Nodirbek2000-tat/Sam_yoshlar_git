@@ -12,12 +12,12 @@
 {% block content %}
 <div class="panel-grid panel-grid-4">
     <div class="panel-stat" data-tone="primary">
-        <span class="panel-stat-icon">🌍</span>
+        <span class="panel-stat-icon"><svg class="ic"><use href="#ic-globe"/></svg></span>
         <div class="panel-stat-value">{{ page_obj.paginator.count }}</div>
         <div class="panel-stat-label">Jami anketa</div>
     </div>
     <div class="panel-stat" data-tone="accent">
-        <span class="panel-stat-icon">⏳</span>
+        <span class="panel-stat-icon"><svg class="ic"><use href="#ic-hourglass"/></svg></span>
         <div class="panel-stat-value">{{ pending }}</div>
         <div class="panel-stat-label">Tasdiq kutmoqda</div>
     </div>
@@ -27,7 +27,7 @@
         <div class="panel-stat-label">Tasdiqlangan</div>
     </div>
     <div class="panel-stat" data-tone="info">
-        <span class="panel-stat-icon">🗺️</span>
+        <span class="panel-stat-icon"><svg class="ic"><use href="#ic-map"/></svg></span>
         <div class="panel-stat-value">{{ countries }}</div>
         <div class="panel-stat-label">Davlat</div>
     </div>
@@ -35,7 +35,7 @@
 
 <form method="get" class="panel-toolbar" style="margin-top:18px">
     <div class="panel-search">
-        <span class="panel-search-icon">🔍</span>
+        <span class="panel-search-icon"><svg class="ic"><use href="#ic-search"/></svg></span>
         <input type="search" name="q" value="{{ search }}" class="panel-input"
                placeholder="Ism, universitet yoki shahar...">
     </div>
@@ -82,7 +82,7 @@
                             </td>
                             <td>
                                 <span class="panel-badge panel-badge-primary">
-                                    {{ peer.purpose_icon }} {{ peer.get_purpose_display }}
+                                    <svg class="ic"><use href="#{{ peer.purpose_icon }}"/></svg> {{ peer.get_purpose_display }}
                                 </span>
                                 <div class="panel-table-meta">{{ peer.field|default:"" }}</div>
                             </td>
@@ -117,7 +117,7 @@
         {% include 'panel/_pagination.html' with qs=""|add:"q="|add:search|add:"&holat="|add:active_status|add:"&" %}
     {% else %}
         <div class="panel-empty">
-            <div class="panel-empty-icon">🌍</div>
+            <div class="panel-empty-icon"><svg class="ic"><use href="#ic-globe"/></svg></div>
             <div class="panel-empty-title">Anketa yo'q</div>
             <div class="panel-empty-text">Chet eldagi yurtdoshlar anketa to'ldirgach shu yerda ko'rinadi.</div>
         </div>

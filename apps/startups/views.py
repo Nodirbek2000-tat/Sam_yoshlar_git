@@ -36,7 +36,7 @@ def startup_register(request):
 
 def _sphere_icon(value):
     from .models import STARTUP_SPHERE_ICONS
-    return STARTUP_SPHERE_ICONS.get(value, '🚀')
+    return STARTUP_SPHERE_ICONS.get(value, 'ic-rocket')
 
 
 def startup_success(request):

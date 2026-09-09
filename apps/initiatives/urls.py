@@ -25,9 +25,16 @@ urlpatterns = [
     # Eski havolalar
     path('ovoz/', RedirectView.as_view(pattern_name='initiatives:youth', permanent=False)),
 
-    # Tashkilotlar anketasi (hozircha menyudan olib tashlangan, havola ishlaydi)
+    # Tashkilotlar muammolari — ko'rish hammaga ochiq, taklif berish ro'yxatdan o'tgach
+    path('muammolar/', views.problem_list, name='problems'),
+    path('muammolar/<int:pk>/', views.problem_detail, name='problem_detail'),
+
+    # Tashkilot anketasi — o'z muammosini kiritish
     path('tashkilotlar/', views.organization_form, name='organizations'),
     path('tashkilotlar/yuborildi/', views.organization_success, name='organization_success'),
-    path('yechim/<int:problem_id>/', views.youth_view, name='youth_problem'),
     path('yechim/yuborildi/', views.solution_success, name='solution_success'),
+
+    # Eski havola
+    path('yechim/<int:pk>/', RedirectView.as_view(
+        pattern_name='initiatives:problem_detail', permanent=False), name='youth_problem'),
 ]

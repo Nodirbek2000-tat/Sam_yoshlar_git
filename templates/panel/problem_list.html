@@ -28,11 +28,11 @@
                                     {{ problem.organization.get_sphere_display }} · {{ problem.organization.phone }}
                                 </div>
                             </td>
-                            <td><span class="panel-badge panel-badge-primary">{{ problem.icon }} {{ problem.get_category_display }}</span></td>
+                            <td><span class="panel-badge panel-badge-primary"><svg class="ic"><use href="#{{ problem.icon }}"/></svg> {{ problem.get_category_display }}</span></td>
                             <td style="max-width:380px">{{ problem.description|truncatechars:130 }}</td>
                             <td>
                                 <a href="{% url 'panel:solutions' %}" class="panel-badge panel-badge-info">
-                                    💡 {{ problem.solution_count }}
+                                    <svg class="ic"><use href="#ic-bulb"/></svg> {{ problem.solution_count }}
                                 </a>
                             </td>
                             <td>{{ problem.created_at|date:"d.m.Y" }}</td>
@@ -45,7 +45,7 @@
         {% include 'panel/_pagination.html' %}
     {% else %}
         <div class="panel-empty">
-            <div class="panel-empty-icon">🏛️</div>
+            <div class="panel-empty-icon"><svg class="ic"><use href="#ic-bank"/></svg></div>
             <div class="panel-empty-title">Muammolar yo'q</div>
             <div class="panel-empty-text">Tashkilotlar anketa orqali muammo kiritishi mumkin.</div>
         </div>

@@ -28,7 +28,7 @@
                         {% endif %}
                     </div>
                     <div class="peer-tags">
-                        <span class="badge badge-primary">{{ peer.purpose_icon }} {{ peer.get_purpose_display }}</span>
+                        <span class="badge badge-primary"><svg class="ic"><use href="#{{ peer.purpose_icon }}"/></svg> {{ peer.get_purpose_display }}</span>
                         {% if peer.since_year %}<span class="badge badge-info">{{ peer.since_year }}-yildan beri</span>{% endif %}
                     </div>
                 </div>
@@ -37,7 +37,7 @@
             <div class="grid grid-2 peer-facts">
                 {% if peer.institution %}
                     <div class="peer-fact">
-                        <span class="peer-fact-icon">🏛️</span>
+                        <span class="peer-fact-icon"><svg class="ic"><use href="#ic-bank"/></svg></span>
                         <div>
                             <div class="peer-fact-label">Universitet / kompaniya</div>
                             <div class="peer-fact-value">{{ peer.institution }}</div>
@@ -46,7 +46,7 @@
                 {% endif %}
                 {% if peer.field %}
                     <div class="peer-fact">
-                        <span class="peer-fact-icon">📚</span>
+                        <span class="peer-fact-icon"><svg class="ic"><use href="#ic-books"/></svg></span>
                         <div>
                             <div class="peer-fact-label">Yo'nalish</div>
                             <div class="peer-fact-value">{{ peer.field }}</div>
@@ -60,7 +60,7 @@
 
             {% if peer.can_help %}
                 <div class="peer-help-box">
-                    <h2 class="peer-section-title">🤝 Nimada yordam bera oladi</h2>
+                    <h2 class="peer-section-title"><svg class="ic"><use href="#ic-handshake"/></svg> Nimada yordam bera oladi</h2>
                     <p>{{ peer.can_help|linebreaksbr }}</p>
                 </div>
             {% endif %}
@@ -70,17 +70,17 @@
                 <div class="peer-contacts">
                     {% if peer.telegram %}
                         <a href="https://t.me/{{ peer.telegram|cut:'@' }}" target="_blank" rel="noopener"
-                           class="peer-contact">📱 Telegram <b>{{ peer.telegram }}</b></a>
+                           class="peer-contact"><svg class="ic"><use href="#ic-mobile"/></svg> Telegram <b>{{ peer.telegram }}</b></a>
                     {% endif %}
                     {% if peer.instagram %}
                         <a href="https://instagram.com/{{ peer.instagram|cut:'@' }}" target="_blank" rel="noopener"
-                           class="peer-contact">📸 Instagram <b>{{ peer.instagram }}</b></a>
+                           class="peer-contact"><svg class="ic"><use href="#ic-camera"/></svg> Instagram <b>{{ peer.instagram }}</b></a>
                     {% endif %}
                     {% if peer.email %}
-                        <a href="mailto:{{ peer.email }}" class="peer-contact">✉️ <b>{{ peer.email }}</b></a>
+                        <a href="mailto:{{ peer.email }}" class="peer-contact"><svg class="ic"><use href="#ic-mail"/></svg> <b>{{ peer.email }}</b></a>
                     {% endif %}
                     {% if peer.phone %}
-                        <a href="tel:{{ peer.phone }}" class="peer-contact">📞 <b>{{ peer.phone }}</b></a>
+                        <a href="tel:{{ peer.phone }}" class="peer-contact"><svg class="ic"><use href="#ic-phone"/></svg> <b>{{ peer.phone }}</b></a>
                     {% endif %}
                 </div>
             {% endif %}

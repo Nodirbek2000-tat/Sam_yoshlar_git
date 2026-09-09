@@ -60,10 +60,10 @@
                         <label class="voice-kind">
                             {{ radio.tag }}
                             <span class="voice-kind-icon">
-                                {% if radio.data.value == 'problem' %}❗
-                                {% elif radio.data.value == 'idea' %}💡
-                                {% elif radio.data.value == 'proposal' %}📌
-                                {% else %}🚀{% endif %}
+                                {% if radio.data.value == 'problem' %}<svg class="ic"><use href="#ic-alert"/></svg>
+                                {% elif radio.data.value == 'idea' %}<svg class="ic"><use href="#ic-bulb"/></svg>
+                                {% elif radio.data.value == 'proposal' %}<svg class="ic"><use href="#ic-pin"/></svg>
+                                {% else %}<svg class="ic"><use href="#ic-rocket"/></svg>{% endif %}
                             </span>
                             <span class="voice-kind-label">{{ radio.choice_label }}</span>
                         </label>
@@ -107,7 +107,7 @@
 
             <div class="voice-form-foot">
                 <button type="submit" class="voice-cta" style="margin-bottom:0">
-                    ✦ Tashabbusni yuborish
+                    <svg class="ic"><use href="#ic-spark"/></svg> Tashabbusni yuborish
                 </button>
                 <a href="{% url 'initiatives:youth_direction' direction.id %}" class="voice-ghost">Bekor qilish</a>
             </div>

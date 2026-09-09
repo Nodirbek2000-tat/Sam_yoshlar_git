@@ -1,3 +1,4 @@
+from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.urls import reverse
 from django.utils.html import escape
@@ -51,16 +52,38 @@ class SolutionTests(TestCase):
             description="Navbat 2 soat.",
         )
 
+    def _detail_url(self):
+        return reverse('initiatives:problem_detail', kwargs={'pk': self.problem.pk})
+
     def test_problem_listed_for_youth(self):
-        url = reverse('initiatives:youth_problem', kwargs={'problem_id': self.problem.pk})
-        response = self.client.get(url)
+        response = self.client.get(reverse('initiatives:problems'))
         self.assertContains(response, "MedService")
         self.assertContains(response, "Navbat 2 soat")
 
+    def test_problem_detail_open_for_guests(self):
+        """Ko'rish hamma uchun ochiq."""
+        response = self.client.get(self._detail_url())
+        self.assertContains(response, "MedService")
+        self.assertContains(response, "Navbat 2 soat")
+        self.assertContains(response, "Taklif berish uchun ro")
+
+    def test_guest_cannot_submit_solution(self):
+        response = self.client.post(self._detail_url(), {
+            'author_name': "Mehmon",
+            'title': "Yechim",
+            'description': "Tavsif.",
+        })
+        self.assertEqual(response.status_code, 302)
+        self.assertIn(reverse('accounts:login'), response['Location'])
+        self.assertEqual(Solution.objects.count(), 0)
+
     def test_submit_solution(self):
-        url = reverse('initiatives:youth_problem', kwargs={'problem_id': self.problem.pk})
-        response = self.client.post(url, {
-            'problem_id': self.problem.pk,
+        User = get_user_model()
+        user = User.objects.create_user(email='yosh@mentadbirkor.uz', password='Parol2026!',
+                                        full_name="Yosh Dasturchi")
+        self.client.force_login(user)
+
+        response = self.client.post(self._detail_url(), {
             'author_name': "Yosh Dasturchi",
             'title': "Onlayn navbat boti",
             'description': "Telegram bot orqali navbat olish tizimi.",
@@ -69,9 +92,17 @@ class SolutionTests(TestCase):
         self.assertRedirects(response, reverse('initiatives:solution_success'))
         self.assertEqual(Solution.objects.count(), 1)
         self.assertEqual(self.problem.solutions_count, 1)
+        self.assertEqual(Solution.objects.first().author, user)
 
     def test_selected_problem_page(self):
-        url = reverse('initiatives:youth_problem', kwargs={'problem_id': self.problem.pk})
-        response = self.client.get(url)
-        self.assertContains(response, "Tanlangan muammo")
+        User = get_user_model()
+        user = User.objects.create_user(email='yosh2@mentadbirkor.uz', password='Parol2026!')
+        self.client.force_login(user)
+        response = self.client.get(self._detail_url())
+        self.assertContains(response, "Yechimingizni taklif qiling")
         self.assertContains(response, "Yechim nomi")
+
+    def test_old_url_redirects(self):
+        response = self.client.get(reverse('initiatives:youth_problem',
+                                           kwargs={'pk': self.problem.pk}))
+        self.assertRedirects(response, self._detail_url())

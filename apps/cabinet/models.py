@@ -93,8 +93,8 @@ class Notification(TimeStampedModel):
     @property
     def icon(self):
         return {
-            NotificationType.INFO: 'ℹ️',
-            NotificationType.SUCCESS: '✅',
-            NotificationType.WARNING: '⚠️',
-            NotificationType.EVENT: '📅',
-        }.get(self.type, 'ℹ️')
+            NotificationType.INFO: 'ic-bell',
+            NotificationType.SUCCESS: 'ic-check',
+            NotificationType.WARNING: 'ic-alert',
+            NotificationType.EVENT: 'ic-calendar',
+        }.get(self.type, 'ic-bell')

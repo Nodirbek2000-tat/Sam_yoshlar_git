@@ -20,7 +20,7 @@ class SiteSetting(TimeStampedModel):
     site_name = models.CharField("Sayt nomi", max_length=120, default="sam-yosh tadbirkor.uz")
     tagline = models.TextField(
         "Qisqa tavsif",
-        default="O'zbekiston yosh tadbirkorlarini birlashtiruvchi, qo'llab-quvvatlovchi va "
+        default="Yoshlarni birlashtiruvchi, qo'llab-quvvatlovchi va "
                 "rivojlantirishga xizmat qiluvchi yagona axborot platformasi.",
     )
     address = models.CharField("Manzil", max_length=255, blank=True)

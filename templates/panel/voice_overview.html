@@ -12,24 +12,24 @@
 {% block content %}
 <div class="panel-grid panel-grid-4">
     <div class="panel-stat" data-tone="primary">
-        <span class="panel-stat-icon">✨</span>
+        <span class="panel-stat-icon"><svg class="ic"><use href="#ic-spark"/></svg></span>
         <div class="panel-stat-value">{{ total_ideas }}</div>
         <div class="panel-stat-label">Bildirilgan tashabbus</div>
         <div class="panel-stat-sub">+{{ new_ideas_week }} bu hafta</div>
     </div>
     <div class="panel-stat" data-tone="success">
-        <span class="panel-stat-icon">👍</span>
+        <span class="panel-stat-icon"><svg class="ic"><use href="#ic-vote"/></svg></span>
         <div class="panel-stat-value">{{ total_votes }}</div>
         <div class="panel-stat-label">Jami ovoz</div>
         <div class="panel-stat-sub">+{{ new_votes_week }} bu hafta</div>
     </div>
     <div class="panel-stat" data-tone="info">
-        <span class="panel-stat-icon">💬</span>
+        <span class="panel-stat-icon"><svg class="ic"><use href="#ic-chat"/></svg></span>
         <div class="panel-stat-value">{{ total_comments }}</div>
         <div class="panel-stat-label">Berilgan taklif</div>
     </div>
     <div class="panel-stat" data-tone="accent">
-        <span class="panel-stat-icon">🗳️</span>
+        <span class="panel-stat-icon"><svg class="ic"><use href="#ic-ballot"/></svg></span>
         <div class="panel-stat-value">{{ total_voters }}</div>
         <div class="panel-stat-label">Ovoz berishlar</div>
     </div>
@@ -38,7 +38,7 @@
 <div class="panel-grid panel-grid-2" style="margin-top:18px">
     <div class="panel-card">
         <div class="panel-card-head">
-            <h2 class="panel-card-title">🏆 Reyting — Top 10</h2>
+            <h2 class="panel-card-title"><svg class="ic"><use href="#ic-trophy"/></svg> Reyting — Top 10</h2>
             <a href="{% url 'panel:initiatives' %}" class="panel-btn panel-btn-ghost panel-btn-sm">Barchasi →</a>
         </div>
         <div class="panel-list">
@@ -46,20 +46,20 @@
                 <a href="{% url 'panel:initiative_detail' idea.pk %}" class="panel-list-item">
                     <span class="panel-rank {% if forloop.counter <= 3 %}panel-rank-top{% endif %}">#{{ forloop.counter }}</span>
                     <div class="panel-list-main">
-                        <div class="panel-list-title">{{ idea.kind_icon }} {{ idea.title }}</div>
+                        <div class="panel-list-title"><svg class="ic"><use href="#{{ idea.kind_icon }}"/></svg> {{ idea.title }}</div>
                         <div class="panel-list-meta">
                             {{ idea.author_label }} ·
                             <span style="color:{{ idea.direction_data.color }}">{{ idea.direction_data.name }}</span>
                         </div>
                     </div>
                     <div style="display:flex; gap:6px">
-                        <span class="panel-badge panel-badge-success">👍 {{ idea.vote_count }}</span>
-                        <span class="panel-badge panel-badge-info">💬 {{ idea.comment_total }}</span>
+                        <span class="panel-badge panel-badge-success"><svg class="ic"><use href="#ic-vote"/></svg> {{ idea.vote_count }}</span>
+                        <span class="panel-badge panel-badge-info"><svg class="ic"><use href="#ic-chat"/></svg> {{ idea.comment_total }}</span>
                     </div>
                 </a>
             {% empty %}
                 <div class="panel-empty">
-                    <div class="panel-empty-icon">✨</div>
+                    <div class="panel-empty-icon"><svg class="ic"><use href="#ic-spark"/></svg></div>
                     <div class="panel-empty-title">Hali tashabbus yo'q</div>
                 </div>
             {% endfor %}
@@ -68,7 +68,7 @@
 
     <div class="panel-card">
         <div class="panel-card-head">
-            <h2 class="panel-card-title">🧭 Yo'nalishlar bo'yicha</h2>
+            <h2 class="panel-card-title"><svg class="ic"><use href="#ic-compass"/></svg> Yo'nalishlar bo'yicha</h2>
         </div>
         <div class="panel-list">
             {% for dir in directions %}
@@ -93,7 +93,7 @@
 <div class="panel-grid panel-grid-2" style="margin-top:18px">
     <div class="panel-card">
         <div class="panel-card-head">
-            <h2 class="panel-card-title">👤 Eng faol mualliflar</h2>
+            <h2 class="panel-card-title"><svg class="ic"><use href="#ic-user"/></svg> Eng faol mualliflar</h2>
         </div>
         <div class="panel-list">
             {% for author in authors %}
@@ -109,11 +109,11 @@
                         </div>
                         <div class="panel-list-meta">{{ author.ideas }} ta tashabbus</div>
                     </div>
-                    <span class="panel-badge panel-badge-success">👍 {{ author.votes|default:0 }}</span>
+                    <span class="panel-badge panel-badge-success"><svg class="ic"><use href="#ic-vote"/></svg> {{ author.votes|default:0 }}</span>
                 </div>
             {% empty %}
                 <div class="panel-empty">
-                    <div class="panel-empty-icon">👤</div>
+                    <div class="panel-empty-icon"><svg class="ic"><use href="#ic-user"/></svg></div>
                     <div class="panel-empty-title">Mualliflar yo'q</div>
                 </div>
             {% endfor %}
@@ -122,7 +122,7 @@
 
     <div class="panel-card">
         <div class="panel-card-head">
-            <h2 class="panel-card-title">💬 So'nggi takliflar</h2>
+            <h2 class="panel-card-title"><svg class="ic"><use href="#ic-chat"/></svg> So'nggi takliflar</h2>
         </div>
         <div class="panel-list">
             {% for comment in recent_comments %}
@@ -138,7 +138,7 @@
                 </a>
             {% empty %}
                 <div class="panel-empty">
-                    <div class="panel-empty-icon">💬</div>
+                    <div class="panel-empty-icon"><svg class="ic"><use href="#ic-chat"/></svg></div>
                     <div class="panel-empty-title">Takliflar yo'q</div>
                 </div>
             {% endfor %}

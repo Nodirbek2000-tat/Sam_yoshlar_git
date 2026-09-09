@@ -1,13 +1,16 @@
 """«Yoshlar Ovozi» — tashabbus bildirish, reyting, ovoz va takliflar."""
 
 import random
+from urllib.parse import quote
 
 from django import forms
 from django.contrib import messages
+from django.contrib.auth.views import redirect_to_login
 from django.core.paginator import Paginator
 from django.db.models import Count, F, Sum
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.decorators.http import require_POST
 
@@ -87,12 +90,6 @@ class CommentForm(forms.ModelForm):
 # Yordamchilar
 # --------------------------------------------------------------------------
 
-def _ensure_session(request):
-    if not request.session.session_key:
-        request.session.save()
-    return request.session.session_key
-
-
 def _direction_stats():
     rows = (Initiative.objects.filter(is_published=True)
             .values('direction')
@@ -116,15 +113,14 @@ def _serialize_directions(stats):
 
 def _voted_ids(request, queryset):
     """Foydalanuvchi/mehmon qaysi tashabbuslarga ovoz berganini qaytaradi."""
+    if not request.user.is_authenticated:
+        return set()          # mehmon ovoz berolmaydi
+
     ids = [item.pk for item in queryset]
     if not ids:
         return set()
 
-    votes = InitiativeVote.objects.filter(initiative_id__in=ids)
-    if request.user.is_authenticated:
-        votes = votes.filter(user=request.user)
-    else:
-        votes = votes.filter(user__isnull=True, session_key=_ensure_session(request))
+    votes = InitiativeVote.objects.filter(initiative_id__in=ids, user=request.user)
     return set(votes.values_list('initiative_id', flat=True))
 
 
@@ -180,13 +176,16 @@ def initiative_detail(request, pk):
     )
     direction = get_direction(initiative.direction)
 
+    if request.method == 'POST' and not request.user.is_authenticated:
+        messages.info(request, "Taklif berish uchun avval tizimga kiring.")
+        return redirect_to_login(f"{request.path}#takliflar")
+
     form = CommentForm(request.POST or None, user=request.user)
     if request.method == 'POST':
         if form.is_valid():
             comment = form.save(commit=False)
             comment.initiative = initiative
-            if request.user.is_authenticated:
-                comment.author = request.user
+            comment.author = request.user
             comment.save()
 
             # Muallifga bildirishnoma
@@ -223,16 +222,20 @@ def initiative_detail(request, pk):
 
 @require_POST
 def vote_view(request, pk):
-    """Ovoz berish (AJAX) — bir kishi bir marta."""
+    """Ovoz berish (AJAX) — bir kishi bir marta, faqat ro'yxatdan o'tganlar."""
     initiative = get_object_or_404(Initiative, pk=pk, is_published=True)
-    session_key = _ensure_session(request)
 
-    lookup = {'initiative': initiative}
-    if request.user.is_authenticated:
-        lookup['user'] = request.user
-    else:
-        lookup['user'] = None
-        lookup['session_key'] = session_key
+    if not request.user.is_authenticated:
+        detail_url = reverse('initiatives:initiative_detail', args=[initiative.pk])
+        return JsonResponse({
+            'ok': False,
+            'reason': 'auth',
+            'message': "Ovoz berish uchun avval tizimga kiring.",
+            'login_url': f"{reverse('accounts:login')}?next={quote(detail_url)}",
+            'votes': initiative.vote_count,
+        }, status=401)
+
+    lookup = {'initiative': initiative, 'user': request.user}
 
     if InitiativeVote.objects.filter(**lookup).exists():
         return JsonResponse({
@@ -242,11 +245,7 @@ def vote_view(request, pk):
             'votes': initiative.vote_count,
         }, status=409)
 
-    InitiativeVote.objects.create(
-        initiative=initiative,
-        user=request.user if request.user.is_authenticated else None,
-        session_key='' if request.user.is_authenticated else session_key,
-    )
+    InitiativeVote.objects.create(initiative=initiative, user=request.user, session_key='')
     Initiative.objects.filter(pk=initiative.pk).update(vote_count=F('vote_count') + 1)
     initiative.refresh_from_db(fields=['vote_count'])
 

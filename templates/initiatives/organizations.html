@@ -8,7 +8,7 @@
     <div class="container">
         <div class="tashkilot-form-hero-content">
             <a href="{% url 'initiatives:index' %}" class="tashabbuslar-back-link">← Tashabbuslar sahifasiga qaytish</a>
-            <span class="tashkilot-form-hero-icon">🏛️</span>
+            <span class="tashkilot-form-hero-icon"><svg class="ic"><use href="#ic-bank"/></svg></span>
             <h1 class="tashkilot-form-hero-title">Tashkilot muammolarini kiriting</h1>
             <p class="tashkilot-form-hero-subtitle">
                 Tashkilotingizdagi mavjud muammolarni aniq va batafsil yozing.
@@ -36,7 +36,7 @@
             <!-- 1-qadam: tashkilot ma'lumotlari -->
             <div class="form-step tashkilot-step active" data-step="1">
                 <div class="tashkilot-step-header">
-                    <span class="tashkilot-step-icon">🏢</span>
+                    <span class="tashkilot-step-icon"><svg class="ic"><use href="#ic-building"/></svg></span>
                     <div>
                         <span class="tashkilot-step-number">1-qadam</span>
                         <h2 class="tashkilot-step-title">Tashkilot ma'lumotlari</h2>
@@ -67,7 +67,7 @@
             {% for step in steps %}
                 <div class="form-step tashkilot-step" data-step="{{ step.number }}">
                     <div class="tashkilot-step-header">
-                        <span class="tashkilot-step-icon">{{ step.icon }}</span>
+                        <span class="tashkilot-step-icon"><svg class="ic"><use href="#{{ step.icon }}"/></svg></span>
                         <div>
                             <span class="tashkilot-step-number">{{ step.number }}-qadam</span>
                             <h2 class="tashkilot-step-title">{{ step.title }}</h2>
@@ -84,7 +84,7 @@
                     <div class="tashkilot-nav">
                         <button type="button" class="btn btn-outline btn-lg" data-goto-step="{{ step.number|add:'-1' }}">← Oldingi</button>
                         {% if forloop.last %}
-                            <button type="submit" class="btn btn-accent btn-lg">✅ Yuborish</button>
+                            <button type="submit" class="btn btn-accent btn-lg"><svg class="ic"><use href="#ic-check"/></svg> Yuborish</button>
                         {% else %}
                             <button type="button" class="btn btn-primary btn-lg" data-goto-step="{{ step.number|add:'1' }}">Keyingi →</button>
                         {% endif %}

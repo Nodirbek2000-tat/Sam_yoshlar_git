@@ -4,6 +4,7 @@ from django.contrib import admin
 from django.urls import include, path
 
 urlpatterns = [
+    path('api/v1/', include('apps.api.urls')),    # Next.js frontend uchun REST API
     path('boshqaruv/', admin.site.urls),          # Django admin
     path('', include('apps.core.urls')),          # /, /about
     path('', include('apps.accounts.urls')),      # /login, /register, /logout

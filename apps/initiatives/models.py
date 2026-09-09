@@ -25,48 +25,48 @@ class ProblemCategory(models.TextChoices):
 #: Anketadagi har bir qadam: kategoriya, tartib raqami, ikonka va savol matni.
 PROBLEM_QUESTIONS = [
     {
-        'category': ProblemCategory.BOTTLENECKS, 'number': 1, 'icon': '⛔',
+        'category': ProblemCategory.BOTTLENECKS, 'number': 1, 'icon': 'ic-ban',
         'question': "Tashkilotingizdagi qaysi amaliy jarayon (yoki ish bosqichi) eng ko'p vaqt "
                     "va resurs talab qiladi? Nima uchun?",
     },
     {
-        'category': ProblemCategory.HUMAN, 'number': 2, 'icon': '👥',
+        'category': ProblemCategory.HUMAN, 'number': 2, 'icon': 'ic-users',
         'question': "Xodimlar bilan bog'liq qanday muammolar bor — malaka, motivatsiya, "
                     "kadrlar almashinuvi yoki ish taqsimoti?",
     },
     {
-        'category': ProblemCategory.COMMUNICATION, 'number': 3, 'icon': '💬',
+        'category': ProblemCategory.COMMUNICATION, 'number': 3, 'icon': 'ic-chat',
         'question': "Bo'limlar o'rtasida axborot qanday uzatiladi? Qayerda ma'lumot yo'qoladi "
                     "yoki kechikadi?",
     },
     {
-        'category': ProblemCategory.TECHNOLOGY, 'number': 4, 'icon': '⚙️',
+        'category': ProblemCategory.TECHNOLOGY, 'number': 4, 'icon': 'ic-settings',
         'question': "Qaysi ishlar hali ham qo'lda bajariladi va avtomatlashtirilishi kerak? "
                     "Mavjud dasturlar yetarlimi?",
     },
     {
-        'category': ProblemCategory.CUSTOMERS, 'number': 5, 'icon': '⭐',
+        'category': ProblemCategory.CUSTOMERS, 'number': 5, 'icon': 'ic-star',
         'question': "Mijozlar (yoki fuqarolar) eng ko'p nimadan shikoyat qiladi? "
                     "Ularning fikri qanday yig'iladi?",
     },
     {
-        'category': ProblemCategory.FINANCE, 'number': 6, 'icon': '💰',
+        'category': ProblemCategory.FINANCE, 'number': 6, 'icon': 'ic-money',
         'question': "Qaysi xarajatlar asossiz ko'p? Byudjet rejalashtirish qanday amalga oshiriladi?",
     },
     {
-        'category': ProblemCategory.MANAGEMENT, 'number': 7, 'icon': '📊',
+        'category': ProblemCategory.MANAGEMENT, 'number': 7, 'icon': 'ic-chart',
         'question': "Natijalar qanday o'lchanadi va nazorat qilinadi? Hisobot tizimi qanchalik shaffof?",
     },
     {
-        'category': ProblemCategory.STRATEGY, 'number': 8, 'icon': '🎯',
+        'category': ProblemCategory.STRATEGY, 'number': 8, 'icon': 'ic-target',
         'question': "Rejalashtirilgan maqsadlarning qaysilari bajarilmay qolmoqda va nima sababdan?",
     },
     {
-        'category': ProblemCategory.COMPETITION, 'number': 9, 'icon': '🛡️',
+        'category': ProblemCategory.COMPETITION, 'number': 9, 'icon': 'ic-shield',
         'question': "Raqobatchilar yoki tashqi omillar (bozor, qonunchilik) qanday xavf tug'dirmoqda?",
     },
     {
-        'category': ProblemCategory.MAIN, 'number': 10, 'icon': '🔥',
+        'category': ProblemCategory.MAIN, 'number': 10, 'icon': 'ic-fire',
         'question': "Agar bitta muammoni bugun hal qilish imkoni bo'lsa — bu qaysi muammo bo'lardi?",
     },
 ]
@@ -130,7 +130,7 @@ class Problem(TimeStampedModel):
     @property
     def icon(self):
         item = PROBLEM_QUESTION_MAP.get(self.category)
-        return item['icon'] if item else '❓'
+        return item['icon'] if item else 'ic-question'
 
     @property
     def question(self):
@@ -176,13 +176,43 @@ class Solution(TimeStampedModel):
     status = models.CharField("Holat", max_length=20, choices=Status.choices, default=Status.PENDING)
     admin_note = models.TextField("Admin izohi", blank=True)
 
+    like_count = models.PositiveIntegerField("Layklar", default=0, db_index=True)
+
     class Meta:
         verbose_name = "Yechim"
         verbose_name_plural = "Yechimlar"
-        ordering = ['-created_at']
+        # Ko'p layk yig'gan taklif muammo ichida tepaga chiqadi
+        ordering = ['-like_count', '-created_at']
+        indexes = [models.Index(fields=['problem', '-like_count'])]
 
     def __str__(self):
         return self.title
+
+    def liked_by(self, user):
+        """Shu foydalanuvchi bu taklifni yoqtirganmi?"""
+        if not user or not user.is_authenticated:
+            return False
+        return self.likes.filter(user=user).exists()
+
+
+class SolutionLike(TimeStampedModel):
+    """Taklifga qo'yilgan layk. Bir foydalanuvchi bir taklifga bir marta."""
+
+    solution = models.ForeignKey(Solution, verbose_name="Taklif", on_delete=models.CASCADE,
+                                 related_name='likes')
+    user = models.ForeignKey('accounts.User', verbose_name="Foydalanuvchi",
+                             on_delete=models.CASCADE, related_name='solution_likes')
+
+    class Meta:
+        verbose_name = "Taklif layki"
+        verbose_name_plural = "Taklif layklari"
+        ordering = ['-created_at']
+        constraints = [
+            models.UniqueConstraint(fields=['solution', 'user'], name='uniq_like_per_user'),
+        ]
+
+    def __str__(self):
+        return f"{self.user} -> {self.solution}"
 
 
 # --------------------------------------------------------------------------
@@ -197,10 +227,10 @@ class InitiativeKind(models.TextChoices):
 
 
 INITIATIVE_KIND_ICONS = {
-    InitiativeKind.PROBLEM: '❗',
-    InitiativeKind.IDEA: '💡',
-    InitiativeKind.PROPOSAL: '📌',
-    InitiativeKind.STARTUP: '🚀',
+    InitiativeKind.PROBLEM: 'ic-alert',
+    InitiativeKind.IDEA: 'ic-bulb',
+    InitiativeKind.PROPOSAL: 'ic-pin',
+    InitiativeKind.STARTUP: 'ic-rocket',
 }
 
 
@@ -244,7 +274,7 @@ class Initiative(TimeStampedModel):
 
     @property
     def kind_icon(self):
-        return INITIATIVE_KIND_ICONS.get(self.kind, '💡')
+        return INITIATIVE_KIND_ICONS.get(self.kind, 'ic-bulb')
 
     @property
     def direction_data(self):

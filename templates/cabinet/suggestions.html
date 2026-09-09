@@ -19,7 +19,7 @@
                     </div>
                 {% endfor %}
             </div>
-            <button type="submit" class="btn btn-accent btn-lg">💡 Taklifni yuborish</button>
+            <button type="submit" class="btn btn-accent btn-lg"><svg class="ic"><use href="#ic-bulb"/></svg> Taklifni yuborish</button>
         </form>
     </div>
 </div>
@@ -36,8 +36,8 @@
                         </span>
                     </div>
                     <div class="card-meta">
-                        <span>📅 {{ suggestion.created_at|date:"d.m.Y" }}</span>
-                        <span>👍 {{ suggestion.votes }}</span>
+                        <span><svg class="ic"><use href="#ic-calendar"/></svg> {{ suggestion.created_at|date:"d.m.Y" }}</span>
+                        <span><svg class="ic"><use href="#ic-vote"/></svg> {{ suggestion.votes }}</span>
                     </div>
                     <p class="card-text">{{ suggestion.description|linebreaksbr }}</p>
                     {% if suggestion.expected_benefit %}
@@ -55,7 +55,7 @@
     </div>
 {% else %}
     <div class="empty-state">
-        <div class="empty-state-icon">💡</div>
+        <div class="empty-state-icon"><svg class="ic"><use href="#ic-bulb"/></svg></div>
         <div class="empty-state-title">Takliflar yo'q</div>
         <div class="empty-state-text">Platformani yaxshilash bo'yicha fikringizni yozing.</div>
     </div>

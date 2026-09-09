@@ -61,7 +61,27 @@ class VoteTests(TestCase):
         )
         self.url = reverse('initiatives:vote', kwargs={'pk': self.idea.pk})
 
-    def test_guest_can_vote_once(self):
+    def _login(self, email='ovoz@example.com'):
+        user = User.objects.create_user(email=email, password='Samyosh2026!', full_name="Ovoz")
+        self.client.force_login(user)
+        return user
+
+    def test_guest_cannot_vote(self):
+        """Ovoz berish faqat ro'yxatdan o'tganlar uchun."""
+        response = self.client.post(self.url)
+
+        self.assertEqual(response.status_code, 401)
+        data = response.json()
+        self.assertFalse(data['ok'])
+        self.assertEqual(data['reason'], 'auth')
+        self.assertIn(reverse('accounts:login'), data['login_url'])
+
+        self.idea.refresh_from_db()
+        self.assertEqual(self.idea.vote_count, 3)
+        self.assertEqual(InitiativeVote.objects.count(), 0)
+
+    def test_logged_in_can_vote_once(self):
+        self._login()
         response = self.client.post(self.url)
         self.assertEqual(response.status_code, 200)
         data = response.json()
@@ -72,6 +92,7 @@ class VoteTests(TestCase):
         self.assertEqual(self.idea.vote_count, 4)
 
     def test_second_vote_rejected(self):
+        self._login()
         self.client.post(self.url)
         response = self.client.post(self.url)
 
@@ -107,6 +128,7 @@ class VoteTests(TestCase):
         self.assertEqual(self.client.post(self.url).status_code, 404)
 
     def test_milestone_message(self):
+        self._login()
         self.idea.vote_count = 4
         self.idea.save()
         data = self.client.post(self.url).json()
@@ -181,7 +203,29 @@ class CommentTests(TestCase):
         self.assertContains(response, "Chiqindi muammosi")
         self.assertContains(response, "Takliflar")
 
-    def test_guest_can_comment(self):
+    def _login_youth(self):
+        youth = User.objects.create_user(email='yosh@example.com', password='Samyosh2026!',
+                                         full_name="Yosh Dasturchi")
+        self.client.force_login(youth)
+        return youth
+
+    def test_guest_sees_login_invite(self):
+        """Mehmon o'qiy oladi, lekin taklif bera olmaydi."""
+        response = self.client.get(self.url)
+        self.assertContains(response, "Taklif berish uchun ro")
+        self.assertNotContains(response, 'class="voice-comment-form"')
+
+    def test_guest_cannot_comment(self):
+        response = self.client.post(self.url, {
+            'author_name': "Yosh Dasturchi",
+            'text': "Telegram bot orqali chaqiruv tizimi qilish mumkin.",
+        })
+        self.assertEqual(response.status_code, 302)
+        self.assertIn(reverse('accounts:login'), response['Location'])
+        self.assertEqual(self.idea.comments.count(), 0)
+
+    def test_logged_in_can_comment(self):
+        self._login_youth()
         response = self.client.post(self.url, {
             'author_name': "Yosh Dasturchi",
             'text': "Telegram bot orqali chaqiruv tizimi qilish mumkin.",
@@ -190,6 +234,7 @@ class CommentTests(TestCase):
         self.assertEqual(self.idea.comments.count(), 1)
 
     def test_comment_notifies_author(self):
+        self._login_youth()
         self.client.post(self.url, {'author_name': "Yosh", 'text': "Taklif matni"})
         self.assertEqual(self.author.notifications.count(), 1)
         self.assertIn("yangi taklif", self.author.notifications.first().title.lower())
@@ -200,11 +245,13 @@ class CommentTests(TestCase):
         self.assertEqual(self.author.notifications.count(), 0)
 
     def test_empty_comment_rejected(self):
+        self._login_youth()
         response = self.client.post(self.url, {'author_name': "Yosh", 'text': ""})
         self.assertEqual(response.status_code, 200)
         self.assertEqual(self.idea.comments.count(), 0)
 
     def test_comment_visible_on_page(self):
+        self._login_youth()
         self.client.post(self.url, {'author_name': "Yosh Dasturchi", 'text': "Bot qilaylik"})
         response = self.client.get(self.url)
         self.assertContains(response, "Bot qilaylik")
@@ -217,6 +264,8 @@ class MilestoneNotificationTests(TestCase):
             direction='eco', kind='idea', title="G'oya", description="X",
             author=author, author_name="A", vote_count=4,
         )
+        voter = User.objects.create_user(email='ovoz@b.uz', password='Samyosh2026!', full_name="V")
+        self.client.force_login(voter)
         self.client.post(reverse('initiatives:vote', kwargs={'pk': idea.pk}))
         self.assertEqual(author.notifications.count(), 1)
         self.assertIn("5 ta ovoz", author.notifications.first().title)

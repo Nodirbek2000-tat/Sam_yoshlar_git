@@ -360,6 +360,11 @@ class PanelVoteToolsTests(TestCase):
         self.client.post(self.url, {'exact': '100'})
         self.client.logout()
 
+        # Ovoz berish ro'yxatdan o'tishni talab qiladi
+        voter = User.objects.create_user(email='ovoz@example.com',
+                                         password='Samyosh2026!', full_name="Ovoz")
+        self.client.force_login(voter)
+
         vote_url = reverse('initiatives:vote', kwargs={'pk': self.idea.pk})
         data = self.client.post(vote_url).json()
 

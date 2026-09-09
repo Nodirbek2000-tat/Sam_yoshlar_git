@@ -27,13 +27,13 @@ class AnnouncementType(models.TextChoices):
 
 
 ANNOUNCEMENT_ICONS = {
-    AnnouncementType.GRANT: '💰',
-    AnnouncementType.CREDIT: '🏦',
-    AnnouncementType.CONTEST: '🏆',
-    AnnouncementType.SEMINAR: '📚',
-    AnnouncementType.TRAINING: '🎓',
-    AnnouncementType.VACANCY: '💼',
-    AnnouncementType.STATE_PROGRAM: '🏛️',
+    AnnouncementType.GRANT: 'ic-money',
+    AnnouncementType.CREDIT: 'ic-building',
+    AnnouncementType.CONTEST: 'ic-trophy',
+    AnnouncementType.SEMINAR: 'ic-books',
+    AnnouncementType.TRAINING: 'ic-graduation',
+    AnnouncementType.VACANCY: 'ic-briefcase',
+    AnnouncementType.STATE_PROGRAM: 'ic-bank',
 }
 
 
@@ -182,7 +182,7 @@ class Announcement(TimeStampedModel):
 
     @property
     def icon(self):
-        return ANNOUNCEMENT_ICONS.get(self.type, '📢')
+        return ANNOUNCEMENT_ICONS.get(self.type, 'ic-megaphone')
 
     @property
     def is_expired(self):

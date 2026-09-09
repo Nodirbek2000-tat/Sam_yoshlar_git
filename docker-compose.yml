@@ -1,3 +1,12 @@
+# mentadbirkor.uz — to'liq tizim
+#
+#   db     PostgreSQL   — ma'lumotlar nomli volume'da, konteyner o'chsa ham qoladi
+#   web    Django       — REST API va admin
+#   front  Next.js      — foydalanuvchi ko'radigan sayt
+#   nginx  ikkalasining oldida turadi, HTTPS shu yerda tugaydi
+#   certbot SSL sertifikatni oladi va o'zi yangilab turadi
+#   bot    Telegram bot (ixtiyoriy profil)
+
 services:
 
   db:
@@ -9,7 +18,7 @@ services:
       POSTGRES_USER: ${DB_USER:-samyosh}
       POSTGRES_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD .env da ko'rsatilishi shart}
     volumes:
-      # Ma'lumotlar shu yerda saqlanadi — konteyner o'chsa ham yo'qolmaydi
+      # Ma'lumotlar shu yerda — `docker compose down` uni o'chirmaydi
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-samyosh} -d ${DB_NAME:-samyosh}"]
@@ -36,19 +45,24 @@ services:
     expose:
       - 8000
 
-  bot:
-    # Bot repo'si loyihaning yonida turadi (Dockerfile o'sha yerda).
-    # Boshqa papka bo'lsa .env da BOT_PATH ni ko'rsating.
-    build: ${BOT_PATH:-../sam_yoshlar_bot_git}
-    container_name: samyosh_bot
+  front:
+    build:
+      context: ${FRONT_PATH:-../Sma_yoshlar_bot/sam_yoshlar_front}
+      args:
+        # `NEXT_PUBLIC_*` qurish paytida kodga yoziladi — shuning uchun `args`.
+        # Brauzer API ga shu manzil orqali murojaat qiladi.
+        NEXT_PUBLIC_API_URL: ${PUBLIC_API_URL:-https://mentadbirkor.uz/api/v1}
+    container_name: samyosh_front
     restart: unless-stopped
-    env_file: ${BOT_PATH:-../sam_yoshlar_bot_git}/.env
     environment:
-      # Bot saytga shu manzil orqali murojaat qiladi
-      SITE_URL: ${SITE_URL:-https://mentadbirkor.uz}
+      NEXT_PUBLIC_API_URL: ${PUBLIC_API_URL:-https://mentadbirkor.uz/api/v1}
+      # Server tomondagi so'rovlar ichki tarmoq orqali — tashqariga chiqmaydi
+      INTERNAL_API_URL: http://web:8000/api/v1
+      NODE_ENV: production
     depends_on:
       - web
-    profiles: ["bot"]
+    expose:
+      - 3000
 
   nginx:
     image: nginx:1.27-alpine
@@ -65,6 +79,7 @@ services:
       - certbot_www:/var/www/certbot:ro
     depends_on:
       - web
+      - front
     # Sertifikat yangilangach nginx o'zini qayta yuklaydi (har 12 soatda)
     command: >
       /bin/sh -c "while :; do sleep 12h & wait $${!}; nginx -s reload; done &
@@ -77,10 +92,21 @@ services:
     volumes:
       - certbot_conf:/etc/letsencrypt
       - certbot_www:/var/www/certbot
-    # Har 12 soatda sertifikatni tekshiradi va muddati yaqinlashsa yangilaydi
+    # Har 12 soatda tekshiradi; muddati 30 kundan kam qolsa o'zi yangilaydi
     entrypoint: >
       /bin/sh -c "trap exit TERM; while :; do certbot renew --webroot -w /var/www/certbot --quiet;
                   sleep 12h & wait $${!}; done"
+
+  bot:
+    build: ${BOT_PATH:-../Sma_yoshlar_bot/sam_yoshlar_bot}
+    container_name: samyosh_bot
+    restart: unless-stopped
+    env_file: ${BOT_PATH:-../Sma_yoshlar_bot/sam_yoshlar_bot}/.env
+    environment:
+      SITE_URL: ${SITE_URL:-https://mentadbirkor.uz}
+    depends_on:
+      - web
+    profiles: ["bot"]
 
 volumes:
   postgres_data:      # baza — hech qachon o'chmaydi

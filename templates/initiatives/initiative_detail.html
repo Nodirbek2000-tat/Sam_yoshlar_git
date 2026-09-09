@@ -47,7 +47,7 @@
             <div class="voice-detail-main">
                 <div class="voice-row-tags">
                     <span class="voice-tag voice-tag-dir"><span class="voice-tag-dot"></span>{{ direction.name }}</span>
-                    <span class="voice-tag">{{ initiative.kind_icon }} {{ initiative.get_kind_display }}</span>
+                    <span class="voice-tag"><svg class="ic"><use href="#{{ initiative.kind_icon }}"/></svg> {{ initiative.get_kind_display }}</span>
                     <span class="voice-tag voice-tag-rank">#{{ rank }}-o'rin</span>
                 </div>
 
@@ -76,7 +76,12 @@
                 <div class="voice-row-actions">
                     <button type="button"
                             class="voice-vote-btn {% if initiative.voted %}voted{% endif %}"
-                            data-vote-url="{% url 'initiatives:vote' initiative.pk %}"
+                            {% if user.is_authenticated %}
+                                data-vote-url="{% url 'initiatives:vote' initiative.pk %}"
+                            {% else %}
+                                data-login-url="{% url 'accounts:login' %}?next={{ request.path }}"
+                                title="Ovoz berish uchun tizimga kiring"
+                            {% endif %}
                             {% if initiative.voted %}disabled{% endif %}>
                         <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"
                              stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -85,7 +90,7 @@
                         <span class="voice-vote-count">{{ initiative.vote_count }}</span>
                         <span class="voice-vote-word">{% if initiative.voted %}Ovoz berdingiz{% else %}Ovoz berish{% endif %}</span>
                     </button>
-                    <a href="#takliflar" class="voice-comment-btn">💬 {{ comments|length }} taklif</a>
+                    <a href="#takliflar" class="voice-comment-btn"><svg class="ic"><use href="#ic-chat"/></svg> {{ comments|length }} taklif</a>
                 </div>
             </div>
 
@@ -93,24 +98,37 @@
 
         <section class="voice-comments" id="takliflar">
             <div class="voice-section-head">
-                <h2 class="voice-section-title">💬 Takliflar</h2>
+                <h2 class="voice-section-title"><svg class="ic"><use href="#ic-chat"/></svg> Takliflar</h2>
                 <span class="voice-section-count">{{ comments|length }} ta</span>
             </div>
 
-            <form method="post" class="voice-comment-form" novalidate>
-                {% csrf_token %}
-                <div class="voice-field">
-                    <label class="voice-label" for="{{ form.author_name.id_for_label }}">Ismingiz</label>
-                    {{ form.author_name }}
-                    {% if form.author_name.errors %}<ul class="voice-errors">{% for e in form.author_name.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+            {% if user.is_authenticated %}
+                <form method="post" class="voice-comment-form" novalidate>
+                    {% csrf_token %}
+                    <div class="voice-field">
+                        <label class="voice-label" for="{{ form.author_name.id_for_label }}">Ismingiz</label>
+                        {{ form.author_name }}
+                        {% if form.author_name.errors %}<ul class="voice-errors">{% for e in form.author_name.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+                    </div>
+                    <div class="voice-field">
+                        <label class="voice-label" for="{{ form.text.id_for_label }}">Taklifingiz</label>
+                        {{ form.text }}
+                        {% if form.text.errors %}<ul class="voice-errors">{% for e in form.text.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+                    </div>
+                    <button type="submit" class="voice-cta" style="margin-bottom:0">Taklifni yuborish</button>
+                </form>
+            {% else %}
+                <div class="voice-gate">
+                    <span class="voice-gate-icon"><svg class="ic"><use href="#ic-lock"/></svg></span>
+                    <p class="voice-gate-title">Taklif berish uchun ro'yxatdan o'ting</p>
+                    <p class="voice-gate-text">
+                        Tashabbuslarni o'qish hamma uchun ochiq. Ovoz berish va taklif yozish uchun
+                        Telegram bot orqali bir daqiqada kiring.
+                    </p>
+                    <a href="{% url 'accounts:login' %}?next={{ request.path }}" class="voice-cta"
+                       style="margin-bottom:0">Kirish / ro'yxatdan o'tish</a>
                 </div>
-                <div class="voice-field">
-                    <label class="voice-label" for="{{ form.text.id_for_label }}">Taklifingiz</label>
-                    {{ form.text }}
-                    {% if form.text.errors %}<ul class="voice-errors">{% for e in form.text.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
-                </div>
-                <button type="submit" class="voice-cta" style="margin-bottom:0">Taklifni yuborish</button>
-            </form>
+            {% endif %}
 
             {% if comments %}
                 <div class="voice-comment-list">

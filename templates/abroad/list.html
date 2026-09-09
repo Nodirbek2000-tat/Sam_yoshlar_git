@@ -7,7 +7,7 @@
 <section class="abroad-hero">
     <div class="container">
         <div class="abroad-hero-inner">
-            <span class="abroad-hero-icon">🌍</span>
+            <span class="abroad-hero-icon"><svg class="ic"><use href="#ic-globe"/></svg></span>
             <h1 class="abroad-hero-title">Chet eldagi tengdoshim</h1>
             <p class="abroad-hero-text">
                 Chet elda o'qiyotgan va ishlayotgan yurtdoshlarimiz bilan bog'laning.
@@ -20,7 +20,7 @@
             </div>
 
             <a href="{% url 'abroad:join' %}" class="btn btn-accent btn-lg">
-                ✈️ Men ham chet eldaman — qo'shilish
+                <svg class="ic"><use href="#ic-send"/></svg> Men ham chet eldaman — qo'shilish
             </a>
         </div>
     </div>
@@ -29,7 +29,7 @@
 <section class="section">
     <div class="container">
         <form method="get" class="search-bar">
-            <span class="search-icon">🔍</span>
+            <span class="search-icon"><svg class="ic"><use href="#ic-search"/></svg></span>
             <input type="search" name="q" value="{{ search }}" class="form-input"
                    placeholder="Ism, universitet, shahar yoki yo'nalish bo'yicha qidiring...">
             {% if active_country %}<input type="hidden" name="davlat" value="{{ active_country }}">{% endif %}
@@ -38,7 +38,7 @@
         {% if countries %}
             <div class="tabs">
                 <a href="?{% if search %}q={{ search }}{% endif %}"
-                   class="tab {% if not active_country %}active{% endif %}">🌍 Barchasi</a>
+                   class="tab {% if not active_country %}active{% endif %}"><svg class="ic"><use href="#ic-globe"/></svg> Barchasi</a>
                 {% for c in countries %}
                     <a href="?davlat={{ c.code }}{% if search %}&q={{ search }}{% endif %}"
                        class="tab {% if active_country == c.code %}active{% endif %}">
@@ -71,15 +71,15 @@
                         </div>
 
                         <div class="peer-tags">
-                            <span class="badge badge-primary">{{ peer.purpose_icon }} {{ peer.get_purpose_display }}</span>
+                            <span class="badge badge-primary"><svg class="ic"><use href="#{{ peer.purpose_icon }}"/></svg> {{ peer.get_purpose_display }}</span>
                             {% if peer.since_year %}<span class="badge badge-info">{{ peer.since_year }}-yildan</span>{% endif %}
                         </div>
 
                         {% if peer.institution %}
-                            <div class="peer-line">🏛️ {{ peer.institution }}</div>
+                            <div class="peer-line"><svg class="ic"><use href="#ic-bank"/></svg> {{ peer.institution }}</div>
                         {% endif %}
                         {% if peer.field %}
-                            <div class="peer-line">📚 {{ peer.field }}</div>
+                            <div class="peer-line"><svg class="ic"><use href="#ic-books"/></svg> {{ peer.field }}</div>
                         {% endif %}
 
                         <p class="peer-about">{{ peer.about|truncatechars:110 }}</p>
@@ -98,7 +98,7 @@
             {% include 'partials/pagination.html' %}
         {% else %}
             <div class="empty-state">
-                <div class="empty-state-icon">🌍</div>
+                <div class="empty-state-icon"><svg class="ic"><use href="#ic-globe"/></svg></div>
                 <div class="empty-state-title">Hozircha hech kim qo'shilmagan</div>
                 <div class="empty-state-text">
                     Agar siz yoki tanishingiz chet elda bo'lsangiz — birinchi bo'lib qo'shiling.

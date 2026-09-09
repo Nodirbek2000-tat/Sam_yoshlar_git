@@ -15,7 +15,7 @@
         <div class="grid grid-2">
             <div class="card">
                 <div class="card-body">
-                    <span class="home-menu-card-icon">🎯</span>
+                    <span class="home-menu-card-icon"><svg class="ic"><use href="#ic-target"/></svg></span>
                     <h2 class="card-title">Maqsadimiz</h2>
                     <p class="card-text">{{ site.mission }}</p>
 
@@ -23,7 +23,7 @@
                         <h3 class="about-subtitle">Vazifalari:</h3>
                         <ul class="task-list">
                             {% for task in tasks %}
-                                <li class="task-item"><span class="task-check">✅</span>{{ task.text }}</li>
+                                <li class="task-item"><span class="task-check"><svg class="ic"><use href="#ic-check"/></svg></span>{{ task.text }}</li>
                             {% endfor %}
                         </ul>
                     {% endif %}
@@ -32,7 +32,7 @@
 
             <div class="card">
                 <div class="card-body">
-                    <span class="home-menu-card-icon">👁️</span>
+                    <span class="home-menu-card-icon"><svg class="ic"><use href="#ic-eye"/></svg></span>
                     <h2 class="card-title">Viziyamiz</h2>
                     <p class="card-text">{{ site.vision }}</p>
                 </div>
@@ -42,20 +42,20 @@
         <div class="grid grid-2 about-docs">
             <div class="card">
                 <div class="card-body">
-                    <h3 class="card-title">📋 Nizom</h3>
+                    <h3 class="card-title"><svg class="ic"><use href="#ic-clipboard"/></svg> Nizom</h3>
                     <p class="card-text">Kengash nizomi va asosiy hujjatlar bilan tanishing.</p>
                     {% if site.charter_file %}
-                        <a href="{{ site.charter_file.url }}" class="btn btn-outline" download>📄 Nizomni yuklab olish</a>
+                        <a href="{{ site.charter_file.url }}" class="btn btn-outline" download><svg class="ic"><use href="#ic-doc"/></svg> Nizomni yuklab olish</a>
                     {% else %}
-                        <button class="btn btn-outline" disabled>📄 Tez orada</button>
+                        <button class="btn btn-outline" disabled><svg class="ic"><use href="#ic-doc"/></svg> Tez orada</button>
                     {% endif %}
                 </div>
             </div>
             <div class="card">
                 <div class="card-body">
-                    <h3 class="card-title">📂 Hujjatlar</h3>
+                    <h3 class="card-title"><svg class="ic"><use href="#ic-folder"/></svg> Hujjatlar</h3>
                     <p class="card-text">Hisobotlar, qarorlar va boshqa rasmiy hujjatlar.</p>
-                    <a href="{% url 'content:announcement_list' %}" class="btn btn-outline">📁 Hujjatlarni ko'rish</a>
+                    <a href="{% url 'content:announcement_list' %}" class="btn btn-outline"><svg class="ic"><use href="#ic-folder"/></svg> Hujjatlarni ko'rish</a>
                 </div>
             </div>
         </div>
@@ -111,7 +111,7 @@
                         <h3 class="card-title">{{ member.full_name }}</h3>
                         <p class="card-text">{{ member.position }}</p>
                         {% if member.region %}
-                            <div class="card-meta"><span>📍 {{ member.get_region_display }}</span></div>
+                            <div class="card-meta"><span><svg class="ic"><use href="#ic-pin"/></svg> {{ member.get_region_display }}</span></div>
                         {% endif %}
                     </div>
                 </article>
@@ -129,7 +129,7 @@
         </div>
         <div class="region-grid">
             {% for value, label in regions %}
-                <div class="region-item">📍 {{ label }}</div>
+                <div class="region-item"><svg class="ic"><use href="#ic-pin"/></svg> {{ label }}</div>
             {% endfor %}
         </div>
     </div>

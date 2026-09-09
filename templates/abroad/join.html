@@ -5,7 +5,7 @@
 {% block content %}
 <section class="page-header">
     <div class="container">
-        <h1 class="page-header-title">✈️ Men ham chet eldaman</h1>
+        <h1 class="page-header-title"><svg class="ic"><use href="#ic-send"/></svg> Men ham chet eldaman</h1>
         <p class="page-header-subtitle">
             Ma'lumotlaringizni qoldiring — yurtdagi tengdoshlaringiz siz bilan bog'lana oladi.
         </p>
@@ -66,12 +66,12 @@
                                 <label class="role-option">
                                     {{ radio.tag }}
                                     <span class="role-icon">
-                                        {% if radio.data.value == 'study' %}🎓
-                                        {% elif radio.data.value == 'work' %}💼
-                                        {% elif radio.data.value == 'business' %}🚀
-                                        {% elif radio.data.value == 'research' %}🔬
-                                        {% elif radio.data.value == 'internship' %}📋
-                                        {% else %}✨{% endif %}
+                                        {% if radio.data.value == 'study' %}<svg class="ic"><use href="#ic-graduation"/></svg>
+                                        {% elif radio.data.value == 'work' %}<svg class="ic"><use href="#ic-briefcase"/></svg>
+                                        {% elif radio.data.value == 'business' %}<svg class="ic"><use href="#ic-rocket"/></svg>
+                                        {% elif radio.data.value == 'research' %}<svg class="ic"><use href="#ic-microscope"/></svg>
+                                        {% elif radio.data.value == 'internship' %}<svg class="ic"><use href="#ic-clipboard"/></svg>
+                                        {% else %}<svg class="ic"><use href="#ic-spark"/></svg>{% endif %}
                                     </span>
                                     <span class="role-label">{{ radio.choice_label }}</span>
                                 </label>
@@ -121,7 +121,7 @@
                         </div>
                     </div>
 
-                    <button type="submit" class="btn btn-accent btn-lg">✈️ Ro'yxatdan o'tish</button>
+                    <button type="submit" class="btn btn-accent btn-lg"><svg class="ic"><use href="#ic-send"/></svg> Ro'yxatdan o'tish</button>
                     <p class="form-hint" style="margin-top: var(--space-3)">
                         Ma'lumotlaringiz admin tomonidan ko'rib chiqilgach ro'yxatda paydo bo'ladi.
                     </p>

@@ -19,7 +19,7 @@
                     </div>
                 {% endfor %}
             </div>
-            <button type="submit" class="btn btn-primary btn-lg">📨 Murojaatni yuborish</button>
+            <button type="submit" class="btn btn-primary btn-lg"><svg class="ic"><use href="#ic-mail"/></svg> Murojaatni yuborish</button>
         </form>
     </div>
 </div>
@@ -37,12 +37,12 @@
                     </div>
                     <div class="card-meta">
                         <span>{{ appeal.get_category_display }}</span>
-                        <span>📅 {{ appeal.created_at|date:"d.m.Y H:i" }}</span>
+                        <span><svg class="ic"><use href="#ic-calendar"/></svg> {{ appeal.created_at|date:"d.m.Y H:i" }}</span>
                     </div>
                     <p class="card-text">{{ appeal.message|linebreaksbr }}</p>
 
                     {% if appeal.attachment %}
-                        <a href="{{ appeal.attachment.url }}" class="btn btn-ghost btn-sm" target="_blank" rel="noopener">📎 Biriktirilgan fayl</a>
+                        <a href="{{ appeal.attachment.url }}" class="btn btn-ghost btn-sm" target="_blank" rel="noopener"><svg class="ic"><use href="#ic-paperclip"/></svg> Biriktirilgan fayl</a>
                     {% endif %}
 
                     {% if appeal.response %}
@@ -58,7 +58,7 @@
     </div>
 {% else %}
     <div class="empty-state">
-        <div class="empty-state-icon">📨</div>
+        <div class="empty-state-icon"><svg class="ic"><use href="#ic-mail"/></svg></div>
         <div class="empty-state-title">Murojaatlar yo'q</div>
         <div class="empty-state-text">Yuqoridagi forma orqali birinchi murojaatingizni yuboring.</div>
     </div>

@@ -14,7 +14,7 @@
 <div class="panel-grid panel-grid-2">
     <div class="panel-card">
         <div class="panel-card-head">
-            <h2 class="panel-card-title">{{ initiative.kind_icon }} {{ initiative.get_kind_display }}</h2>
+            <h2 class="panel-card-title"><svg class="ic"><use href="#{{ initiative.kind_icon }}"/></svg> {{ initiative.get_kind_display }}</h2>
             <span class="panel-badge" style="background: {{ initiative.direction_data.color }}22; color: {{ initiative.direction_data.color }}">
                 {{ initiative.direction_data.name }}
             </span>
@@ -80,7 +80,7 @@
                         <span>Saytda ko'rinsin</span>
                     </label>
 
-                    <button type="submit" class="panel-btn panel-btn-primary">💾 Saqlash</button>
+                    <button type="submit" class="panel-btn panel-btn-primary"><svg class="ic"><use href="#ic-save"/></svg> Saqlash</button>
                     <p class="panel-list-meta" style="margin-top:10px">
                         Holat o'zgarsa, muallifga bildirishnoma boradi.
                     </p>
@@ -90,7 +90,7 @@
 
         <div class="panel-card" style="margin-top:18px">
             <div class="panel-card-head">
-                <h2 class="panel-card-title">🗳 Ovozni sozlash</h2>
+                <h2 class="panel-card-title"><svg class="ic"><use href="#ic-ballot"/></svg> Ovozni sozlash</h2>
                 <span class="panel-badge panel-badge-success">{{ initiative.vote_count }}</span>
             </div>
             <div class="panel-card-body">
@@ -121,7 +121,7 @@
 
         <div class="panel-card" style="margin-top:18px">
             <div class="panel-card-head">
-                <h2 class="panel-card-title">💬 Takliflar</h2>
+                <h2 class="panel-card-title"><svg class="ic"><use href="#ic-chat"/></svg> Takliflar</h2>
                 <span class="panel-badge panel-badge-info">{{ comments|length }}</span>
             </div>
             <div class="panel-list">
@@ -136,7 +136,7 @@
                     </div>
                 {% empty %}
                     <div class="panel-empty">
-                        <div class="panel-empty-icon">💬</div>
+                        <div class="panel-empty-icon"><svg class="ic"><use href="#ic-chat"/></svg></div>
                         <div class="panel-empty-text">Hali taklif berilmagan.</div>
                     </div>
                 {% endfor %}
@@ -145,7 +145,7 @@
 
         <div class="panel-card" style="margin-top:18px">
             <div class="panel-card-head">
-                <h2 class="panel-card-title">🗳 Ovoz berganlar</h2>
+                <h2 class="panel-card-title"><svg class="ic"><use href="#ic-ballot"/></svg> Ovoz berganlar</h2>
                 <span class="panel-badge panel-badge-success">{{ initiative.vote_count }}</span>
             </div>
             <div class="panel-list">
@@ -160,7 +160,7 @@
                     </div>
                 {% empty %}
                     <div class="panel-empty">
-                        <div class="panel-empty-icon">🗳</div>
+                        <div class="panel-empty-icon"><svg class="ic"><use href="#ic-ballot"/></svg></div>
                         <div class="panel-empty-text">Hali ro'yxatga olingan ovoz yo'q.</div>
                     </div>
                 {% endfor %}

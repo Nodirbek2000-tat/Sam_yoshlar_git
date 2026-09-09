@@ -482,6 +482,15 @@
     }
 
     document.addEventListener('click', async (event) => {
+        // Mehmon — ovoz berish o'rniga kirish sahifasiga yuboramiz
+        const guestBtn = event.target.closest('[data-login-url]');
+        if (guestBtn) {
+            event.preventDefault();
+            showToast("Ovoz berish uchun avval tizimga kiring", false);
+            setTimeout(() => { window.location.href = guestBtn.dataset.loginUrl; }, 900);
+            return;
+        }
+
         const btn = event.target.closest('[data-vote-url]');
         if (!btn || btn.disabled) return;
 
@@ -498,6 +507,13 @@
                 headers: { 'X-CSRFToken': getCookie('csrftoken'), 'X-Requested-With': 'XMLHttpRequest' },
             });
             const data = await response.json();
+
+            // Sessiya tugagan bo'lsa ham kirish sahifasiga yuboramiz
+            if (data.reason === 'auth' && data.login_url) {
+                showToast(data.message, false);
+                setTimeout(() => { window.location.href = data.login_url; }, 900);
+                return;
+            }
 
             const counter = btn.querySelector('.voice-vote-count');
             if (counter) counter.textContent = data.votes;

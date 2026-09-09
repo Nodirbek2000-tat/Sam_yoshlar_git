@@ -20,28 +20,28 @@
         </p>
 
         <div class="error-actions">
-            <a href="{% url 'core:home' %}" class="btn btn-primary btn-lg">🏠 Bosh sahifaga</a>
-            <a href="{% url 'content:news_list' %}" class="btn btn-outline btn-lg">📰 Yangiliklar</a>
+            <a href="{% url 'core:home' %}" class="btn btn-primary btn-lg"><svg class="ic"><use href="#ic-home"/></svg> Bosh sahifaga</a>
+            <a href="{% url 'content:news_list' %}" class="btn btn-outline btn-lg"><svg class="ic"><use href="#ic-news"/></svg> Yangiliklar</a>
         </div>
 
         <div class="error-links">
             <a href="{% url 'content:event_list' %}" class="error-link">
-                <span class="error-link-icon">📅</span>
+                <span class="error-link-icon"><svg class="ic"><use href="#ic-calendar"/></svg></span>
                 <span class="error-link-title">Tadbirlar</span>
                 <span class="error-link-desc">Trening, forum va seminarlar</span>
             </a>
             <a href="{% url 'content:announcement_list' %}" class="error-link">
-                <span class="error-link-icon">📢</span>
+                <span class="error-link-icon"><svg class="ic"><use href="#ic-megaphone"/></svg></span>
                 <span class="error-link-title">E'lonlar</span>
                 <span class="error-link-desc">Grant, kredit va tanlovlar</span>
             </a>
             <a href="{% url 'initiatives:index' %}" class="error-link">
-                <span class="error-link-icon">🌟</span>
+                <span class="error-link-icon"><svg class="ic"><use href="#ic-star"/></svg></span>
                 <span class="error-link-title">Tashabbuslar</span>
                 <span class="error-link-desc">Muammolar va yechimlar</span>
             </a>
             <a href="{% url 'startups:register' %}" class="error-link">
-                <span class="error-link-icon">🚀</span>
+                <span class="error-link-icon"><svg class="ic"><use href="#ic-rocket"/></svg></span>
                 <span class="error-link-title">Startupperlar</span>
                 <span class="error-link-desc">Loyihangizni ro'yxatdan o'tkazing</span>
             </a>

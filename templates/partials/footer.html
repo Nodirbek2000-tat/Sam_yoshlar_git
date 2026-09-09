@@ -2,16 +2,26 @@
     <div class="container">
         <div class="footer-grid">
             <div class="footer-brand-col">
-                <div class="footer-brand">🏛️ {{ site.site_name|default:"sam-yosh tadbirkor.uz" }}</div>
+                <div class="footer-brand">
+                    <svg class="ic ic-lg"><use href="#ic-bank"/></svg>
+                    <span>{{ site.site_name|default:"sam-yosh tadbirkor.uz" }}</span>
+                </div>
                 <p class="footer-desc">
-                    O'zbekiston yosh tadbirkorlarini qo'llab-quvvatlash, ularning salohiyatini oshirish
-                    va biznes muhitini yaxshilash maqsadida tashkil etilgan platforma.
+                    {{ site.tagline|default:"Yoshlarni birlashtiruvchi, qo'llab-quvvatlovchi va rivojlantirishga xizmat qiluvchi yagona axborot platformasi." }}
                 </p>
                 <div class="footer-socials">
-                    <a href="{{ site.telegram_url|default:'#' }}" class="footer-social-link" aria-label="Telegram">📱</a>
-                    <a href="{{ site.instagram_url|default:'#' }}" class="footer-social-link" aria-label="Instagram">📸</a>
-                    <a href="{{ site.facebook_url|default:'#' }}" class="footer-social-link" aria-label="Facebook">👥</a>
-                    <a href="{{ site.youtube_url|default:'#' }}" class="footer-social-link" aria-label="YouTube">▶️</a>
+                    <a href="{{ site.telegram_url|default:'#' }}" class="footer-social-link" aria-label="Telegram">
+                        <svg class="ic"><use href="#ic-telegram"/></svg>
+                    </a>
+                    <a href="{{ site.instagram_url|default:'#' }}" class="footer-social-link" aria-label="Instagram">
+                        <svg class="ic"><use href="#ic-instagram"/></svg>
+                    </a>
+                    <a href="{{ site.facebook_url|default:'#' }}" class="footer-social-link" aria-label="Facebook">
+                        <svg class="ic ic-fill"><use href="#ic-facebook"/></svg>
+                    </a>
+                    <a href="{{ site.youtube_url|default:'#' }}" class="footer-social-link" aria-label="YouTube">
+                        <svg class="ic"><use href="#ic-youtube"/></svg>
+                    </a>
                 </div>
             </div>
 
@@ -22,6 +32,7 @@
                     <li><a href="{% url 'content:news_list' %}" class="footer-link">Yangiliklar</a></li>
                     <li><a href="{% url 'content:event_list' %}" class="footer-link">Tadbirlar</a></li>
                     <li><a href="{% url 'content:announcement_list' %}" class="footer-link">E'lonlar</a></li>
+                    <li><a href="{% url 'initiatives:index' %}" class="footer-link">Tashabbuslar</a></li>
                     <li><a href="{% url 'abroad:list' %}" class="footer-link">Chet eldagi tengdoshim</a></li>
                 </ul>
             </div>
@@ -33,16 +44,29 @@
                     <li><a href="{% url 'cabinet:dashboard' %}" class="footer-link">Shaxsiy kabinet</a></li>
                     <li><a href="{% url 'cabinet:appeals' %}" class="footer-link">Murojaat yuborish</a></li>
                     <li><a href="{% url 'cabinet:suggestions' %}" class="footer-link">Taklif yuborish</a></li>
+                    <li><a href="{% url 'initiatives:problems' %}" class="footer-link">Tashkilotlar muammolari</a></li>
                 </ul>
             </div>
 
             <div>
                 <h4 class="footer-heading">Aloqa</h4>
-                <ul class="footer-links">
-                    <li class="footer-link">📍 {{ site.address|default:"Toshkent sh., Amir Temur ko'chasi, 4" }}</li>
-                    <li class="footer-link">📞 {{ site.phone|default:"+998 71 123 45 67" }}</li>
-                    <li class="footer-link">✉️ {{ site.email|default:"info@mentadbirkor.uz" }}</li>
-                    <li class="footer-link">🕐 {{ site.work_hours|default:"Du-Ju: 9:00 — 18:00" }}</li>
+                <ul class="footer-links footer-contacts">
+                    <li class="footer-link">
+                        <svg class="ic"><use href="#ic-pin"/></svg>
+                        <span>{{ site.address|default:"Toshkent sh., Amir Temur ko'chasi, 4" }}</span>
+                    </li>
+                    <li class="footer-link">
+                        <svg class="ic"><use href="#ic-phone"/></svg>
+                        <span>{{ site.phone|default:"+998 71 123 45 67" }}</span>
+                    </li>
+                    <li class="footer-link">
+                        <svg class="ic"><use href="#ic-mail"/></svg>
+                        <span>{{ site.email|default:"info@mentadbirkor.uz" }}</span>
+                    </li>
+                    <li class="footer-link">
+                        <svg class="ic"><use href="#ic-clock"/></svg>
+                        <span>{{ site.work_hours|default:"Du-Ju: 9:00 — 18:00" }}</span>
+                    </li>
                 </ul>
             </div>
         </div>

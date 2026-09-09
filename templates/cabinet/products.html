@@ -31,7 +31,7 @@
                 {% if product.image %}
                     <img src="{{ product.image.url }}" alt="{{ product.name }}" class="card-img">
                 {% else %}
-                    <div class="card-img card-img-placeholder">📦</div>
+                    <div class="card-img card-img-placeholder"><svg class="ic"><use href="#ic-package"/></svg></div>
                 {% endif %}
                 <div class="card-body">
                     <h3 class="card-title">{{ product.name }}</h3>
@@ -42,7 +42,7 @@
                     <form method="post" action="{% url 'cabinet:product_delete' product.pk %}"
                           onsubmit="return confirm('Mahsulot o\'chirilsinmi?')">
                         {% csrf_token %}
-                        <button type="submit" class="btn btn-ghost btn-sm">🗑 O'chirish</button>
+                        <button type="submit" class="btn btn-ghost btn-sm"><svg class="ic"><use href="#ic-trash"/></svg> O'chirish</button>
                     </form>
                 </div>
             </article>
@@ -50,7 +50,7 @@
     </div>
 {% else %}
     <div class="empty-state">
-        <div class="empty-state-icon">📦</div>
+        <div class="empty-state-icon"><svg class="ic"><use href="#ic-package"/></svg></div>
         <div class="empty-state-title">Mahsulotlar yo'q</div>
         <div class="empty-state-text">Yuqoridagi forma orqali birinchi mahsulotingizni qo'shing.</div>
     </div>

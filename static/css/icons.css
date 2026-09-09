@@ -1,0 +1,63 @@
+/* ==========================================================================
+   Ikonkalar — `templates/partials/icons.html` dagi SVG sprite uchun.
+
+   Ishlatish:  <svg class="ic"><use href="#ic-home"/></svg>
+   Rang matndan olinadi, o'lcham esa font-size dan (yoki .ic-lg / .ic-sm).
+   Emoji ishlatmaymiz: u Windows, Android va iPhone'da uch xil ko'rinadi.
+   ========================================================================== */
+
+.ic {
+    width: 1em;
+    height: 1em;
+    flex: 0 0 auto;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.75;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    vertical-align: -.14em;
+    overflow: visible;
+}
+
+/* Kichik o'lchamda chiziq yo'qolib ketmasin, kattada esa qalin ko'rinmasin */
+.ic-sm { width: .875em; height: .875em; stroke-width: 2; }
+.ic-lg { width: 1.5em; height: 1.5em; stroke-width: 1.6; }
+.ic-xl { width: 2.25em; height: 2.25em; stroke-width: 1.4; }
+.ic-2xl { width: 3rem; height: 3rem; stroke-width: 1.3; }
+
+.ic-fill { fill: currentColor; stroke: none; }
+
+/* Emoji o'rniga kelgan ikonkalar — eski `*-icon` konteynerlarida markazlansin */
+.empty-state-icon .ic,
+.cab-stat-icon .ic,
+.panel-stat-icon .ic,
+.panel-pending-icon .ic,
+.notif-icon .ic,
+.tashabbuslar-card-icon .ic,
+.tashabbuslar-hero-icon .ic,
+.yoshlar-form-hero-icon .ic,
+.tashkilot-step-icon .ic,
+.auth-gate-icon .ic,
+.voice-gate-icon .ic {
+    width: 1em;
+    height: 1em;
+    stroke-width: 1.5;
+    vertical-align: -.12em;
+}
+
+/* Rangli (gradient) sarlavha bloklarida ikonka oq bo'lsin.
+   Emoji o'z rangi bilan chizilardi, SVG esa matn rangini oladi —
+   bu konteynerlarda matn rangi qorong'i qolib ketgan edi. */
+.yoshlar-form-hero-icon,
+.tashabbuslar-hero-icon,
+.startup-hero-icon,
+.peer-hero-icon,
+.auth-hero-icon,
+.cab-hero-icon {
+    color: #fff;
+}
+
+.yoshlar-form-hero-icon .ic,
+.tashabbuslar-hero-icon .ic {
+    stroke-width: 1.3;
+}

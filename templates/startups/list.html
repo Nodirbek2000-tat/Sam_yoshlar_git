@@ -24,13 +24,13 @@
                 {% for startup in startups %}
                     <article class="card scroll-reveal">
                         <div class="card-body">
-                            <span class="home-menu-card-icon">{{ startup.sphere_icon }}</span>
+                            <span class="home-menu-card-icon"><svg class="ic"><use href="#{{ startup.sphere_icon }}"/></svg></span>
                             <span class="badge badge-primary">{{ startup.get_sphere_display }}</span>
                             <h3 class="card-title">{{ startup.name }}</h3>
                             <p class="card-text">{{ startup.about|truncatechars:140 }}</p>
                             <div class="card-meta">
-                                <span>👤 {{ startup.full_name }}</span>
-                                <span>📍 {{ startup.get_region_display }}</span>
+                                <span><svg class="ic"><use href="#ic-user"/></svg> {{ startup.full_name }}</span>
+                                <span><svg class="ic"><use href="#ic-pin"/></svg> {{ startup.get_region_display }}</span>
                             </div>
                             <span class="badge badge-info">{{ startup.get_stage_display }}</span>
                         </div>
@@ -41,7 +41,7 @@
             {% include 'partials/pagination.html' %}
         {% else %}
             <div class="empty-state">
-                <div class="empty-state-icon">🚀</div>
+                <div class="empty-state-icon"><svg class="ic"><use href="#ic-rocket"/></svg></div>
                 <div class="empty-state-title">StartUplar topilmadi</div>
                 <div class="empty-state-text">
                     Hozircha tasdiqlangan startup yo'q.

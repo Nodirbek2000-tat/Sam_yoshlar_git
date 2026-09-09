@@ -16,7 +16,7 @@
     <div class="notif-list">
         {% for notification in notifications %}
             <article class="notif-item {% if not notification.is_read %}unread{% endif %}">
-                <span class="notif-icon">{{ notification.icon }}</span>
+                <span class="notif-icon"><svg class="ic"><use href="#{{ notification.icon }}"/></svg></span>
                 <div class="notif-body">
                     <div class="notif-title">{{ notification.title }}</div>
                     {% if notification.message %}<p class="notif-text">{{ notification.message }}</p>{% endif %}
@@ -30,7 +30,7 @@
     </div>
 {% else %}
     <div class="empty-state">
-        <div class="empty-state-icon">🔔</div>
+        <div class="empty-state-icon"><svg class="ic"><use href="#ic-bell"/></svg></div>
         <div class="empty-state-title">Bildirishnomalar yo'q</div>
         <div class="empty-state-text">Yangi xabarlar shu yerda paydo bo'ladi.</div>
     </div>

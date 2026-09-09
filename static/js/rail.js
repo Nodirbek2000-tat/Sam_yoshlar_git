@@ -66,15 +66,18 @@
             moved = 0;
             startX = event.clientX;
             startScroll = rail.scrollLeft;
-            rail.classList.add('is-dragging');
         });
 
         rail.addEventListener('pointermove', (event) => {
             if (!dragging) return;
             const delta = event.clientX - startX;
             moved = Math.abs(delta);
+            if (moved <= 4) return;         // oddiy bosish — havolaga tegmaymiz
+            // `is-dragging` havolalarni o'chiradi, shuning uchun uni faqat
+            // haqiqiy sudrash boshlangandan keyin qo'yamiz
+            rail.classList.add('is-dragging');
             rail.scrollLeft = startScroll - delta;
-            if (moved > 4) event.preventDefault();
+            event.preventDefault();
         });
 
         function stopDrag() {

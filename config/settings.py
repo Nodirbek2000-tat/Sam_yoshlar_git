@@ -3,6 +3,7 @@ sam-yosh tadbirkor.uz — Django settings.
 """
 
 import os
+from datetime import timedelta
 from pathlib import Path
 
 from dotenv import load_dotenv
@@ -38,6 +39,12 @@ DJANGO_APPS = [
     'django.contrib.humanize',
 ]
 
+# Next.js frontend uchun REST API
+THIRD_PARTY_APPS = [
+    'rest_framework',
+    'corsheaders',
+]
+
 LOCAL_APPS = [
     'apps.accounts',
     'apps.core',
@@ -48,12 +55,14 @@ LOCAL_APPS = [
     'apps.cabinet',
     'apps.panel',
     'apps.abroad',
+    'apps.api',
 ]
 
-INSTALLED_APPS = DJANGO_APPS + LOCAL_APPS
+INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -186,3 +195,48 @@ if not DEBUG:
     SECURE_HSTS_PRELOAD = True
     X_FRAME_OPTIONS = 'DENY'
     SECURE_CONTENT_TYPE_NOSNIFF = True
+
+# ---------------------------------------------------------------------------
+# REST API (Next.js frontend uchun)
+# ---------------------------------------------------------------------------
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ],
+    # Ko'rish hamma uchun ochiq; yozish amallari view darajasida yopiladi
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.AllowAny',
+    ],
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 12,
+    'DEFAULT_RENDERER_CLASSES': [
+        'rest_framework.renderers.JSONRenderer',
+    ],
+    'UNAUTHENTICATED_USER': 'django.contrib.auth.models.AnonymousUser',
+    'DEFAULT_THROTTLE_CLASSES': [],
+    # Parol tanlashga urinishni cheklaymiz
+    'DEFAULT_THROTTLE_RATES': {'login': '10/min'},
+}
+
+# Brauzerda API'ni ko'rib chiqish faqat dev rejimida
+if DEBUG:
+    REST_FRAMEWORK['DEFAULT_RENDERER_CLASSES'].append(
+        'rest_framework.renderers.BrowsableAPIRenderer')
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(hours=12),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=30),
+    'ROTATE_REFRESH_TOKENS': True,
+    'BLACKLIST_AFTER_ROTATION': False,
+    'UPDATE_LAST_LOGIN': True,
+    'AUTH_HEADER_TYPES': ('Bearer',),
+}
+
+# Frontend qaysi manzillardan murojaat qila oladi
+CORS_ALLOWED_ORIGINS = [
+    o.strip() for o in
+    env('CORS_ALLOWED_ORIGINS', 'http://localhost:3000,http://127.0.0.1:3000').split(',')
+    if o.strip()
+]
+CORS_ALLOW_CREDENTIALS = True

@@ -52,7 +52,7 @@
 
             <div class="panel-form-foot">
                 <button type="submit" class="panel-btn panel-btn-primary">
-                    {% if object %}💾 Saqlash{% else %}✓ Qo'shish{% endif %}
+                    {% if object %}<svg class="ic"><use href="#ic-save"/></svg> Saqlash{% else %}✓ Qo'shish{% endif %}
                 </button>
                 <a href="{% url back_url %}" class="panel-btn panel-btn-ghost">Bekor qilish</a>
                 <span class="panel-spacer"></span>
@@ -63,7 +63,7 @@
             <form method="post" action="{% url delete_url object.pk %}" style="margin-top:14px"
                   onsubmit="return confirm('Rostdan ham o\'chirilsinmi? Bu amalni qaytarib bo\'lmaydi.')">
                 {% csrf_token %}
-                <button type="submit" class="panel-btn panel-btn-danger">🗑 O'chirish</button>
+                <button type="submit" class="panel-btn panel-btn-danger"><svg class="ic"><use href="#ic-trash"/></svg> O'chirish</button>
             </form>
         {% endif %}
     </div>

@@ -1257,10 +1257,23 @@
     font-size: 13.5px;
 }
 
-.navbar-link .nav-icon { flex-shrink: 0; }
+.navbar-link .nav-icon,
+.navbar-link .ic { flex-shrink: 0; }
 
-/* Menyu nomlari uzun — 1450px dan pastda burgerga yig'iladi */
-@media (max-width: 1450px) {
+.navbar-brand { display: flex; align-items: center; gap: 8px; }
+.navbar-brand .ic { color: var(--color-primary); }
+
+.menu-toggle { display: none; align-items: center; justify-content: center; }
+.nav-logout .ic { width: 17px; height: 17px; }
+
+/* 1440px dan pastda menyuni ixchamlashtiramiz — burgerga o'tishni kechiktiradi */
+@media (max-width: 1440px) {
+    .navbar-link { padding: var(--space-2) 7px; font-size: 13px; gap: 5px; }
+    .navbar-brand { font-size: 15px; }
+}
+
+/* Menyu nomlari uzun — 1300px dan pastda burgerga yig'iladi */
+@media (max-width: 1300px) {
     .navbar-menu {
         position: absolute;
         top: var(--navbar-height);
@@ -1467,3 +1480,207 @@
 }
 
 .tg-code-form .auth-submit { margin-top: var(--space-4); }
+
+/* ==========================================================================
+   Tashkilotlar muammolari — ro'yxat, tafsilot va takliflar
+   ========================================================================== */
+
+.prob-hero-stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-8);
+    justify-content: center;
+    margin-top: var(--space-8);
+}
+
+.prob-hero-stat { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+
+.prob-hero-stat-value {
+    font-size: var(--font-size-2xl);
+    font-weight: 800;
+    line-height: 1;
+    color: inherit;
+}
+
+.prob-hero-stat-label {
+    font-size: var(--font-size-xs);
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    opacity: .75;
+}
+
+/* --- Tashkilotlar uchun chaqiruv --- */
+.prob-org-cta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+    padding: var(--space-5) var(--space-6);
+    margin-bottom: var(--space-8);
+    border: 1px solid var(--color-border);
+    border-left: 4px solid var(--color-primary);
+    border-radius: var(--radius-lg, 14px);
+    background: var(--color-surface);
+    box-shadow: var(--shadow-sm);
+}
+
+.prob-org-cta-text { display: flex; flex-direction: column; gap: 2px; }
+.prob-org-cta-text strong { color: var(--color-text); }
+.prob-org-cta-text span { font-size: var(--font-size-sm); color: var(--color-text-secondary); }
+
+/* --- Muammo kartasi --- */
+.prob-card { display: flex; flex-direction: column; }
+
+/* Karta ichidagi havola — tugma bosilganda ishga tushmasligi uchun ajratilgan */
+.prob-card-link { display: block; color: inherit; text-decoration: none; }
+
+.prob-card-footer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-3);
+    margin-top: var(--space-4);
+}
+
+.prob-count {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+    white-space: nowrap;
+}
+
+.prob-cta { margin-left: auto; }
+
+.prob-question {
+    margin: 0 0 var(--space-3);
+    font-size: var(--font-size-sm);
+    font-style: italic;
+    color: var(--color-text-muted);
+}
+
+/* --- Bo'limlar --- */
+.prob-section { margin-top: var(--space-10); }
+
+.prob-section-title {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    margin: 0 0 var(--space-5);
+    font-size: var(--font-size-xl);
+    color: var(--color-text);
+}
+
+.prob-section-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 30px;
+    height: 24px;
+    padding: 0 8px;
+    border-radius: 999px;
+    background: var(--color-primary-50);
+    color: var(--color-primary);
+    font-size: var(--font-size-sm);
+    font-weight: 700;
+}
+
+.prob-empty {
+    padding: var(--space-6);
+    border: 1px dashed var(--color-border);
+    border-radius: var(--radius-lg, 14px);
+    text-align: center;
+    color: var(--color-text-muted);
+}
+
+/* --- Takliflar --- */
+.prob-solutions { display: flex; flex-direction: column; gap: var(--space-4); }
+
+.prob-solution {
+    padding: var(--space-5) var(--space-6);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg, 14px);
+    background: var(--color-surface);
+    box-shadow: var(--shadow-xs);
+}
+
+.prob-solution-head {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    margin-bottom: var(--space-3);
+}
+
+.prob-solution-avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--gradient-primary);
+    color: #fff;
+    font-weight: 700;
+}
+
+.prob-solution-author { display: block; color: var(--color-text); }
+.prob-solution-date { font-size: var(--font-size-xs); color: var(--color-text-muted); }
+
+.prob-solution-title { margin: 0 0 var(--space-2); font-size: var(--font-size-md); color: var(--color-text); }
+.prob-solution-text { margin: 0; color: var(--color-text-secondary); }
+
+.prob-solution-tech,
+.prob-solution-result {
+    margin: var(--space-3) 0 0;
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+}
+
+/* --- Ro'yxatdan o'tish taklifi (ovoz/taklif uchun) --- */
+.auth-gate {
+    padding: var(--space-8) var(--space-6);
+    border: 1px dashed var(--color-primary-200);
+    border-radius: var(--radius-lg, 14px);
+    background: var(--color-primary-50);
+    text-align: center;
+}
+
+.auth-gate-icon { font-size: 2rem; display: block; margin-bottom: var(--space-3); }
+
+.auth-gate-title {
+    margin: 0 0 var(--space-2);
+    font-size: var(--font-size-lg);
+    font-weight: 700;
+    color: var(--color-text);
+}
+
+.auth-gate-text {
+    max-width: 460px;
+    margin: 0 auto var(--space-5);
+    color: var(--color-text-secondary);
+}
+
+@media (max-width: 640px) {
+    .prob-cta { margin-left: 0; width: 100%; text-align: center; }
+    .prob-org-cta { flex-direction: column; align-items: stretch; }
+    .prob-hero-stats { gap: var(--space-5); }
+}
+
+
+/* ---------- Footer: ikonkali qatorlar ---------- */
+
+.footer-brand { display: flex; align-items: center; gap: 10px; }
+
+.footer-contacts .footer-link {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+}
+
+.footer-contacts .ic { margin-top: .15em; opacity: .8; }
+
+.footer-social-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+}

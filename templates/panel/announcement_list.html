@@ -11,7 +11,7 @@
 {% block content %}
 <form method="get" class="panel-toolbar">
     <div class="panel-search">
-        <span class="panel-search-icon">🔍</span>
+        <span class="panel-search-icon"><svg class="ic"><use href="#ic-search"/></svg></span>
         <input type="search" name="q" value="{{ search }}" class="panel-input" placeholder="E'lon sarlavhasi...">
     </div>
     <button type="submit" class="panel-btn panel-btn-outline">Qidirish</button>
@@ -38,7 +38,7 @@
                                 <div class="panel-table-title">{{ item.title|truncatechars:60 }}</div>
                                 <div class="panel-table-meta">{{ item.body|truncatechars:70 }}</div>
                             </td>
-                            <td><span class="panel-badge panel-badge-primary">{{ item.icon }} {{ item.get_type_display }}</span></td>
+                            <td><span class="panel-badge panel-badge-primary"><svg class="ic"><use href="#{{ item.icon }}"/></svg> {{ item.get_type_display }}</span></td>
                             <td>{{ item.posted_at|date:"d.m.Y" }}</td>
                             <td>{{ item.deadline|date:"d.m.Y"|default:"—" }}</td>
                             <td>
@@ -54,14 +54,14 @@
                                 <div class="panel-table-actions">
                                     <a href="{% url 'content:announcement_detail' item.slug %}"
                                        target="_blank" rel="noopener"
-                                       class="panel-btn panel-btn-ghost panel-btn-sm" title="Saytda ko'rish">👁</a>
+                                       class="panel-btn panel-btn-ghost panel-btn-sm" title="Saytda ko'rish"><svg class="ic"><use href="#ic-eye"/></svg></a>
                                     <a href="{% url 'panel:announcement_edit' item.pk %}"
                                        class="panel-btn panel-btn-outline panel-btn-sm">Tahrirlash</a>
                                     <form method="post" action="{% url 'panel:announcement_delete' item.pk %}"
                                           onsubmit="return confirm('«{{ item.title|escapejs }}» o\'chirilsinmi?\n\nBu amalni qaytarib bo\'lmaydi.')">
                                         {% csrf_token %}
                                         <button type="submit" class="panel-btn panel-btn-danger panel-btn-sm"
-                                                title="O'chirish">🗑</button>
+                                                title="O'chirish"><svg class="ic"><use href="#ic-trash"/></svg></button>
                                     </form>
                                 </div>
                             </td>
@@ -73,7 +73,7 @@
         {% include 'panel/_pagination.html' with qs=""|add:"q="|add:search|add:"&" %}
     {% else %}
         <div class="panel-empty">
-            <div class="panel-empty-icon">📢</div>
+            <div class="panel-empty-icon"><svg class="ic"><use href="#ic-megaphone"/></svg></div>
             <div class="panel-empty-title">E'lonlar yo'q</div>
             <div class="panel-empty-text">Grant, kredit yoki tanlov e'lonini joylang.</div>
             <a href="{% url 'panel:announcement_create' %}" class="panel-btn panel-btn-primary">+ E'lon qo'shish</a>

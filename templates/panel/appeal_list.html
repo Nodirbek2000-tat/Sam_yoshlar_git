@@ -56,7 +56,7 @@
         {% include 'panel/_pagination.html' with qs=""|add:"holat="|add:active_status|add:"&" %}
     {% else %}
         <div class="panel-empty">
-            <div class="panel-empty-icon">📨</div>
+            <div class="panel-empty-icon"><svg class="ic"><use href="#ic-mail"/></svg></div>
             <div class="panel-empty-title">Murojaatlar yo'q</div>
             <div class="panel-empty-text">Bu holatda murojaat topilmadi.</div>
         </div>

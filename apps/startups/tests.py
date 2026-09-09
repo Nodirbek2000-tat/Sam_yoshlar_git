@@ -34,7 +34,7 @@ class StartupRegistrationTests(TestCase):
 
         startup = Startup.objects.get(name="SmartQueue")
         self.assertEqual(startup.status, Status.PENDING)
-        self.assertEqual(startup.sphere_icon, '🩺')
+        self.assertEqual(startup.sphere_icon, 'ic-stethoscope')
 
     def test_required_fields(self):
         response = self.client.post(reverse('startups:register'), self._data(name=''))

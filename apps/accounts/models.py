@@ -8,6 +8,7 @@ from apps.core.constants import Region
 
 
 class Role(models.TextChoices):
+    YOUTH = 'yosh', "Yosh"
     ENTREPRENEUR = 'entrepreneur', "Tadbirkor"
     STARTUPPER = 'startupper', "Startupper"
     ORGANIZATION = 'organization', "Tashkilot"

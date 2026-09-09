@@ -8,7 +8,7 @@
         <div class="container">
             <div class="tashabbuslar-hero-content animate-fade-in">
                 <a href="{% url 'core:home' %}" class="tashabbuslar-back-link">← Bosh sahifaga qaytish</a>
-                <span class="tashabbuslar-hero-icon">🌟</span>
+                <span class="tashabbuslar-hero-icon"><svg class="ic"><use href="#ic-star"/></svg></span>
                 <h1 class="tashabbuslar-hero-title">Tashabbuslar</h1>
                 <p class="tashabbuslar-hero-subtitle">
                     Tashkilotlar muammolarini aniqlash va yoshlar tomonidan innovatsion
@@ -27,7 +27,7 @@
                         {% if card.featured %}<span class="tashabbuslar-flag">YANGI</span>{% endif %}
                         <div class="tashabbuslar-card-bg"></div>
                         <div class="tashabbuslar-card-content">
-                            <span class="tashabbuslar-card-icon">{{ card.icon }}</span>
+                            <span class="tashabbuslar-card-icon"><svg class="ic"><use href="#{{ card.icon }}"/></svg></span>
                             <h2 class="tashabbuslar-card-title">{{ card.title }}</h2>
                             <p class="tashabbuslar-card-desc">{{ card.description }}</p>
                             <p class="tashabbuslar-card-details">{{ card.details }}</p>

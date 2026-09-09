@@ -8,7 +8,7 @@
         <a href="{% url 'content:announcement_list' %}" class="tashabbuslar-back-link">← E'lonlarga qaytish</a>
 
         <div class="announcement-head">
-            <span class="badge badge-accent">{{ announcement.icon }} {{ announcement.get_type_display }}</span>
+            <span class="badge badge-accent"><svg class="ic"><use href="#{{ announcement.icon }}"/></svg> {{ announcement.get_type_display }}</span>
             <span class="badge {% if announcement.is_expired %}badge-error{% else %}badge-success{% endif %}">
                 {{ announcement.status_label }}
             </span>
@@ -17,9 +17,9 @@
         <h1 class="article-title">{{ announcement.title }}</h1>
 
         <div class="article-meta">
-            <span>📅 Joylangan: {{ announcement.posted_at|date:"d.m.Y" }}</span>
+            <span><svg class="ic"><use href="#ic-calendar"/></svg> Joylangan: {{ announcement.posted_at|date:"d.m.Y" }}</span>
             {% if announcement.deadline %}
-                <span>⏰ Muddat: {{ announcement.deadline|date:"d.m.Y" }}</span>
+                <span><svg class="ic"><use href="#ic-alarm"/></svg> Muddat: {{ announcement.deadline|date:"d.m.Y" }}</span>
             {% endif %}
         </div>
 
@@ -27,7 +27,7 @@
 
         {% if announcement.file %}
             <a href="{{ announcement.file.url }}" class="btn btn-primary btn-lg" download>
-                📄 Hujjatni yuklab olish
+                <svg class="ic"><use href="#ic-doc"/></svg> Hujjatni yuklab olish
             </a>
         {% endif %}
 

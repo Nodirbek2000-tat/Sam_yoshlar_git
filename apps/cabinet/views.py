@@ -31,14 +31,14 @@ class DashboardView(TemplateView):
 
         context['business'] = business
         context['stats'] = [
-            {'icon': '📨', 'label': "Murojaatlar", 'value': user.appeals.count(),
+            {'icon': 'ic-mail', 'label': "Murojaatlar", 'value': user.appeals.count(),
              'url': 'cabinet:appeals', 'tone': 'primary'},
-            {'icon': '💡', 'label': "Takliflar", 'value': user.suggestions.count(),
+            {'icon': 'ic-bulb', 'label': "Takliflar", 'value': user.suggestions.count(),
              'url': 'cabinet:suggestions', 'tone': 'accent'},
-            {'icon': '📅', 'label': "Tadbirlarim",
+            {'icon': 'ic-calendar', 'label': "Tadbirlarim",
              'value': user.event_registrations.filter(is_cancelled=False).count(),
              'url': 'cabinet:events', 'tone': 'success'},
-            {'icon': '📦', 'label': "Mahsulotlar",
+            {'icon': 'ic-package', 'label': "Mahsulotlar",
              'value': business.products.count() if business else 0,
              'url': 'cabinet:products', 'tone': 'info'},
         ]

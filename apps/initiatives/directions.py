@@ -5,6 +5,8 @@ sahna o'sadi (daraxt barg chiqaradi, shahar yonadi, neyronlar ulanadi...).
 Sahna chizish mantiqi `static/js/voice.js` ichida — shu yerdagi `scene` kaliti bilan bog'lanadi.
 """
 
+import random
+
 DIRECTIONS = [
     {
         'id': 'eco', 'scene': 'eco',
@@ -168,3 +170,8 @@ MILESTONES = {
     50: "50 ta ovoz — bu haqiqiy harakatga aylandi ⭐",
     100: "100 ta ovoz! Kelajak shu yerdan boshlanadi 🏆",
 }
+
+
+def random_cheer():
+    """Ovoz berilganda chiqadigan tasodifiy ruhlantiruvchi ibora."""
+    return random.choice(CHEERS)

@@ -6,13 +6,13 @@
 <section class="auth-page">
     <div class="auth-card tg-card animate-slide-up">
         <div class="auth-head">
-            <span class="auth-icon tg-icon">✈️</span>
+            <span class="auth-icon tg-icon"><svg class="ic"><use href="#ic-send"/></svg></span>
             <h1 class="auth-title">Telegram orqali kirish</h1>
             <p class="auth-subtitle">Botga raqamingizni yuboring — kod olasiz</p>
         </div>
 
         <a href="{{ bot_link }}" target="_blank" rel="noopener" class="tg-open">
-            ✈️ Botni ochish — @{{ bot_username }}
+            <svg class="ic"><use href="#ic-send"/></svg> Botni ochish — @{{ bot_username }}
         </a>
 
         <form method="post" novalidate class="tg-code-form">

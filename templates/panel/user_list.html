@@ -7,7 +7,7 @@
 {% block content %}
 <form method="get" class="panel-toolbar">
     <div class="panel-search">
-        <span class="panel-search-icon">🔍</span>
+        <span class="panel-search-icon"><svg class="ic"><use href="#ic-search"/></svg></span>
         <input type="search" name="q" value="{{ search }}" class="panel-input"
                placeholder="Ism, email yoki telefon...">
     </div>
@@ -76,7 +76,7 @@
                                             {% csrf_token %}
                                             <button type="submit"
                                                     class="panel-btn panel-btn-sm {% if person.is_staff %}panel-btn-success{% else %}panel-btn-ghost{% endif %}"
-                                                    title="{% if person.is_staff %}Administrator — bosib olib qo'ying{% else %}Adminlik berish{% endif %}">⚙️</button>
+                                                    title="{% if person.is_staff %}Administrator — bosib olib qo'ying{% else %}Adminlik berish{% endif %}"><svg class="ic"><use href="#ic-settings"/></svg></button>
                                         </form>
                                     {% endif %}
                                     <a href="{% url 'panel:user_detail' person.pk %}"
@@ -91,7 +91,7 @@
         {% include 'panel/_pagination.html' with qs=""|add:"q="|add:search|add:"&rol="|add:active_role|add:"&holat="|add:active_status|add:"&" %}
     {% else %}
         <div class="panel-empty">
-            <div class="panel-empty-icon">👥</div>
+            <div class="panel-empty-icon"><svg class="ic"><use href="#ic-users"/></svg></div>
             <div class="panel-empty-title">Foydalanuvchi topilmadi</div>
             <div class="panel-empty-text">Qidiruv yoki filtrni o'zgartirib ko'ring.</div>
         </div>

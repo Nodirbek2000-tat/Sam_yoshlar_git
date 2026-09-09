@@ -65,7 +65,7 @@
         {% include 'panel/_pagination.html' with qs=""|add:"holat="|add:active_status|add:"&" %}
     {% else %}
         <div class="panel-empty">
-            <div class="panel-empty-icon">🌟</div>
+            <div class="panel-empty-icon"><svg class="ic"><use href="#ic-star"/></svg></div>
             <div class="panel-empty-title">Yechimlar yo'q</div>
             <div class="panel-empty-text">Yoshlar /tashabbuslar/yoshlar sahifasidan yechim yuboradi.</div>
         </div>

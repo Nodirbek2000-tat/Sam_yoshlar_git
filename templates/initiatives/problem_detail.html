@@ -1,0 +1,138 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ problem.organization.name }} — muammo{% endblock %}
+{% block description %}{{ problem.description|truncatechars:150 }}{% endblock %}
+
+{% block content %}
+<section class="yoshlar-form-hero">
+    <div class="container">
+        <div class="yoshlar-form-hero-content">
+            <a href="{% url 'initiatives:problems' %}" class="tashabbuslar-back-link">← Muammolar ro'yxatiga qaytish</a>
+            <span class="yoshlar-form-hero-icon"><svg class="ic"><use href="#{{ problem.icon }}"/></svg></span>
+            <h1 class="yoshlar-form-hero-title">{{ problem.get_category_display }}</h1>
+            <p class="yoshlar-form-hero-subtitle">{{ problem.organization.name }}</p>
+        </div>
+    </div>
+</section>
+
+<section class="yoshlar-form-section">
+    <div class="container container-narrow">
+
+        <article class="yoshlar-selected-card">
+            <div class="yoshlar-selected-problem">
+                <div class="yoshlar-problem-header">
+                    <strong class="yoshlar-problem-org">{{ problem.organization.name }}</strong>
+                    <span class="yoshlar-problem-sphere">{{ problem.organization.get_sphere_display }}</span>
+                    <span class="yoshlar-problem-time">{{ problem.age_label }}</span>
+                </div>
+
+                {% if problem.question %}
+                    <p class="prob-question">{{ problem.question }}</p>
+                {% endif %}
+
+                <p class="yoshlar-problem-text">{{ problem.description|linebreaksbr }}</p>
+
+                <div class="yoshlar-problem-footer prob-card-footer">
+                    <span class="badge badge-primary"><svg class="ic"><use href="#{{ problem.icon }}"/></svg> {{ problem.get_category_display }}</span>
+                    <span class="prob-count"><svg class="ic"><use href="#ic-bulb"/></svg> {{ solutions_count }} ta taklif</span>
+                    {% if problem.organization.region %}
+                        <span class="prob-count"><svg class="ic"><use href="#ic-pin"/></svg> {{ problem.organization.get_region_display }}</span>
+                    {% endif %}
+                </div>
+            </div>
+        </article>
+
+        {# ---------- Berilgan takliflar ---------- #}
+        <div class="prob-section" id="takliflar">
+            <h2 class="prob-section-title">Berilgan takliflar <span class="prob-section-count">{{ solutions|length }}</span></h2>
+
+            {% if solutions %}
+                <div class="prob-solutions">
+                    {% for solution in solutions %}
+                        <article class="prob-solution">
+                            <div class="prob-solution-head">
+                                <span class="prob-solution-avatar">{{ solution.author_name|first|upper }}</span>
+                                <div>
+                                    <strong class="prob-solution-author">{{ solution.author_name }}</strong>
+                                    <span class="prob-solution-date">{{ solution.created_at|date:"d.m.Y" }}</span>
+                                </div>
+                            </div>
+                            <h3 class="prob-solution-title">{{ solution.title }}</h3>
+                            <p class="prob-solution-text">{{ solution.description|linebreaksbr }}</p>
+                            {% if solution.technologies %}
+                                <p class="prob-solution-tech"><svg class="ic"><use href="#ic-tools"/></svg> {{ solution.technologies }}</p>
+                            {% endif %}
+                            {% if solution.expected_result %}
+                                <p class="prob-solution-result"><svg class="ic"><use href="#ic-target"/></svg> {{ solution.expected_result }}</p>
+                            {% endif %}
+                        </article>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="prob-empty">Hozircha taklif berilmagan — birinchi bo'ling.</p>
+            {% endif %}
+        </div>
+
+        {# ---------- Taklif berish ---------- #}
+        <div class="yoshlar-solution-form" id="taklif">
+            <h2 class="yoshlar-solution-title"><svg class="ic"><use href="#ic-rocket"/></svg> Yechimingizni taklif qiling</h2>
+
+            {% if user.is_authenticated %}
+                <form method="post" enctype="multipart/form-data" novalidate>
+                    {% csrf_token %}
+                    {% for field in form %}
+                        <div class="startup-field">
+                            <div class="startup-field-header">
+                                <label class="startup-field-label" for="{{ field.id_for_label }}">
+                                    {{ field.label }}{% if field.field.required %} *{% endif %}
+                                </label>
+                            </div>
+                            {{ field }}
+                            {% if field.help_text %}<p class="startup-field-hint">{{ field.help_text }}</p>{% endif %}
+                            {% if field.errors %}<ul class="form-errors">{% for e in field.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+                        </div>
+                    {% endfor %}
+                    <button type="submit" class="btn btn-accent btn-lg"><svg class="ic"><use href="#ic-check"/></svg> Taklifni yuborish</button>
+                </form>
+            {% else %}
+                <div class="auth-gate">
+                    <span class="auth-gate-icon"><svg class="ic"><use href="#ic-lock"/></svg></span>
+                    <p class="auth-gate-title">Taklif berish uchun ro'yxatdan o'ting</p>
+                    <p class="auth-gate-text">
+                        Muammolarni ko'rish hamma uchun ochiq. Taklif berish uchun esa
+                        Telegram bot orqali bir daqiqada kiring.
+                    </p>
+                    <a href="{% url 'accounts:login' %}?next={{ request.path }}%23taklif"
+                       class="btn btn-primary btn-lg">Kirish / ro'yxatdan o'tish</a>
+                </div>
+            {% endif %}
+        </div>
+
+        {# ---------- Boshqa muammolar ---------- #}
+        {% if others %}
+            <div class="prob-section">
+                <h2 class="prob-section-title">Boshqa muammolar</h2>
+                <div class="yoshlar-problems-list">
+                    {% for item in others %}
+                        <article class="yoshlar-problem-card prob-card">
+                            <a href="{% url 'initiatives:problem_detail' item.pk %}" class="prob-card-link">
+                                <div class="yoshlar-problem-header">
+                                    <strong class="yoshlar-problem-org">{{ item.organization.name }}</strong>
+                                    <span class="yoshlar-problem-sphere">{{ item.organization.get_sphere_display }}</span>
+                                </div>
+                                <p class="yoshlar-problem-text">{{ item.description|truncatechars:140 }}</p>
+                            </a>
+                            <div class="yoshlar-problem-footer prob-card-footer">
+                                <span class="badge badge-primary"><svg class="ic"><use href="#{{ item.icon }}"/></svg> {{ item.get_category_display }}</span>
+                                <span class="prob-count"><svg class="ic"><use href="#ic-bulb"/></svg> {{ item.solution_count }} ta taklif</span>
+                                <a href="{% url 'initiatives:problem_detail' item.pk %}#taklif"
+                                   class="btn btn-accent btn-sm prob-cta">Taklif berish</a>
+                            </div>
+                        </article>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

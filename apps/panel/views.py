@@ -38,29 +38,29 @@ def dashboard(request):
     week_ago = now - timezone.timedelta(days=7)
 
     stats = [
-        {'icon': '👥', 'label': "Foydalanuvchilar", 'value': User.objects.count(),
+        {'icon': 'ic-users', 'label': "Foydalanuvchilar", 'value': User.objects.count(),
          'sub': f"+{User.objects.filter(date_joined__gte=week_ago).count()} bu hafta",
          'url': 'panel:users', 'tone': 'primary'},
-        {'icon': '📰', 'label': "Yangiliklar", 'value': News.objects.count(),
+        {'icon': 'ic-news', 'label': "Yangiliklar", 'value': News.objects.count(),
          'sub': f"{News.objects.filter(is_published=True).count()} ta chop etilgan",
          'url': 'panel:news', 'tone': 'info'},
-        {'icon': '📅', 'label': "Tadbirlar", 'value': Event.objects.count(),
+        {'icon': 'ic-calendar', 'label': "Tadbirlar", 'value': Event.objects.count(),
          'sub': f"{Event.objects.filter(starts_at__gte=now).count()} ta kelasi",
          'url': 'panel:events', 'tone': 'success'},
-        {'icon': '📢', 'label': "E'lonlar", 'value': Announcement.objects.count(),
+        {'icon': 'ic-megaphone', 'label': "E'lonlar", 'value': Announcement.objects.count(),
          'sub': f"{Announcement.objects.filter(is_active=True).count()} ta faol",
          'url': 'panel:announcements', 'tone': 'accent'},
     ]
 
     pending = [
-        {'icon': '📨', 'label': "Javob kutayotgan murojaatlar",
+        {'icon': 'ic-mail', 'label': "Javob kutayotgan murojaatlar",
          'value': Appeal.objects.filter(status=Status.PENDING).count(), 'url': 'panel:appeals'},
-        {'icon': '💡', 'label': "Ko'rilmagan takliflar",
+        {'icon': 'ic-bulb', 'label': "Ko'rilmagan takliflar",
          'value': Suggestion.objects.filter(status=Status.PENDING).count(),
          'url': 'panel:suggestions'},
-        {'icon': '🚀', 'label': "Tasdiq kutayotgan StartUplar",
+        {'icon': 'ic-rocket', 'label': "Tasdiq kutayotgan StartUplar",
          'value': Startup.objects.filter(status=Status.PENDING).count(), 'url': 'panel:startups'},
-        {'icon': '🌟', 'label': "Yangi yechimlar",
+        {'icon': 'ic-star', 'label': "Yangi yechimlar",
          'value': Solution.objects.filter(status=Status.PENDING).count(),
          'url': 'panel:solutions'},
     ]

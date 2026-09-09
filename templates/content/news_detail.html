@@ -12,9 +12,9 @@
         <h1 class="article-title">{{ news.title }}</h1>
 
         <div class="article-meta">
-            <span>📅 {{ news.published_at|date:"d.m.Y" }}</span>
-            {% if news.display_author %}<span>✍️ {{ news.display_author }}</span>{% endif %}
-            <span>👁️ {{ news.views }}</span>
+            <span><svg class="ic"><use href="#ic-calendar"/></svg> {{ news.published_at|date:"d.m.Y" }}</span>
+            {% if news.display_author %}<span><svg class="ic"><use href="#ic-pen"/></svg> {{ news.display_author }}</span>{% endif %}
+            <span><svg class="ic"><use href="#ic-eye"/></svg> {{ news.views }}</span>
         </div>
 
         {% if news.image %}
@@ -38,11 +38,11 @@
                     {% if item.image %}
                         <img src="{{ item.image.url }}" alt="{{ item.title }}" class="card-img">
                     {% else %}
-                        <div class="card-img card-img-placeholder">📰</div>
+                        <div class="card-img card-img-placeholder"><svg class="ic"><use href="#ic-news"/></svg></div>
                     {% endif %}
                     <div class="card-body">
                         <h3 class="card-title">{{ item.title }}</h3>
-                        <div class="card-meta"><span>📅 {{ item.published_at|date:"Y-m-d" }}</span></div>
+                        <div class="card-meta"><span><svg class="ic"><use href="#ic-calendar"/></svg> {{ item.published_at|date:"Y-m-d" }}</span></div>
                     </div>
                 </a>
             {% endfor %}

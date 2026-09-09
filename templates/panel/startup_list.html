@@ -33,7 +33,7 @@
                     {% for startup in page_obj %}
                         <tr>
                             <td>
-                                <div class="panel-table-title">{{ startup.sphere_icon }} {{ startup.name }}</div>
+                                <div class="panel-table-title"><svg class="ic"><use href="#{{ startup.sphere_icon }}"/></svg> {{ startup.name }}</div>
                                 <div class="panel-table-meta">{{ startup.about|truncatechars:70 }}</div>
                             </td>
                             <td>
@@ -45,7 +45,7 @@
                             <td>
                                 {% if startup.pitch_file %}
                                     <a href="{{ startup.pitch_file.url }}" target="_blank" rel="noopener"
-                                       class="panel-btn panel-btn-ghost panel-btn-sm">📎 Fayl</a>
+                                       class="panel-btn panel-btn-ghost panel-btn-sm"><svg class="ic"><use href="#ic-paperclip"/></svg> Fayl</a>
                                 {% else %}—{% endif %}
                             </td>
                             <td>{% include 'panel/_status_badge.html' with status=startup.status label=startup.get_status_display %}</td>
@@ -69,7 +69,7 @@
         {% include 'panel/_pagination.html' with qs=""|add:"holat="|add:active_status|add:"&" %}
     {% else %}
         <div class="panel-empty">
-            <div class="panel-empty-icon">🚀</div>
+            <div class="panel-empty-icon"><svg class="ic"><use href="#ic-rocket"/></svg></div>
             <div class="panel-empty-title">StartUp arizalari yo'q</div>
             <div class="panel-empty-text">Arizalar /startupperlar sahifasi orqali keladi.</div>
         </div>

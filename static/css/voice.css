@@ -890,13 +890,14 @@
 
 /* ---------------- Lenta o'qlari (scroll uchun) ---------------- */
 
-.rail-wrap { position: relative; }
+/* O'qlar chetdagi tugmalar ustiga tushmasligi uchun ikki yonda joy qoldiramiz */
+.rail-wrap { position: relative; padding: 0 42px; }
 
 .rail-wrap .voice-rail { margin-bottom: 26px; }
 
 .rail-arrow {
     position: absolute;
-    top: 18px;
+    top: 26px;
     transform: translateY(-50%);
     z-index: 5;
     width: 34px;
@@ -918,8 +919,8 @@
 
 .rail-arrow:hover { border-color: var(--cat-color); color: var(--cat-color); transform: translateY(-50%) scale(1.08); }
 .rail-arrow.hidden { opacity: 0; pointer-events: none; }
-.rail-arrow-prev { left: -6px; }
-.rail-arrow-next { right: -6px; }
+.rail-arrow-prev { left: 0; }
+.rail-arrow-next { right: 0; }
 
 .voice-rail.is-scrollable { cursor: grab; }
 .voice-rail.is-dragging { cursor: grabbing; user-select: none; }
@@ -927,6 +928,7 @@
 
 @media (max-width: 640px) {
     .rail-arrow { display: none; }
+    .rail-wrap { padding: 0; }
 }
 
 /* ---------------- Qorong'i header (tashabbuslar bo'limi) ---------------- */
@@ -996,3 +998,30 @@
 }
 
 .voice-theme .nav-user { background: linear-gradient(135deg, #35b7a6, #6fe0ce); color: #0a0d13; }
+
+/* ---------------- Ro'yxatdan o'tish taklifi (qorong'i sahifalar) ---------------- */
+
+.voice-gate {
+    padding: 30px 26px;
+    border: 1px dashed rgba(255, 255, 255, .18);
+    border-radius: 18px;
+    background: rgba(255, 255, 255, .03);
+    text-align: center;
+}
+
+.voice-gate-icon { display: block; font-size: 30px; margin-bottom: 12px; }
+
+.voice-gate-title {
+    margin: 0 0 8px;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--v-ink);
+}
+
+.voice-gate-text {
+    max-width: 460px;
+    margin: 0 auto 20px;
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--v-dim);
+}

@@ -1,7 +1,7 @@
 {% extends 'cabinet/base_cabinet.html' %}
 
 {% block title %}Tadbirlarim — Kabinet{% endblock %}
-{% block cabinet_title %}📅 Tadbirlarim{% endblock %}
+{% block cabinet_title %}<svg class="ic"><use href="#ic-calendar"/></svg> Tadbirlarim{% endblock %}
 {% block cabinet_subtitle %}Siz yozilgan tadbirlar shu yerda to'planadi{% endblock %}
 
 {% block cabinet_content %}
@@ -13,14 +13,14 @@
                 {% if reg.event.image %}
                     <img src="{{ reg.event.image.url }}" alt="" class="my-event-img">
                 {% else %}
-                    <div class="my-event-img my-event-img-placeholder">📅</div>
+                    <div class="my-event-img my-event-img-placeholder"><svg class="ic"><use href="#ic-calendar"/></svg></div>
                 {% endif %}
                 <div class="my-event-body">
                     <h3 class="my-event-title">{{ reg.event.title }}</h3>
                     <div class="my-event-meta">
-                        <span>📅 {{ reg.event.starts_at|date:"d.m.Y" }}</span>
-                        <span>🕐 {{ reg.event.starts_at|date:"H:i" }}</span>
-                        <span>📍 {{ reg.event.location }}</span>
+                        <span><svg class="ic"><use href="#ic-calendar"/></svg> {{ reg.event.starts_at|date:"d.m.Y" }}</span>
+                        <span><svg class="ic"><use href="#ic-clock"/></svg> {{ reg.event.starts_at|date:"H:i" }}</span>
+                        <span><svg class="ic"><use href="#ic-pin"/></svg> {{ reg.event.location }}</span>
                     </div>
                 </div>
                 <span class="badge badge-info">Kelasi</span>
@@ -30,20 +30,20 @@
 {% endif %}
 
 {% if past %}
-    <h2 class="section-title-sm">✅ O'tgan tadbirlar</h2>
+    <h2 class="section-title-sm"><svg class="ic"><use href="#ic-check"/></svg> O'tgan tadbirlar</h2>
     <div class="my-events">
         {% for reg in past %}
             <a href="{{ reg.event.get_absolute_url }}" class="my-event my-event-past">
                 {% if reg.event.image %}
                     <img src="{{ reg.event.image.url }}" alt="" class="my-event-img">
                 {% else %}
-                    <div class="my-event-img my-event-img-placeholder">📅</div>
+                    <div class="my-event-img my-event-img-placeholder"><svg class="ic"><use href="#ic-calendar"/></svg></div>
                 {% endif %}
                 <div class="my-event-body">
                     <h3 class="my-event-title">{{ reg.event.title }}</h3>
                     <div class="my-event-meta">
-                        <span>📅 {{ reg.event.starts_at|date:"d.m.Y" }}</span>
-                        <span>📍 {{ reg.event.location }}</span>
+                        <span><svg class="ic"><use href="#ic-calendar"/></svg> {{ reg.event.starts_at|date:"d.m.Y" }}</span>
+                        <span><svg class="ic"><use href="#ic-pin"/></svg> {{ reg.event.location }}</span>
                     </div>
                 </div>
                 {% if reg.attended %}
@@ -60,7 +60,7 @@
 
 {% if not upcoming and not past %}
     <div class="empty-state">
-        <div class="empty-state-icon">📅</div>
+        <div class="empty-state-icon"><svg class="ic"><use href="#ic-calendar"/></svg></div>
         <div class="empty-state-title">Hali tadbirga yozilmagansiz</div>
         <div class="empty-state-text">Tadbirlar bo'limidan o'zingizga mos tadbirni tanlang.</div>
         <a href="{% url 'content:event_list' %}" class="btn btn-primary">Tadbirlarni ko'rish →</a>

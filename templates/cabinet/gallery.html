@@ -18,7 +18,7 @@
                     </div>
                 {% endfor %}
             </div>
-            <button type="submit" class="btn btn-primary">🖼️ Rasm yuklash</button>
+            <button type="submit" class="btn btn-primary"><svg class="ic"><use href="#ic-image"/></svg> Rasm yuklash</button>
         </form>
     </div>
 </div>
@@ -33,7 +33,7 @@
                     <form method="post" action="{% url 'cabinet:gallery_delete' image.pk %}"
                           onsubmit="return confirm('Rasm o\'chirilsinmi?')">
                         {% csrf_token %}
-                        <button type="submit" class="btn btn-ghost btn-sm">🗑</button>
+                        <button type="submit" class="btn btn-ghost btn-sm"><svg class="ic"><use href="#ic-trash"/></svg></button>
                     </form>
                 </figcaption>
             </figure>
@@ -41,7 +41,7 @@
     </div>
 {% else %}
     <div class="empty-state">
-        <div class="empty-state-icon">🖼️</div>
+        <div class="empty-state-icon"><svg class="ic"><use href="#ic-image"/></svg></div>
         <div class="empty-state-title">Galereya bo'sh</div>
         <div class="empty-state-text">Birinchi rasmni yuklang.</div>
     </div>

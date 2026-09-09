@@ -24,7 +24,7 @@ COUNTRIES = [
     ('india', "Hindiston", 'IN', '#e08a3c'),
     ('latvia', "Latviya", 'LV', '#a8453f'),
     ('czech', "Chexiya", 'CZ', '#3f6fb5'),
-    ('other', "Boshqa davlat", '🌍', '#5a6b80'),
+    ('other', "Boshqa davlat", '??', '#5a6b80'),
 ]
 
 COUNTRY_CHOICES = [(code, name) for code, name, _, _ in COUNTRIES]
@@ -34,7 +34,7 @@ COUNTRY_NAMES = {code: name for code, name, _, _ in COUNTRIES}
 
 
 def short_of(code):
-    return COUNTRY_SHORT.get(code, '🌍')
+    return COUNTRY_SHORT.get(code, '??')
 
 
 def color_of(code):

@@ -20,7 +20,7 @@
                 {% endfor %}
             </div>
             <div class="panel-form-foot">
-                <button type="submit" class="panel-btn panel-btn-primary">💾 Saqlash</button>
+                <button type="submit" class="panel-btn panel-btn-primary"><svg class="ic"><use href="#ic-save"/></svg> Saqlash</button>
             </div>
         </form>
     </div>
@@ -29,7 +29,7 @@
 <div class="panel-grid panel-grid-2" style="margin-top:18px">
     <div class="panel-card">
         <div class="panel-card-head">
-            <h2 class="panel-card-title">👤 Rahbariyat va a'zolar</h2>
+            <h2 class="panel-card-title"><svg class="ic"><use href="#ic-user"/></svg> Rahbariyat va a'zolar</h2>
             <a href="{% url 'panel:leader_create' %}" class="panel-btn panel-btn-primary panel-btn-sm">+ Qo'shish</a>
         </div>
         <div class="panel-list">
@@ -50,7 +50,7 @@
                 </a>
             {% empty %}
                 <div class="panel-empty">
-                    <div class="panel-empty-icon">👤</div>
+                    <div class="panel-empty-icon"><svg class="ic"><use href="#ic-user"/></svg></div>
                     <div class="panel-empty-title">Ro'yxat bo'sh</div>
                 </div>
             {% endfor %}
@@ -59,7 +59,7 @@
 
     <div class="panel-card">
         <div class="panel-card-head">
-            <h2 class="panel-card-title">✅ Kengash vazifalari</h2>
+            <h2 class="panel-card-title"><svg class="ic"><use href="#ic-check"/></svg> Kengash vazifalari</h2>
             <a href="{% url 'panel:task_create' %}" class="panel-btn panel-btn-primary panel-btn-sm">+ Qo'shish</a>
         </div>
         <div class="panel-list">
@@ -77,7 +77,7 @@
                 </a>
             {% empty %}
                 <div class="panel-empty">
-                    <div class="panel-empty-icon">✅</div>
+                    <div class="panel-empty-icon"><svg class="ic"><use href="#ic-check"/></svg></div>
                     <div class="panel-empty-title">Vazifalar yo'q</div>
                 </div>
             {% endfor %}

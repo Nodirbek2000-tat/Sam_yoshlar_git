@@ -22,22 +22,22 @@
 {% if result %}
     <div class="panel-grid panel-grid-4" style="margin-bottom:18px">
         <div class="panel-stat" data-tone="primary">
-            <span class="panel-stat-icon">✨</span>
+            <span class="panel-stat-icon"><svg class="ic"><use href="#ic-spark"/></svg></span>
             <div class="panel-stat-value">{{ result.initiatives }}</div>
             <div class="panel-stat-label">Kiritilgan tashabbus</div>
         </div>
         <div class="panel-stat" data-tone="success">
-            <span class="panel-stat-icon">👍</span>
+            <span class="panel-stat-icon"><svg class="ic"><use href="#ic-vote"/></svg></span>
             <div class="panel-stat-value">{{ result.votes }}</div>
             <div class="panel-stat-label">Kiritilgan ovoz</div>
         </div>
         <div class="panel-stat" data-tone="info">
-            <span class="panel-stat-icon">💬</span>
+            <span class="panel-stat-icon"><svg class="ic"><use href="#ic-chat"/></svg></span>
             <div class="panel-stat-value">{{ result.comments }}</div>
             <div class="panel-stat-label">Kiritilgan taklif</div>
         </div>
         <div class="panel-stat" data-tone="accent">
-            <span class="panel-stat-icon">📊</span>
+            <span class="panel-stat-icon"><svg class="ic"><use href="#ic-chart"/></svg></span>
             <div class="panel-stat-value">{{ total }}</div>
             <div class="panel-stat-label">Bazadagi jami</div>
         </div>
@@ -47,7 +47,7 @@
 <div class="panel-grid panel-grid-2">
     <div class="panel-card">
         <div class="panel-card-head">
-            <h2 class="panel-card-title">📥 Yuklash</h2>
+            <h2 class="panel-card-title"><svg class="ic"><use href="#ic-inbox"/></svg> Yuklash</h2>
             <span class="panel-badge panel-badge-gray">Bazada {{ total }} ta</span>
         </div>
         <div class="panel-card-body">
@@ -90,7 +90,7 @@
     <div>
         <div class="panel-card">
             <div class="panel-card-head">
-                <h2 class="panel-card-title">📄 Namuna format</h2>
+                <h2 class="panel-card-title"><svg class="ic"><use href="#ic-doc"/></svg> Namuna format</h2>
                 <button type="button" class="panel-btn panel-btn-ghost panel-btn-sm"
                         onclick="fillSample()">Formaga qo'yish</button>
             </div>
@@ -101,7 +101,7 @@
 
         <div class="panel-card" style="margin-top:18px">
             <div class="panel-card-head">
-                <h2 class="panel-card-title">🧭 Yo'nalish kodlari</h2>
+                <h2 class="panel-card-title"><svg class="ic"><use href="#ic-compass"/></svg> Yo'nalish kodlari</h2>
             </div>
             <div class="panel-card-body">
                 <div class="panel-code-chips">

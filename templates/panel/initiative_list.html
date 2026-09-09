@@ -11,7 +11,7 @@
 {% block content %}
 <form method="get" class="panel-toolbar">
     <div class="panel-search">
-        <span class="panel-search-icon">🔍</span>
+        <span class="panel-search-icon"><svg class="ic"><use href="#ic-search"/></svg></span>
         <input type="search" name="q" value="{{ search }}" class="panel-input"
                placeholder="Sarlavha, tavsif yoki muallif...">
     </div>
@@ -49,7 +49,7 @@
                     {% for idea in page_obj %}
                         <tr>
                             <td>
-                                <div class="panel-table-title">{{ idea.kind_icon }} {{ idea.title|truncatechars:52 }}</div>
+                                <div class="panel-table-title"><svg class="ic"><use href="#{{ idea.kind_icon }}"/></svg> {{ idea.title|truncatechars:52 }}</div>
                                 <div class="panel-table-meta">{{ idea.summary|default:idea.description|truncatechars:70 }}</div>
                             </td>
                             <td>
@@ -81,7 +81,7 @@
         {% include 'panel/_pagination.html' with qs=""|add:"q="|add:search|add:"&yonalish="|add:active_direction|add:"&holat="|add:active_status|add:"&" %}
     {% else %}
         <div class="panel-empty">
-            <div class="panel-empty-icon">✨</div>
+            <div class="panel-empty-icon"><svg class="ic"><use href="#ic-spark"/></svg></div>
             <div class="panel-empty-title">Tashabbus topilmadi</div>
             <div class="panel-empty-text">Filtrni o'zgartiring yoki boshqa yo'nalishni tanlang.</div>
         </div>

@@ -34,7 +34,7 @@
                         {% endfor %}
                     </div>
                     <div class="panel-form-foot">
-                        <button type="submit" class="panel-btn panel-btn-primary">💾 Saqlash</button>
+                        <button type="submit" class="panel-btn panel-btn-primary"><svg class="ic"><use href="#ic-save"/></svg> Saqlash</button>
                     </div>
                 </form>
             </div>
@@ -86,7 +86,7 @@
                               onsubmit="return confirm('Holatni o\'zgartirishni tasdiqlaysizmi?')">
                             {% csrf_token %}
                             <button type="submit" class="panel-btn {% if user_obj.is_active %}panel-btn-danger{% else %}panel-btn-success{% endif %}">
-                                {% if user_obj.is_active %}🚫 Bloklash{% else %}Faollashtirish{% endif %}
+                                {% if user_obj.is_active %}<svg class="ic"><use href="#ic-ban"/></svg> Bloklash{% else %}Faollashtirish{% endif %}
                             </button>
                         </form>
 
@@ -94,7 +94,7 @@
                               onsubmit="return confirm('Administrator huquqi o\'zgartirilsinmi?')">
                             {% csrf_token %}
                             <button type="submit" class="panel-btn {% if user_obj.is_staff %}panel-btn-outline{% else %}panel-btn-primary{% endif %}">
-                                {% if user_obj.is_staff %}Adminlikni olib qo'yish{% else %}⚙️ Adminlik berish{% endif %}
+                                {% if user_obj.is_staff %}Adminlikni olib qo'yish{% else %}<svg class="ic"><use href="#ic-settings"/></svg> Adminlik berish{% endif %}
                             </button>
                         </form>
                     </div>
@@ -108,7 +108,7 @@
 
         {% if business %}
             <div class="panel-card" style="margin-top:18px">
-                <div class="panel-card-head"><h2 class="panel-card-title">🏢 Biznes profil</h2></div>
+                <div class="panel-card-head"><h2 class="panel-card-title"><svg class="ic"><use href="#ic-building"/></svg> Biznes profil</h2></div>
                 <div class="panel-card-body">
                     <div class="panel-list-title">{{ business.name }}</div>
                     <div class="panel-list-meta">{{ business.get_sphere_display }} · {{ business.get_region_display }}</div>
@@ -122,7 +122,7 @@
 
         {% if registrations %}
             <div class="panel-card" style="margin-top:18px">
-                <div class="panel-card-head"><h2 class="panel-card-title">📅 Tadbirlari</h2></div>
+                <div class="panel-card-head"><h2 class="panel-card-title"><svg class="ic"><use href="#ic-calendar"/></svg> Tadbirlari</h2></div>
                 <div class="panel-list">
                     {% for reg in registrations %}
                         <div class="panel-list-item">
@@ -145,7 +145,7 @@
 
         {% if appeals %}
             <div class="panel-card" style="margin-top:18px">
-                <div class="panel-card-head"><h2 class="panel-card-title">📨 Murojaatlari</h2></div>
+                <div class="panel-card-head"><h2 class="panel-card-title"><svg class="ic"><use href="#ic-mail"/></svg> Murojaatlari</h2></div>
                 <div class="panel-list">
                     {% for appeal in appeals %}
                         <a href="{% url 'panel:appeal_detail' appeal.pk %}" class="panel-list-item">

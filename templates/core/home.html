@@ -1,36 +1,278 @@
 {% extends 'base.html' %}
 
-{% block content %}
-<div class="home-landing">
-    <section class="hero">
-        <div class="container">
-            <div class="hero-content animate-fade-in">
-                <h1 class="hero-title">sam-yosh tadbirkor.uz</h1>
-                <p class="hero-subtitle">
-                    O'zbekiston yosh tadbirkorlarini birlashtiruvchi, qo'llab-quvvatlovchi va
-                    rivojlantirishga xizmat qiluvchi yagona axborot platformasi.
-                </p>
-            </div>
-        </div>
-    </section>
+{% block body_class %}home-page{% endblock %}
 
-    <section class="home-menu-section">
-        <div class="container">
-            <div class="home-menu-grid">
-                {% for card in cards %}
-                <a href="{% url card.url %}" class="home-menu-card animate-slide-up"
-                   style="--card-gradient: {{ card.gradient }}; --card-shadow: {{ card.shadow }}; animation-delay: {{ forloop.counter0|floatformat:0 }}00ms;">
-                    <div class="home-menu-card-bg"></div>
-                    <div class="home-menu-card-content">
-                        <span class="home-menu-card-icon">{{ card.icon }}</span>
-                        <h2 class="home-menu-card-title">{{ card.title }}</h2>
-                        <p class="home-menu-card-desc">{{ card.description }}</p>
-                        <span class="home-menu-card-arrow">→</span>
-                    </div>
+{% block content %}
+
+{# ================= HERO ================= #}
+<section class="hm-hero">
+    <div class="hm-hero-glow" aria-hidden="true"></div>
+    <div class="container hm-hero-inner">
+        <span class="hm-badge">
+            <svg class="ic ic-sm"><use href="#ic-spark"/></svg>
+            Yosh Tadbirkorlar Kengashi
+        </span>
+
+        <h1 class="hm-title">
+            Yoshlar tashabbusi<br><span class="hm-title-accent">kuchga aylanadigan joy</span>
+        </h1>
+
+        <p class="hm-lead">
+            Yoshlarni birlashtiruvchi, qo'llab-quvvatlovchi va rivojlantirishga
+            xizmat qiluvchi yagona axborot platformasi.
+        </p>
+
+        <div class="hm-hero-actions">
+            <a href="{% url 'initiatives:youth' %}" class="hm-btn hm-btn-primary">
+                <svg class="ic"><use href="#ic-spark"/></svg>
+                Tashabbuslarni ko'rish
+            </a>
+            {% if user.is_authenticated %}
+                <a href="{% url 'cabinet:dashboard' %}" class="hm-btn hm-btn-ghost">
+                    <svg class="ic"><use href="#ic-user"/></svg>
+                    Shaxsiy kabinet
                 </a>
-                {% endfor %}
-            </div>
+            {% else %}
+                <a href="{% url 'accounts:login' %}" class="hm-btn hm-btn-ghost">
+                    <svg class="ic"><use href="#ic-send"/></svg>
+                    Telegram orqali kirish
+                </a>
+            {% endif %}
         </div>
-    </section>
-</div>
+
+        <div class="hm-stats">
+            {% for stat in stats %}
+                <div class="hm-stat">
+                    <svg class="ic ic-lg hm-stat-icon"><use href="#{{ stat.icon }}"/></svg>
+                    <span class="hm-stat-value">{{ stat.value }}</span>
+                    <span class="hm-stat-label">{{ stat.label }}</span>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+{# ================= BO'LIMLAR ================= #}
+<section class="hm-section">
+    <div class="container">
+        <div class="hm-head">
+            <h2 class="hm-head-title">Bo'limlar</h2>
+            <p class="hm-head-sub">Platformaning to'rt asosiy yo'nalishi</p>
+        </div>
+
+        <div class="hm-sections">
+            {% for card in sections %}
+                <a href="{% url card.url %}" class="hm-card hm-tone-{{ card.tone }}">
+                    <span class="hm-card-icon">
+                        <svg class="ic ic-lg"><use href="#{{ card.icon }}"/></svg>
+                    </span>
+                    <h3 class="hm-card-title">{{ card.title }}</h3>
+                    <p class="hm-card-desc">{{ card.description }}</p>
+                    <span class="hm-card-go">
+                        Ochish <svg class="ic ic-sm"><use href="#ic-arrow-right"/></svg>
+                    </span>
+                </a>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+{# ================= TASHABBUSLAR ================= #}
+{% if top_initiatives %}
+<section class="hm-spotlight">
+    <div class="container">
+        <div class="hm-head hm-head-light hm-head-row">
+            <div>
+                <h2 class="hm-head-title">Eng ko'p ovoz olgan tashabbuslar</h2>
+                <p class="hm-head-sub">Har bir ovoz yo'nalishning tirik ekotizimini o'stiradi</p>
+            </div>
+            <a href="{% url 'initiatives:youth' %}" class="hm-link">
+                Barchasi <svg class="ic ic-sm"><use href="#ic-arrow-right"/></svg>
+            </a>
+        </div>
+
+        <div class="hm-top-list">
+            {% for idea in top_initiatives %}
+                <a href="{% url 'initiatives:initiative_detail' idea.pk %}" class="hm-top">
+                    <span class="hm-top-place">#{{ forloop.counter }}</span>
+                    <span class="hm-top-body">
+                        <span class="hm-top-title">{{ idea.title }}</span>
+                        <span class="hm-top-meta">
+                            <span><svg class="ic ic-sm"><use href="#ic-vote"/></svg> {{ idea.vote_count }}</span>
+                            <span><svg class="ic ic-sm"><use href="#ic-chat"/></svg> {{ idea.comment_total }}</span>
+                            <span class="hm-top-author">{{ idea.author_label }}</span>
+                        </span>
+                    </span>
+                    <svg class="ic hm-top-arrow"><use href="#ic-arrow-right"/></svg>
+                </a>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{# ================= YANGILIKLAR + TADBIRLAR ================= #}
+<section class="hm-section">
+    <div class="container">
+        <div class="hm-two">
+
+            <div class="hm-col">
+                <div class="hm-head hm-head-row">
+                    <h2 class="hm-head-title">
+                        <svg class="ic"><use href="#ic-news"/></svg> So'nggi yangiliklar
+                    </h2>
+                    <a href="{% url 'content:news_list' %}" class="hm-link">
+                        Barchasi <svg class="ic ic-sm"><use href="#ic-arrow-right"/></svg>
+                    </a>
+                </div>
+
+                {% if latest_news %}
+                    <div class="hm-list">
+                        {% for item in latest_news %}
+                            <a href="{{ item.get_absolute_url }}" class="hm-item">
+                                {% if item.image %}
+                                    <img src="{{ item.image.url }}" alt="" class="hm-item-thumb" loading="lazy">
+                                {% else %}
+                                    <span class="hm-item-thumb hm-item-thumb-empty">
+                                        <svg class="ic ic-lg"><use href="#ic-news"/></svg>
+                                    </span>
+                                {% endif %}
+                                <span class="hm-item-body">
+                                    <span class="hm-item-title">{{ item.title|truncatechars:70 }}</span>
+                                    <span class="hm-item-meta">{{ item.published_at|date:"d.m.Y" }}</span>
+                                </span>
+                            </a>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="hm-empty">Hozircha yangilik yo'q.</p>
+                {% endif %}
+            </div>
+
+            <div class="hm-col">
+                <div class="hm-head hm-head-row">
+                    <h2 class="hm-head-title">
+                        <svg class="ic"><use href="#ic-calendar"/></svg> Yaqin tadbirlar
+                    </h2>
+                    <a href="{% url 'content:event_list' %}" class="hm-link">
+                        Barchasi <svg class="ic ic-sm"><use href="#ic-arrow-right"/></svg>
+                    </a>
+                </div>
+
+                {% if upcoming_events %}
+                    <div class="hm-list">
+                        {% for event in upcoming_events %}
+                            <a href="{{ event.get_absolute_url }}" class="hm-item">
+                                <span class="hm-date">
+                                    <span class="hm-date-day">{{ event.starts_at|date:"d" }}</span>
+                                    <span class="hm-date-month">{{ event.starts_at|date:"M" }}</span>
+                                </span>
+                                <span class="hm-item-body">
+                                    <span class="hm-item-title">{{ event.title|truncatechars:70 }}</span>
+                                    <span class="hm-item-meta">
+                                        <svg class="ic ic-sm"><use href="#ic-pin"/></svg>
+                                        {{ event.location|truncatechars:38 }}
+                                    </span>
+                                </span>
+                            </a>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="hm-empty">Rejalashtirilgan tadbir yo'q.</p>
+                {% endif %}
+            </div>
+
+        </div>
+    </div>
+</section>
+
+{# ================= E'LONLAR + MUAMMOLAR ================= #}
+<section class="hm-section hm-section-alt">
+    <div class="container">
+        <div class="hm-two">
+
+            <div class="hm-col">
+                <div class="hm-head hm-head-row">
+                    <h2 class="hm-head-title">
+                        <svg class="ic"><use href="#ic-megaphone"/></svg> E'lonlar
+                    </h2>
+                    <a href="{% url 'content:announcement_list' %}" class="hm-link">
+                        Barchasi <svg class="ic ic-sm"><use href="#ic-arrow-right"/></svg>
+                    </a>
+                </div>
+
+                {% if announcements %}
+                    <div class="hm-chips">
+                        {% for item in announcements %}
+                            <a href="{% url 'content:announcement_detail' item.slug %}" class="hm-chip">
+                                <span class="hm-chip-type">{{ item.get_type_display }}</span>
+                                <span class="hm-chip-title">{{ item.title|truncatechars:80 }}</span>
+                                {% if item.deadline %}
+                                    <span class="hm-chip-deadline">
+                                        <svg class="ic ic-sm"><use href="#ic-clock"/></svg>
+                                        {{ item.deadline|date:"d.m.Y" }} gacha
+                                    </span>
+                                {% endif %}
+                            </a>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="hm-empty">Faol e'lon yo'q.</p>
+                {% endif %}
+            </div>
+
+            <div class="hm-col">
+                <div class="hm-head hm-head-row">
+                    <h2 class="hm-head-title">
+                        <svg class="ic"><use href="#ic-clipboard"/></svg> Tashkilot muammolari
+                    </h2>
+                    <a href="{% url 'initiatives:problems' %}" class="hm-link">
+                        Barchasi <svg class="ic ic-sm"><use href="#ic-arrow-right"/></svg>
+                    </a>
+                </div>
+
+                {% if open_problems %}
+                    <div class="hm-list">
+                        {% for problem in open_problems %}
+                            <a href="{% url 'initiatives:problem_detail' problem.pk %}" class="hm-item">
+                                <span class="hm-item-thumb hm-item-thumb-empty">
+                                    <svg class="ic ic-lg"><use href="#ic-bulb"/></svg>
+                                </span>
+                                <span class="hm-item-body">
+                                    <span class="hm-item-title">{{ problem.description|truncatechars:80 }}</span>
+                                    <span class="hm-item-meta">
+                                        {{ problem.organization.name }} · {{ problem.solution_count }} ta taklif
+                                    </span>
+                                </span>
+                            </a>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="hm-empty">Hozircha muammo kiritilmagan.</p>
+                {% endif %}
+            </div>
+
+        </div>
+    </div>
+</section>
+
+{# ================= CTA ================= #}
+{% if not user.is_authenticated %}
+<section class="hm-cta">
+    <div class="container hm-cta-inner">
+        <div>
+            <h2 class="hm-cta-title">Ovoz berish va taklif yozish uchun qo'shiling</h2>
+            <p class="hm-cta-text">
+                Sahifalarni ko'rish hamma uchun ochiq. Ovoz berish, taklif yozish va
+                tadbirlarga yozilish uchun Telegram bot orqali bir daqiqada ro'yxatdan o'ting.
+            </p>
+        </div>
+        <a href="{% url 'accounts:login' %}" class="hm-btn hm-btn-primary hm-btn-lg">
+            <svg class="ic"><use href="#ic-send"/></svg>
+            Ro'yxatdan o'tish
+        </a>
+    </div>
+</section>
+{% endif %}
+
 {% endblock %}

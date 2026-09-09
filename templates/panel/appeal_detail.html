@@ -34,7 +34,7 @@
 
             {% if appeal.attachment %}
                 <a href="{{ appeal.attachment.url }}" target="_blank" rel="noopener"
-                   class="panel-btn panel-btn-outline" style="margin-top:14px">📎 Biriktirilgan fayl</a>
+                   class="panel-btn panel-btn-outline" style="margin-top:14px"><svg class="ic"><use href="#ic-paperclip"/></svg> Biriktirilgan fayl</a>
             {% endif %}
 
             {% if appeal.responded_at %}
@@ -61,7 +61,7 @@
                         {% if field.errors %}<ul class="panel-errors">{% for e in field.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
                     </div>
                 {% endfor %}
-                <button type="submit" class="panel-btn panel-btn-primary">📤 Javobni yuborish</button>
+                <button type="submit" class="panel-btn panel-btn-primary"><svg class="ic"><use href="#ic-send"/></svg> Javobni yuborish</button>
                 <p class="panel-list-meta" style="margin-top:10px">
                     Javob yozilsa, foydalanuvchiga bildirishnoma boradi.
                 </p>

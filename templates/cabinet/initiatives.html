@@ -1,35 +1,35 @@
 {% extends 'cabinet/base_cabinet.html' %}
 
 {% block title %}Tashabbuslarim — Kabinet{% endblock %}
-{% block cabinet_title %}✨ Tashabbuslarim{% endblock %}
+{% block cabinet_title %}<svg class="ic"><use href="#ic-spark"/></svg> Tashabbuslarim{% endblock %}
 {% block cabinet_subtitle %}Bildirgan g'oyalaringiz, ular to'plagan ovoz va o'rinlar{% endblock %}
 
 {% block cabinet_content %}
 {% if initiatives %}
     <div class="cab-stats">
         <div class="cab-stat" data-tone="primary">
-            <span class="cab-stat-icon">✨</span>
+            <span class="cab-stat-icon"><svg class="ic"><use href="#ic-spark"/></svg></span>
             <div>
                 <div class="cab-stat-value">{{ initiatives|length }}</div>
                 <div class="cab-stat-label">Tashabbus</div>
             </div>
         </div>
         <div class="cab-stat" data-tone="success">
-            <span class="cab-stat-icon">👍</span>
+            <span class="cab-stat-icon"><svg class="ic"><use href="#ic-vote"/></svg></span>
             <div>
                 <div class="cab-stat-value">{{ total_votes }}</div>
                 <div class="cab-stat-label">Jami ovoz</div>
             </div>
         </div>
         <div class="cab-stat" data-tone="info">
-            <span class="cab-stat-icon">💬</span>
+            <span class="cab-stat-icon"><svg class="ic"><use href="#ic-chat"/></svg></span>
             <div>
                 <div class="cab-stat-value">{{ total_comments }}</div>
                 <div class="cab-stat-label">Kelgan taklif</div>
             </div>
         </div>
         <div class="cab-stat" data-tone="accent">
-            <span class="cab-stat-icon">🏆</span>
+            <span class="cab-stat-icon"><svg class="ic"><use href="#ic-trophy"/></svg></span>
             <div>
                 <div class="cab-stat-value">#{{ best_place }}</div>
                 <div class="cab-stat-label">Eng yaxshi o'rin</div>
@@ -48,7 +48,7 @@
                 <div class="my-initiative-body">
                     <div class="my-initiative-tags">
                         <span class="my-initiative-tag">{{ idea.direction_info.name }}</span>
-                        <span class="my-initiative-tag">{{ idea.kind_icon }} {{ idea.get_kind_display }}</span>
+                        <span class="my-initiative-tag"><svg class="ic"><use href="#{{ idea.kind_icon }}"/></svg> {{ idea.get_kind_display }}</span>
                         {% if idea.status == 'approved' %}
                             <span class="badge badge-success">Tasdiqlangan</span>
                         {% elif idea.status == 'rejected' %}
@@ -74,15 +74,15 @@
                     {% endif %}
 
                     <div class="my-initiative-foot">
-                        <span class="my-initiative-metric">👍 <b>{{ idea.vote_count }}</b> ovoz</span>
-                        <span class="my-initiative-metric">💬 <b>{{ idea.comment_total }}</b> taklif</span>
-                        <span class="my-initiative-metric">📅 {{ idea.created_at|date:"d.m.Y" }}</span>
+                        <span class="my-initiative-metric"><svg class="ic"><use href="#ic-vote"/></svg> <b>{{ idea.vote_count }}</b> ovoz</span>
+                        <span class="my-initiative-metric"><svg class="ic"><use href="#ic-chat"/></svg> <b>{{ idea.comment_total }}</b> taklif</span>
+                        <span class="my-initiative-metric"><svg class="ic"><use href="#ic-calendar"/></svg> {{ idea.created_at|date:"d.m.Y" }}</span>
 
                         <form method="post" action="{% url 'initiatives:initiative_delete' idea.pk %}"
                               class="my-initiative-delete"
                               onsubmit="return confirm('«{{ idea.title|escapejs }}» o\'chirilsinmi? Ovozlar ham yo\'qoladi.')">
                             {% csrf_token %}
-                            <button type="submit" class="btn btn-ghost btn-sm">🗑 O'chirish</button>
+                            <button type="submit" class="btn btn-ghost btn-sm"><svg class="ic"><use href="#ic-trash"/></svg> O'chirish</button>
                         </form>
                     </div>
                 </div>
@@ -91,7 +91,7 @@
     </div>
 {% else %}
     <div class="empty-state">
-        <div class="empty-state-icon">✨</div>
+        <div class="empty-state-icon"><svg class="ic"><use href="#ic-spark"/></svg></div>
         <div class="empty-state-title">Hali tashabbus bildirmagansiz</div>
         <div class="empty-state-text">
             Muammo, g'oya yoki taklifingizni bildiring — boshqalar ovoz beradi va

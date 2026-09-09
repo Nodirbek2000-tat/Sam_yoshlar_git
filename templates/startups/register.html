@@ -8,7 +8,7 @@
     <div class="container">
         <div class="startup-form-hero-content">
             <a href="{% url 'core:home' %}" class="tashabbuslar-back-link">← Bosh sahifaga qaytish</a>
-            <span class="startup-form-hero-icon">🚀</span>
+            <span class="startup-form-hero-icon"><svg class="ic"><use href="#ic-rocket"/></svg></span>
             <h1 class="startup-form-hero-title">StartUp ro'yxatdan o'tkazish</h1>
             <p class="startup-form-hero-subtitle">
                 O'zingizning innovatsion startup loyihangizni ro'yxatdan o'tkazing va
@@ -44,7 +44,7 @@
             <!-- 1-qadam -->
             <div class="form-step active" data-step="1">
                 <div class="startup-step-header">
-                    <span class="startup-step-header-icon">👤</span>
+                    <span class="startup-step-header-icon"><svg class="ic"><use href="#ic-user"/></svg></span>
                     <div>
                         <h2 class="startup-step-header-title">Shaxsiy ma'lumotlar</h2>
                         <p class="startup-step-header-desc">Birinchi qadam — o'zingiz haqingizda ma'lumot kiriting</p>
@@ -77,7 +77,7 @@
             <!-- 2-qadam -->
             <div class="form-step" data-step="2">
                 <div class="startup-step-header">
-                    <span class="startup-step-header-icon">🚀</span>
+                    <span class="startup-step-header-icon"><svg class="ic"><use href="#ic-rocket"/></svg></span>
                     <div>
                         <h2 class="startup-step-header-title">StartUp ma'lumotlari</h2>
                         <p class="startup-step-header-desc">Loyihangiz haqida batafsil yozing</p>
@@ -101,7 +101,7 @@
                             <label class="startup-sphere-option">
                                 {{ radio.tag }}
                                 <span class="startup-sphere-icon">
-                                    {% for sphere in spheres %}{% if sphere.value == radio.data.value %}{{ sphere.icon }}{% endif %}{% endfor %}
+                                    {% for sphere in spheres %}{% if sphere.value == radio.data.value %}<svg class="ic"><use href="#{{ sphere.icon }}"/></svg>{% endif %}{% endfor %}
                                 </span>
                                 <span class="startup-sphere-label">{{ radio.choice_label }}</span>
                             </label>
@@ -160,7 +160,7 @@
                         <label class="startup-field-label">Pitch fayl (PDF, PPT — 10 MB gacha)</label>
                     </div>
                     <label class="startup-upload-zone" for="{{ form.pitch_file.id_for_label }}">
-                        <span class="startup-upload-icon">📎</span>
+                        <span class="startup-upload-icon"><svg class="ic"><use href="#ic-paperclip"/></svg></span>
                         <span class="startup-upload-text" id="upload-text">Faylni tanlash uchun bosing</span>
                         <span class="startup-upload-hint">PDF, PPTX, DOCX — maksimal 10 MB</span>
                     </label>
@@ -170,7 +170,7 @@
 
                 <div class="startup-nav">
                     <button type="button" class="btn btn-outline btn-lg" data-goto-step="1">← Oldingi</button>
-                    <button type="submit" class="btn btn-accent btn-lg">🚀 StartUpni ro'yxatdan o'tkazish</button>
+                    <button type="submit" class="btn btn-accent btn-lg"><svg class="ic"><use href="#ic-rocket"/></svg> StartUpni ro'yxatdan o'tkazish</button>
                 </div>
             </div>
         </form>

@@ -1,0 +1,169 @@
+{
+  "initiatives": [
+    {
+      "direction": "eco",
+      "kind": "problem",
+      "title": "Mahalla ariqlari chiqindi bilan to'lib yotibdi",
+      "summary": "Yomg'ir suvi oqmaydi, hovlilarni suv bosadi.",
+      "description": "Uch yildan beri mahallamizdagi ariqlar tozalanmagan. Ichiga plastik butilka, qurilish chiqindisi va shox-shabba tushib qolgan. Yomg'ir yog'sa suv oqmay, ko'chaga va hovlilarga yoyiladi — o'tgan bahorda o'n beshga yaqin uyni suv bosdi.\n\nMahalla qo'mitasiga ikki marta yozganmiz, javob bo'lmadi. Aholi o'zi tozalashga urinib ko'rdi, lekin yig'ilgan chiqindini olib ketadigan texnika yo'q. Bir kunlik ish uchun bitta traktor va ikkita ishchi yetardi.\n\nEng katta muammo — tozalagandan keyin ham bir oyda yana to'ladi, chunki chiqindi tashlashning tartibi yo'q va hech kim nazorat qilmaydi.",
+      "expected_result": "Ariqlar tozalanadi, har bir mahallaga chiqindi grafigi biriktiriladi va bahorgi suv toshqini takrorlanmaydi.",
+      "author_name": "Dilshod Karimov",
+      "author_phone": "+998901234567",
+      "region": "namangan",
+      "vote_count": 143,
+      "created_at": "2026-06-18",
+      "comments": [
+        {
+          "author_name": "Nargiza Islomova",
+          "text": "Bizning mahallada ham aynan shunday. Kechagi yomg'irdan keyin bolalar maktabga botqoq kechib borishdi. Bu bitta mahallaning muammosi emas, butun tumanda shunday.",
+          "created_at": "2026-06-19"
+        },
+        {
+          "author_name": "Shohruh Qodirov",
+          "text": "Tozalash oson, lekin bir oydan keyin nima bo'ladi? Menimcha har bir ko'chaga mas'ul biriktirilishi kerak — kim tashladi, kim nazorat qiladi, aniq bo'lsin. Bo'lmasa har yili shu gap takrorlanaveradi.",
+          "created_at": "2026-06-21"
+        },
+        {
+          "author_name": "Aziza Rahmonova",
+          "text": "Volontyorlar to'plasak bo'ladi, o'zim 20 ga yaqin talabani chiqara olaman. Faqat traktor va chiqindi tashiydigan mashina kerak — shuni hokimlik bersa, qolganini o'zimiz qilamiz.",
+          "created_at": "2026-06-24"
+        },
+        {
+          "author_name": "Bekzod Sultonov",
+          "text": "Fotosuratlarni ham qo'shsangiz yaxshi bo'lardi. Rasm bilan yozilgan murojaatga tezroq javob berishadi, o'zim sinab ko'rganman.",
+          "created_at": "2026-07-02"
+        }
+      ]
+    },
+    {
+      "direction": "edu",
+      "kind": "proposal",
+      "title": "Qishloq maktablariga talabalardan onlayn mentorlik",
+      "summary": "Har hafta ikki soat — talaba o'quvchiga o'z fanidan yordam beradi.",
+      "description": "Toshkent va Samarqanddagi universitet talabalari haftada ikki soat vaqt ajratib, qishloq maktabi o'quvchilariga onlayn dars beradi. Matematika, ingliz tili va informatika — eng ko'p so'raladigan uchta fan.\n\nTizim oddiy: talaba ro'yxatdan o'tadi, qaysi fandan va qaysi kunlari bo'sh ekanini belgilaydi. Maktab o'qituvchisi o'z sinfidan uch-to'rt o'quvchini biriktiradi. Dars Telegram yoki oddiy video qo'ng'iroq orqali o'tadi — qimmat platforma shart emas.\n\nTalaba uchun bu ko'ngilli ish tajribasi bo'ladi va u rasman qayd etiladi — keyin ish topishda yoki grantga hujjat topshirishda asqotadi.",
+      "expected_result": "Birinchi yilda 200 talaba va 800 ga yaqin o'quvchi qamrab olinadi; har bir mentorga rasmiy tavsifnoma beriladi.",
+      "author_name": "Sevara Umarova",
+      "author_phone": "+998935556677",
+      "region": "samarqand",
+      "vote_count": 118,
+      "created_at": "2026-05-29",
+      "comments": [
+        {
+          "author_name": "Jasur Toshmatov",
+          "text": "O'zim ikkinchi kursda shunga o'xshash narsani qilib ko'rgandim, lekin uzoqqa bormadi — bir oydan keyin hamma tashlab ketdi. Motivatsiya kerak: sertifikat yoki stipendiyaga qo'shimcha ball bo'lsa boshqacha bo'lardi.",
+          "created_at": "2026-05-30"
+        },
+        {
+          "author_name": "Malika Yo'ldosheva",
+          "text": "Internet masalasi bor. Bizning tumandagi maktablarda darsdan keyin Wi-Fi o'chiriladi. Buni oldindan hal qilish kerak, bo'lmasa g'oya qog'ozda qolib ketadi.",
+          "created_at": "2026-06-01"
+        },
+        {
+          "author_name": "Otabek Nazarov",
+          "text": "Men ingliz tilidan yordam bera olaman, IELTS 7.5. Qayerga yozilish kerak? Guruh ochilsa ayting.",
+          "created_at": "2026-06-03"
+        }
+      ]
+    },
+    {
+      "direction": "smartcity",
+      "kind": "idea",
+      "title": "Avtobus qachon kelishini bekatdan ko'rsatadigan ekran",
+      "summary": "GPS ma'lumoti bor, lekin yo'lovchiga yetib bormaydi.",
+      "description": "Shahar avtobuslarida GPS o'rnatilgan va dispetcher ularni ekranda ko'rib turadi. Lekin bekatda turgan odam avtobus qachon kelishini bilmaydi — ba'zan 40 daqiqa kutadi.\n\nTaklif: eng gavjum 50 ta bekatga oddiy elektron ekran o'rnatish va unda keyingi uchta avtobusning raqami va necha daqiqada kelishini chiqarish. Ma'lumot allaqachon bor, faqat uni ochiq qilish va ekranga uzatish kerak.\n\nEkran qimmat bo'lsa, birinchi bosqichda QR kod ham yetadi: bekatdagi kodni skanerlagan odam telefonida shu bekatga keladigan avtobuslarni ko'radi.",
+      "expected_result": "Yo'lovchi kutish vaqtini oldindan biladi, jamoat transportidan foydalanish 15-20 foizga oshadi.",
+      "author_name": "Sherzod Ahmedov",
+      "author_phone": "+998977778899",
+      "region": "toshkent_shahri",
+      "vote_count": 96,
+      "created_at": "2026-07-04",
+      "comments": [
+        {
+          "author_name": "Kamola Tosheva",
+          "text": "QR variant ancha arzon va tezroq ishga tushadi. Ekranlarni kutguncha shuni qilish kerak — bir oyda tayyor bo'ladi.",
+          "created_at": "2026-07-05"
+        },
+        {
+          "author_name": "Rustam Ergashev",
+          "text": "Ma'lumot ochiq bo'lsa, dasturchilar o'zlari ilova yasab beradi. Asosiysi API ochilsin, qolganini jamoatchilik qiladi.",
+          "created_at": "2026-07-06"
+        },
+        {
+          "author_name": "Zulfiya Mirzayeva",
+          "text": "Ekranni ko'chada qo'yish oson, lekin uni kim ta'mirlaydi? Bizning mahallada uchta to'xtash joyidagi yoritgich yarim yildan beri buzuq turibdi. Xizmat ko'rsatish shartnomasi ham shartnomaga kiritilsin.",
+          "created_at": "2026-07-09"
+        },
+        {
+          "author_name": "Aziz Rahimov",
+          "text": "Ovoz berdim. Qo'shimcha: ekranda avtobus to'la yoki bo'shligini ham ko'rsatsa bo'lardi, hozir bu texnologiya bor.",
+          "created_at": "2026-07-12"
+        }
+      ]
+    },
+    {
+      "direction": "ai",
+      "kind": "startup",
+      "title": "Fermer barg rasmini olsa, kasallikni aytadigan ilova",
+      "summary": "O'zbek tilida, internetsiz ham ishlaydigan tashxis.",
+      "description": "Fermerlar o'simlik kasalligini ko'pincha kech payqashadi va butun hosilni yo'qotishadi. Agronom har doim yo'q, bor bo'lsa ham navbat kutish kerak.\n\nIlova shunday ishlaydi: fermer bargning rasmini oladi, ilova kasallikni aniqlaydi va nima qilish kerakligini o'zbek tilida tushuntiradi — qaysi dori, qancha miqdorda, qachon sepiladi.\n\nModel telefonning o'zida ishlaydi, shuning uchun internetsiz joyda ham ishlaydi. Hozircha paxta, pomidor va uzum uchun 12 ta eng keng tarqalgan kasallikni o'rgatdik, aniqlik 87 foiz. Ma'lumot bazasini kengaytirish uchun fermerlardan rasm yig'ish kerak.",
+      "expected_result": "Birinchi mavsumda 5000 fermer foydalanadi, hosil yo'qotilishi o'rtacha 20 foizga kamayadi.",
+      "author_name": "Akmal Raxmonov",
+      "author_phone": "+998909998877",
+      "region": "buxoro",
+      "vote_count": 87,
+      "created_at": "2026-06-11",
+      "comments": [
+        {
+          "author_name": "Doston Yo'ldoshev",
+          "text": "87 foiz aniqlik yaxshi, lekin qolgan 13 foizda fermer noto'g'ri dori sepsa zarar ko'radi. Ilova ishonchsiz bo'lgan holatda \"agronomga murojaat qiling\" deb ogohlantirsin.",
+          "created_at": "2026-06-12"
+        },
+        {
+          "author_name": "Feruza Sattorova",
+          "text": "Otam fermer, telefonni zo'rg'a ishlatadi. Interfeys juda sodda bo'lishi kerak — bitta katta tugma, o'zbek tilida ovozli javob bo'lsa yanayam yaxshi.",
+          "created_at": "2026-06-15"
+        },
+        {
+          "author_name": "Sanjar Ibrohimov",
+          "text": "Ma'lumot yig'ishda yordam bera olaman — Buxoroda 40 ga yaqin fermer bilan ishlayman, ulardan rasm to'plash mumkin.",
+          "created_at": "2026-06-20"
+        }
+      ]
+    },
+    {
+      "direction": "social",
+      "kind": "proposal",
+      "title": "Nogironligi bor yoshlar uchun bepul IT kursi va ish o'rni",
+      "summary": "O'qitish yetarli emas — oxirida ish bilan ta'minlash kerak.",
+      "description": "Tumanimizda nogironligi bor 60 ga yaqin yosh bor. Ularning ko'pchiligi uydan chiqolmaydi, lekin kompyuterda ishlay oladi. Hozir ular uchun na kurs, na ish o'rni bor.\n\nTaklif ikki qismdan iborat. Birinchisi — olti oylik bepul kurs: dizayn, kontent yozish yoki oddiy dasturlash. Darslar onlayn, kerak bo'lsa uyga kompyuter beriladi.\n\nIkkinchisi va eng muhimi — kurs oxirida amaliyot va ish. Kompaniyalar bilan oldindan kelishib olinadi: kursni tamomlagan har bir yosh kamida uch oylik amaliyotga olinadi. Faqat o'qitib qo'yish kifoya emas, ko'pchilik kursni tugatib keyin ish topolmay qoladi.",
+      "expected_result": "Yiliga 60 yosh o'qiydi, kamida 35 tasi doimiy masofaviy ish bilan ta'minlanadi.",
+      "author_name": "Nodira Usmonova",
+      "author_phone": "+998911112233",
+      "region": "surxondaryo",
+      "vote_count": 74,
+      "created_at": "2026-07-21",
+      "comments": [
+        {
+          "author_name": "Gulnora Ahmedova",
+          "text": "Eng to'g'ri gap — oxirida ish bo'lishi. Singlim kursni tugatgan, sertifikati bor, lekin ikki yildan beri ish topolmayapti. Kompaniyalar bilan oldindan shartnoma tuzilsin.",
+          "created_at": "2026-07-22"
+        },
+        {
+          "author_name": "Bobur Nazarov",
+          "text": "Bizning kompaniya kontent yozuvchi olishga tayyor, ikki-uch kishi. Masofaviy ishlaymiz, shuning uchun hech qanday to'siq yo'q. Kim bilan bog'lanay?",
+          "created_at": "2026-07-25"
+        },
+        {
+          "author_name": "Madina Yusupova",
+          "text": "Kompyuter berish qismini alohida o'ylash kerak — uyda internet bo'lmasa kompyuterning foydasi yo'q. Modem va oylik trafik ham hisobga olinsin.",
+          "created_at": "2026-07-28"
+        },
+        {
+          "author_name": "Ilhom Qosimov",
+          "text": "Men dasturlashdan bepul dars bera olaman, haftada bir kun. Kerak bo'lsa yozing.",
+          "created_at": "2026-08-03"
+        }
+      ]
+    }
+  ]
+}
