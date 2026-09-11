@@ -28,6 +28,10 @@ urlpatterns = [
     path('me/problems/', views.MyProblems.as_view(), name='me_problems'),
     path('me/startup/', cabinet_views.MyStartup.as_view(), name='me_startup'),
     path('me/business/', cabinet_views.MyBusiness.as_view(), name='me_business'),
+    path('me/business/gallery/', cabinet_views.MyBusinessGallery.as_view(),
+         name='me_business_gallery'),
+    path('me/business/gallery/<int:pk>/', cabinet_views.delete_gallery_image,
+         name='me_business_gallery_delete'),
 
     # --- Umumiy ---
     path('overview/', views.Overview.as_view(), name='overview'),
@@ -69,10 +73,17 @@ urlpatterns = [
 
     # --- Startaplar ---
     path('startups/', views.StartupList.as_view(), name='startup_list'),
+    path('startups/<int:pk>/', views.StartupDetail.as_view(), name='startup_detail'),
+    path('businesses/', views.BusinessList.as_view(), name='business_list'),
+    path('businesses/<int:pk>/', views.BusinessDetail.as_view(), name='business_detail'),
 
     # --- Boshqaruv paneli (faqat adminlar; ruxsat yo'q bo'lsa 404) ---
     path('panel/overview/', admin_views.PanelOverview.as_view(), name='panel_overview'),
     path('panel/users/', admin_views.PanelUsers.as_view(), name='panel_users'),
+    path('panel/users/<int:pk>/', admin_views.PanelUserDetail.as_view(),
+         name='panel_user_detail'),
+    path('panel/users/<int:pk>/profil/', admin_views.moderate_profile,
+         name='panel_moderate_profile'),
     path('panel/users/<int:pk>/admin/', admin_views.toggle_admin, name='panel_toggle_admin'),
     path('panel/initiatives/<int:pk>/votes/', admin_views.adjust_votes, name='panel_votes'),
     path('panel/organizations/', admin_views.PanelOrganizations.as_view(),

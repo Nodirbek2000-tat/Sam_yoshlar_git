@@ -1,3 +1,5 @@
+import tempfile
+
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.cache import cache
@@ -5,12 +7,12 @@ from django.test import TestCase, override_settings
 from django.urls import reverse
 
 from apps.api.auth_views import tokens_for
-from apps.business.models import BusinessProfile
+from apps.business.models import BusinessProfile, GalleryImage
 from apps.content.models import News
-from apps.startups.models import Startup
 from apps.core.constants import Status
 from apps.initiatives.models import (Initiative, InitiativeVote, Organization,
                                      Problem, Solution, SolutionLike)
+from apps.startups.models import Startup
 
 User = get_user_model()
 
@@ -951,9 +953,11 @@ class ProblemAuthoringTests(TestCase):
         self.assertTrue(all(row['label'] for row in rows))
 
 
+@override_settings(MEDIA_ROOT=tempfile.mkdtemp())
 class ProfileSetupTests(TestCase):
     """Ro'yxatdan keyingi ikkinchi qadam: startapper startapini,
-    tadbirkor biznesini tanishtiradi."""
+    tadbirkor biznesini tanishtiradi. Logotip majburiy — shuning uchun
+    anketalar multipart bilan yuboriladi."""
 
     def setUp(self):
         self.startupper = User.objects.create_user(
@@ -977,9 +981,9 @@ class ProfileSetupTests(TestCase):
             'about': "O'zbek tili uchun ovozli yordamchi — matnni ovozga aylantiradi.",
             'problem_solved': "Ko'zi ojizlar uchun kontent yopiq edi.",
             'team_size': 4,
+            'logo': _png('logo.png'),
         }
         response = self.client.post('/api/v1/me/startup/', payload,
-                                    content_type='application/json',
                                     **self._auth(self.startupper))
         self.assertEqual(response.status_code, 201)
 
@@ -996,8 +1000,9 @@ class ProfileSetupTests(TestCase):
             'name': "Tilchi AI", 'sphere': 'it', 'stage': 'mvp',
             'about': "O'zbek tili uchun ovozli yordamchi — matnni ovozga aylantiradi.",
         }
-        self.client.post('/api/v1/me/startup/', payload, content_type='application/json',
+        self.client.post('/api/v1/me/startup/', {**payload, 'logo': _png('logo.png')},
                          **self._auth(self.startupper))
+        # Ikkinchi yuborishda logo shart emas — avvalgisi saqlanadi
         self.client.post('/api/v1/me/startup/', {**payload, 'name': "Tilchi AI 2.0"},
                          content_type='application/json', **self._auth(self.startupper))
 
@@ -1017,9 +1022,9 @@ class ProfileSetupTests(TestCase):
             'name': "Buxoro Tekstil", 'sphere': 'ishlab_chiqarish',
             'founded_year': 2019, 'employees': 35,
             'description': "Paxtadan trikotaj mahsulot ishlab chiqaramiz va eksport qilamiz.",
+            'logo': _png('logo.png'),
         }
         response = self.client.post('/api/v1/me/business/', payload,
-                                    content_type='application/json',
                                     **self._auth(self.entrepreneur))
         self.assertEqual(response.status_code, 201)
 
@@ -1041,3 +1046,370 @@ class ProfileSetupTests(TestCase):
         self.assertTrue(data['startup_spheres'])
         self.assertTrue(data['startup_stages'])
         self.assertTrue(data['business_spheres'])
+
+
+def _png(name='rasm.png', size=(8, 8)):
+    """Testlar uchun haqiqiy kichik PNG."""
+    import io as _io
+
+    from django.core.files.uploadedfile import SimpleUploadedFile
+    from PIL import Image
+
+    buffer = _io.BytesIO()
+    Image.new('RGB', size, (40, 160, 120)).save(buffer, format='PNG')
+    return SimpleUploadedFile(name, buffer.getvalue(), content_type='image/png')
+
+
+@override_settings(MEDIA_ROOT=tempfile.mkdtemp())
+class OnboardingTests(TestCase):
+    """Yangi foydalanuvchi: rol → biznes yoki startap anketasi → tayyor."""
+
+    def _user(self, **extra):
+        data = {'email': 'yangi@mentadbirkor.uz', 'password': None, 'full_name': "Yangi User"}
+        data.update(extra)
+        return User.objects.create_user(**data)
+
+    def _auth(self, user):
+        return {'HTTP_AUTHORIZATION': f"Bearer {tokens_for(user)['access']}"}
+
+    def test_steps_follow_the_role(self):
+        from apps.api.onboarding import onboarding_step
+
+        user = self._user(is_verified=False)
+        self.assertEqual(onboarding_step(user), 'role')
+
+        user.is_verified = True
+        user.role = 'entrepreneur'
+        self.assertEqual(onboarding_step(user), 'business')
+
+        user.role = 'startupper'
+        self.assertEqual(onboarding_step(user), 'startup')
+
+        user.role = 'yosh'
+        self.assertIsNone(onboarding_step(user))
+
+        # Tashkilot va admin hisobini biz ochamiz — ulardan so'ralmaydi
+        user.role = 'organization'
+        self.assertIsNone(onboarding_step(user))
+
+    def test_me_reports_pending_step(self):
+        user = self._user(is_verified=True, role='entrepreneur')
+        data = self.client.get('/api/v1/auth/me/', **self._auth(user)).json()
+        self.assertEqual(data['onboarding'], 'business')
+
+    def test_business_with_logo_completes_onboarding(self):
+        user = self._user(is_verified=True, role='entrepreneur', phone='+998901112233')
+
+        response = self.client.post('/api/v1/me/business/', {
+            'name': "Buxoro Tekstil",
+            'sphere': 'ishlab_chiqarish',
+            'founded_year': '2019',
+            'employees': '35',
+            'description': "Paxtadan mato ishlab chiqaramiz va eksport qilamiz.",
+            'website': 'buxorotekstil.uz',
+            'instagram': '@buxorotekstil',
+            'logo': _png('logo.png'),
+        }, **self._auth(user))
+        self.assertEqual(response.status_code, 201, response.content)
+
+        data = response.json()
+        self.assertEqual(data['website'], 'https://buxorotekstil.uz')
+        self.assertEqual(data['instagram'], 'buxorotekstil')
+        self.assertTrue(data['logo_url'])
+        self.assertEqual(data['status'], 'pending')
+        # Telefon berilmagan — hisobdagisi olinadi
+        self.assertEqual(data['phone'], '+998901112233')
+
+        # Logo bor, lekin rasm hali yo'q — anketa tugamagan
+        me = self.client.get('/api/v1/auth/me/', **self._auth(user)).json()
+        self.assertEqual(me['onboarding'], 'business')
+
+        self.client.post('/api/v1/me/business/gallery/', {'images': [_png('ish.png')]},
+                         **self._auth(user))
+        me = self.client.get('/api/v1/auth/me/', **self._auth(user)).json()
+        self.assertIsNone(me['onboarding'])
+
+    def test_logo_is_required(self):
+        entrepreneur = self._user(is_verified=True, role='entrepreneur')
+        response = self.client.post('/api/v1/me/business/', {
+            'name': "Buxoro Tekstil", 'sphere': 'ishlab_chiqarish',
+            'description': "Paxtadan mato ishlab chiqaramiz va eksport qilamiz.",
+        }, **self._auth(entrepreneur))
+        self.assertEqual(response.status_code, 400)
+        self.assertIn('logo', response.json())
+
+        startupper = self._user(email='s2@mentadbirkor.uz', is_verified=True, role='startupper')
+        response = self.client.post('/api/v1/me/startup/', {
+            'name': "Tilchi AI", 'sphere': 'it', 'stage': 'mvp',
+            'about': "O'zbek tilida nutqni matnga aylantiradigan ochiq model.",
+        }, **self._auth(startupper))
+        self.assertEqual(response.status_code, 400)
+        self.assertIn('logo', response.json())
+
+    def test_edit_keeps_existing_logo(self):
+        user = self._user(is_verified=True, role='entrepreneur')
+        self.client.post('/api/v1/me/business/', {
+            'name': "Buxoro Tekstil", 'sphere': 'ishlab_chiqarish',
+            'description': "Paxtadan mato ishlab chiqaramiz va eksport qilamiz.",
+            'logo': _png('logo.png'),
+        }, **self._auth(user))
+
+        # Tahrirlashda logoni qayta yuborish shart emas
+        response = self.client.post('/api/v1/me/business/', {'employees': '50'},
+                                    **self._auth(user))
+        self.assertEqual(response.status_code, 200, response.content)
+        self.assertTrue(response.json()['logo_url'])
+
+    def test_business_needs_real_description(self):
+        user = self._user(is_verified=True, role='entrepreneur')
+        response = self.client.post('/api/v1/me/business/', {
+            'name': "Do'kon", 'sphere': 'savdo', 'description': "Qisqa",
+        }, **self._auth(user))
+        self.assertEqual(response.status_code, 400)
+        self.assertIn('description', response.json())
+
+    def test_bad_stir_is_rejected(self):
+        user = self._user(is_verified=True, role='entrepreneur')
+        response = self.client.post('/api/v1/me/business/', {
+            'name': "Do'kon", 'sphere': 'savdo', 'stir': '12ab',
+            'description': "Kiyim-kechak savdosi bilan shug'ullanamiz, uchta filial bor.",
+        }, **self._auth(user))
+        self.assertEqual(response.status_code, 400)
+        self.assertIn('stir', response.json())
+
+    def test_gallery_upload_limit_and_delete(self):
+        user = self._user(is_verified=True, role='entrepreneur')
+        self.client.post('/api/v1/me/business/', {
+            'name': "Buxoro Tekstil", 'sphere': 'ishlab_chiqarish',
+            'description': "Paxtadan mato ishlab chiqaramiz va eksport qilamiz.",
+            'logo': _png('logo.png'),
+        }, **self._auth(user))
+
+        response = self.client.post('/api/v1/me/business/gallery/',
+                                    {'images': [_png('a.png'), _png('b.png')]},
+                                    **self._auth(user))
+        self.assertEqual(response.status_code, 201, response.content)
+        self.assertEqual(len(response.json()), 2)
+
+        too_many = self.client.post('/api/v1/me/business/gallery/',
+                                    {'images': [_png(f'{i}.png') for i in range(7)]},
+                                    **self._auth(user))
+        self.assertEqual(too_many.status_code, 400)
+
+        image_id = response.json()[0]['id']
+        deleted = self.client.delete(f'/api/v1/me/business/gallery/{image_id}/',
+                                     **self._auth(user))
+        self.assertEqual(deleted.status_code, 204)
+
+    def test_cannot_delete_someone_elses_photo(self):
+        owner = self._user(is_verified=True, role='entrepreneur')
+        self.client.post('/api/v1/me/business/', {
+            'name': "Buxoro Tekstil", 'sphere': 'ishlab_chiqarish',
+            'description': "Paxtadan mato ishlab chiqaramiz va eksport qilamiz.",
+            'logo': _png('logo.png'),
+        }, **self._auth(owner))
+        photo = self.client.post('/api/v1/me/business/gallery/', {'images': [_png()]},
+                                 **self._auth(owner)).json()[0]
+
+        stranger = self._user(email='begona@mentadbirkor.uz', is_verified=True)
+        response = self.client.delete(f"/api/v1/me/business/gallery/{photo['id']}/",
+                                      **self._auth(stranger))
+        self.assertEqual(response.status_code, 404)
+
+    def test_gallery_needs_business_first(self):
+        user = self._user(is_verified=True, role='entrepreneur')
+        response = self.client.post('/api/v1/me/business/gallery/', {'images': [_png()]},
+                                    **self._auth(user))
+        self.assertEqual(response.status_code, 400)
+
+    def test_startup_completes_onboarding(self):
+        user = self._user(is_verified=True, role='startupper', region='samarqand')
+
+        response = self.client.post('/api/v1/me/startup/', {
+            'name': "Tilchi AI",
+            'sphere': 'it',
+            'stage': 'mvp',
+            'about': "O'zbek tilida nutqni matnga aylantiradigan ochiq model.",
+            'team_size': '4',
+            'needed_investment': '150000000',
+            'logo': _png('logo.png'),
+        }, **self._auth(user))
+        self.assertEqual(response.status_code, 201, response.content)
+        self.assertTrue(response.json()['logo_url'])
+
+        startup = Startup.objects.get()
+        self.assertEqual(startup.user, user)
+        self.assertEqual(startup.region, 'samarqand')
+
+        me = self.client.get('/api/v1/auth/me/', **self._auth(user)).json()
+        self.assertIsNone(me['onboarding'])
+
+    def test_rejected_profile_goes_back_to_review_after_edit(self):
+        user = self._user(is_verified=True, role='entrepreneur')
+        self.client.post('/api/v1/me/business/', {
+            'name': "Buxoro Tekstil", 'sphere': 'ishlab_chiqarish',
+            'description': "Paxtadan mato ishlab chiqaramiz va eksport qilamiz.",
+            'logo': _png('logo.png'),
+        }, **self._auth(user))
+        BusinessProfile.objects.update(status='rejected')
+
+        response = self.client.post('/api/v1/me/business/', {'employees': '40'},
+                                    **self._auth(user))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()['status'], 'pending')
+
+
+@override_settings(MEDIA_ROOT=tempfile.mkdtemp())
+class PanelUserManagementTests(TestCase):
+    """Panel: foydalanuvchini ko'rish, anketasini tasdiqlash, o'chirish."""
+
+    def setUp(self):
+        self.admin = User.objects.create_superuser(
+            email='boss@mentadbirkor.uz', password='Parol12345', full_name="Bosh")
+        self.user = User.objects.create_user(
+            email='tadbirkor2@mentadbirkor.uz', password=None, full_name="Tadbirkor",
+            role='entrepreneur', is_verified=True)
+        self.business = BusinessProfile.objects.create(
+            user=self.user, name="Buxoro Tekstil", sphere='ishlab_chiqarish',
+            description="Paxtadan mato ishlab chiqaramiz.")
+
+    def _auth(self, user=None):
+        return {'HTTP_AUTHORIZATION': f"Bearer {tokens_for(user or self.admin)['access']}"}
+
+    def test_detail_shows_business(self):
+        data = self.client.get(f'/api/v1/panel/users/{self.user.pk}/', **self._auth()).json()
+        self.assertEqual(data['user']['full_name'], "Tadbirkor")
+        self.assertEqual(data['business']['name'], "Buxoro Tekstil")
+        self.assertEqual(data['startups'], [])
+
+    def test_list_shows_profile_status(self):
+        rows = self.client.get('/api/v1/panel/users/', **self._auth()).json()['results']
+        row = next(item for item in rows if item['id'] == self.user.pk)
+        self.assertEqual(row['profile_status'], 'pending')
+
+    def test_pending_filter(self):
+        User.objects.create_user(email='oddiy5@mentadbirkor.uz', password=None, full_name="O")
+        data = self.client.get('/api/v1/panel/users/?tekshiruv=1', **self._auth()).json()
+        self.assertEqual([row['id'] for row in data['results']], [self.user.pk])
+        self.assertEqual(data['pending_profiles'], 1)
+
+    def test_approve_notifies_user(self):
+        response = self.client.post(f'/api/v1/panel/users/{self.user.pk}/profil/',
+                                    {'status': 'approved'}, content_type='application/json',
+                                    **self._auth())
+        self.assertEqual(response.status_code, 200)
+
+        self.business.refresh_from_db()
+        self.assertEqual(self.business.status, 'approved')
+        self.assertEqual(self.user.notifications.count(), 1)
+
+    def test_reject_with_reason(self):
+        self.client.post(f'/api/v1/panel/users/{self.user.pk}/profil/',
+                         {'status': 'rejected', 'note': "Logotip yo'q"},
+                         content_type='application/json', **self._auth())
+        note = self.user.notifications.get()
+        self.assertIn("Logotip", note.message)
+
+    def test_delete_user_removes_everything(self):
+        Startup.objects.create(user=self.user, full_name="T", phone="1", email="t@t.uz",
+                               region='samarqand', name="S", sphere='it', about="x" * 40)
+
+        response = self.client.delete(f'/api/v1/panel/users/{self.user.pk}/', **self._auth())
+        self.assertEqual(response.status_code, 200)
+
+        self.assertFalse(User.objects.filter(pk=self.user.pk).exists())
+        self.assertFalse(BusinessProfile.objects.exists())
+        # Startap egasiz qolib ketmaydi
+        self.assertFalse(Startup.objects.exists())
+
+    def test_cannot_delete_self_or_superuser(self):
+        self.assertEqual(
+            self.client.delete(f'/api/v1/panel/users/{self.admin.pk}/',
+                               **self._auth()).status_code, 400)
+
+        other_admin = User.objects.create_superuser(
+            email='boss2@mentadbirkor.uz', password='Parol12345', full_name="Boshqa")
+        self.assertEqual(
+            self.client.delete(f'/api/v1/panel/users/{other_admin.pk}/',
+                               **self._auth()).status_code, 400)
+
+    def test_plain_user_cannot_delete(self):
+        victim = User.objects.create_user(email='v@mentadbirkor.uz', password=None,
+                                          full_name="V")
+        response = self.client.delete(f'/api/v1/panel/users/{victim.pk}/',
+                                      **self._auth(self.user))
+        self.assertEqual(response.status_code, 404)
+        self.assertTrue(User.objects.filter(pk=victim.pk).exists())
+
+
+@override_settings(MEDIA_ROOT=tempfile.mkdtemp())
+class PublicDirectoryTests(TestCase):
+    """Ochiq ro'yxatlar: faqat tasdiqlangan va yashirilmagan anketalar."""
+
+    def setUp(self):
+        owner = User.objects.create_user(email='egasi@mentadbirkor.uz', password=None,
+                                         full_name="Dilshod Karimov", role='entrepreneur')
+        self.approved = BusinessProfile.objects.create(
+            user=owner, name="Buxoro Tekstil", sphere='ishlab_chiqarish', region='buxoro',
+            description="Mato ishlab chiqaramiz.", status='approved', phone='+998901112233',
+            logo=_png('logo.png'))
+        GalleryImage.objects.create(business=self.approved, image=_png('ish.png'))
+
+        other = User.objects.create_user(email='kutuvchi@mentadbirkor.uz', password=None,
+                                         full_name="Kutuvchi", role='entrepreneur')
+        self.pending = BusinessProfile.objects.create(
+            user=other, name="Tekshiruvdagi", sphere='savdo', description="X", status='pending')
+
+        self.startup = Startup.objects.create(
+            full_name="Kamola Tosheva", phone="1", email="k@t.uz", region='samarqand',
+            name="Tilchi AI", sphere='it', stage='mvp', about="Nutqni matnga aylantiradi.",
+            status='approved', logo=_png('s.png'))
+        Startup.objects.create(
+            full_name="X", phone="1", email="x@t.uz", region='samarqand', name="Yashirin",
+            sphere='it', about="Y", status='approved', is_public=False)
+        Startup.objects.create(
+            full_name="X", phone="1", email="x@t.uz", region='samarqand', name="Kutilmoqda",
+            sphere='it', about="Y", status='pending')
+
+    def test_business_list_shows_only_approved(self):
+        rows = self.client.get('/api/v1/businesses/').json()['results']
+        self.assertEqual([row['name'] for row in rows], ["Buxoro Tekstil"])
+        self.assertTrue(rows[0]['logo_url'])
+        self.assertTrue(rows[0]['cover_url'])
+        self.assertEqual(rows[0]['photo_count'], 1)
+        self.assertEqual(rows[0]['sphere_icon'], 'ic-package')
+
+    def test_business_filters(self):
+        self.assertEqual(
+            self.client.get('/api/v1/businesses/?soha=savdo').json()['count'], 0)
+        self.assertEqual(
+            self.client.get('/api/v1/businesses/?hudud=buxoro').json()['count'], 1)
+        self.assertEqual(
+            self.client.get('/api/v1/businesses/?q=tekstil').json()['count'], 1)
+
+    def test_business_detail(self):
+        data = self.client.get(f'/api/v1/businesses/{self.approved.pk}/').json()
+        self.assertEqual(data['owner_name'], "Dilshod Karimov")
+        self.assertEqual(data['phone'], '+998901112233')
+        self.assertEqual(len(data['gallery']), 1)
+
+        # Tekshiruvdagi anketa ochiq sahifada yo'q
+        self.assertEqual(
+            self.client.get(f'/api/v1/businesses/{self.pending.pk}/').status_code, 404)
+
+    def test_startup_list_and_detail(self):
+        rows = self.client.get('/api/v1/startups/').json()['results']
+        self.assertEqual([row['name'] for row in rows], ["Tilchi AI"])
+        self.assertTrue(rows[0]['logo_url'])
+
+        data = self.client.get(f'/api/v1/startups/{self.startup.pk}/').json()
+        self.assertEqual(data['full_name'], "Kamola Tosheva")
+        self.assertEqual(
+            self.client.get('/api/v1/startups/?bosqich=idea').json()['count'], 0)
+
+    def test_overview_includes_directory(self):
+        data = self.client.get('/api/v1/overview/').json()
+        self.assertEqual(data['stats']['businesses'], 1)
+        self.assertEqual(data['stats']['startups'], 1)
+        self.assertEqual(len(data['businesses']), 1)
+        self.assertEqual(len(data['startups']), 1)

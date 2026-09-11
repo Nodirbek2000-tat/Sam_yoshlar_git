@@ -8,7 +8,7 @@ import secrets
 from datetime import datetime, time
 
 from django.contrib.auth import get_user_model
-from django.db.models import Count, F, Sum, Value
+from django.db.models import Count, F, Q, Sum, Value
 from django.db.models.functions import Greatest
 from django.http import Http404
 from django.shortcuts import get_object_or_404
@@ -22,6 +22,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from apps.abroad.models import Peer
+from apps.business.models import BusinessProfile
 from apps.cabinet.models import Appeal, Notification, Suggestion
 from apps.content.models import Announcement, Event, News
 from apps.core.constants import Region, Status
@@ -33,6 +34,7 @@ from apps.panel.mixins import is_panel_admin
 from apps.startups.models import Startup
 
 from . import serializers as s
+from .onboarding import onboarding_step
 
 User = get_user_model()
 
@@ -120,6 +122,12 @@ class PanelUsers(APIView):
         if role:
             queryset = queryset.filter(role=role)
 
+        # Tadbirkor/startupper anketasi kengash tekshiruvini kutayotganlar
+        if request.query_params.get('tekshiruv'):
+            queryset = queryset.filter(
+                Q(business__status=Status.PENDING) | Q(startups__status=Status.PENDING)
+            ).distinct()
+
         page_size = 25
         try:
             page = max(int(request.query_params.get('page', 1)), 1)
@@ -131,6 +139,9 @@ class PanelUsers(APIView):
 
         return Response({
             'count': total,
+            'pending_profiles': User.objects.filter(
+                Q(business__status=Status.PENDING) | Q(startups__status=Status.PENDING)
+            ).distinct().count(),
             'page': page,
             'pages': (total + page_size - 1) // page_size,
             'results': [
@@ -141,10 +152,128 @@ class PanelUsers(APIView):
                  'initials': user.initials, 'is_verified': user.is_verified,
                  'is_admin': is_panel_admin(user),
                  'telegram_username': user.telegram_username,
+                 'onboarding': onboarding_step(user),
+                 'profile_status': profile_status(user),
                  'created_at': user.date_joined}
                 for user in rows
             ],
         })
+
+
+def profile_status(user):
+    """Tadbirkor/startupper anketasining holati — ro'yxatda nishon uchun."""
+    if user.role == 'entrepreneur':
+        business = BusinessProfile.objects.filter(user=user).only('status').first()
+        return business.status if business else None
+    if user.role == 'startupper':
+        startup = user.startups.only('status').first()
+        return startup.status if startup else None
+    return None
+
+
+class PanelUserDetail(APIView):
+    """Bitta foydalanuvchi: hisob, biznes yoki startap anketasi, faolligi.
+
+    `DELETE` — hisobni butunlay o'chiradi. O'zini va bosh adminni
+    o'chirib bo'lmaydi.
+    """
+
+    permission_classes = [IsPanelAdmin]
+
+    def get(self, request, pk):
+        user = get_object_or_404(User, pk=pk)
+        business = BusinessProfile.objects.filter(user=user).prefetch_related('gallery').first()
+
+        return Response({
+            'user': {
+                'id': user.pk, 'full_name': user.full_name, 'email': user.email,
+                'phone': user.phone, 'role': user.role, 'role_display': user.get_role_display(),
+                'region_display': user.get_region_display(), 'district': user.district,
+                'initials': user.initials, 'is_verified': user.is_verified,
+                'is_admin': is_panel_admin(user), 'is_superuser': user.is_superuser,
+                'telegram_username': user.telegram_username,
+                'onboarding': onboarding_step(user),
+                'created_at': user.date_joined, 'last_login': user.last_login,
+            },
+            'business': (s.BusinessSetupSerializer(business, context={'request': request}).data
+                         if business else None),
+            'startups': s.StartupSetupSerializer(user.startups.all(), many=True,
+                                                 context={'request': request}).data,
+            'activity': {
+                'initiatives': Initiative.objects.filter(author=user).count(),
+                'votes': user.initiative_votes.count(),
+                'solutions': Solution.objects.filter(author=user).count(),
+                'events': user.event_registrations.count(),
+            },
+        })
+
+    def delete(self, request, pk):
+        user = get_object_or_404(User, pk=pk)
+
+        if user.pk == request.user.pk:
+            return Response({'detail': "O'zingizni o'chira olmaysiz."},
+                            status=status.HTTP_400_BAD_REQUEST)
+        if user.is_superuser:
+            return Response({'detail': "Bosh adminni o'chirib bo'lmaydi."},
+                            status=status.HTTP_400_BAD_REQUEST)
+
+        label = user.full_name or user.email
+        # Startap foydalanuvchiga `SET_NULL` bilan bog'langan — egasiz qolib
+        # reyestrda yurmasin, birga o'chiriladi
+        startups = user.startups.count()
+        user.startups.all().delete()
+        user.delete()
+
+        return Response({'deleted': True, 'label': label, 'startups': startups})
+
+
+@api_view(['POST'])
+@permission_classes([IsPanelAdmin])
+def moderate_profile(request, pk):
+    """Tadbirkor yoki startupper anketasini tasdiqlash / rad etish.
+
+    `status` — `approved` yoki `rejected`, `note` — rad etilganda sabab.
+    Natija foydalanuvchiga bildirishnoma bo'lib boradi.
+    """
+    user = get_object_or_404(User, pk=pk)
+    new_status = request.data.get('status')
+    note = str(request.data.get('note') or '').strip()
+
+    if new_status not in (Status.APPROVED, Status.REJECTED):
+        return Response({'detail': "Holat `approved` yoki `rejected` bo'lishi kerak."},
+                        status=status.HTTP_400_BAD_REQUEST)
+
+    if user.role == 'entrepreneur':
+        profile = BusinessProfile.objects.filter(user=user).first()
+        kind, link = "Biznes profilingiz", "/kabinet/biznesim"
+    elif user.role == 'startupper':
+        profile = user.startups.first()
+        kind, link = "Startap anketangiz", "/kabinet/startapim"
+    else:
+        profile = None
+
+    if profile is None:
+        return Response({'detail': "Bu foydalanuvchida tekshiriladigan anketa yo'q."},
+                        status=status.HTTP_400_BAD_REQUEST)
+
+    profile.status = new_status
+    fields = ['status', 'updated_at']
+    if hasattr(profile, 'admin_note'):
+        profile.admin_note = note
+        fields.append('admin_note')
+    profile.save(update_fields=fields)
+
+    approved = new_status == Status.APPROVED
+    Notification.objects.create(
+        user=user,
+        title=f"{kind} tasdiqlandi" if approved else f"{kind} qaytarildi",
+        message=("Endi u ommaviy ro'yxatda ko'rinadi." if approved
+                 else (note or "Ma'lumotlarni tekshirib, qayta yuboring.")),
+        type='success' if approved else 'warning',
+        link=link,
+    )
+
+    return Response({'status': new_status})
 
 
 @api_view(['POST'])

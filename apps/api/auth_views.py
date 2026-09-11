@@ -22,6 +22,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 from apps.accounts.models import TelegramAuthCode
 
+from .onboarding import onboarding_step
 from .serializers import ProfileUpdateSerializer, UserSerializer
 
 
@@ -70,10 +71,15 @@ def password_login(request):
         return Response({'detail': "Login yoki parol noto'g'ri."},
                         status=status.HTTP_401_UNAUTHORIZED)
 
+    # Tashkilot va admin uchun odatda `None`; boshqa rol parol bilan kirsa
+    # ham qolgan qadamga yuboriladi
+    step = onboarding_step(user)
+
     return Response({
         **tokens_for(user),
         'user': UserSerializer(user, context={'request': request}).data,
-        'needs_profile': False,
+        'needs_profile': step is not None,
+        'onboarding': step,
     })
 
 
@@ -106,13 +112,15 @@ def telegram_login(request):
     entry.save(update_fields=['used_at'])
 
     user = entry.user
-    # Rol hali tanlanmagan bo'lsa, frontend uni tanlash qadamiga yuboradi
-    needs_role = not user.is_verified
+    # Rol tanlanmagan yoki biznes/startap ma'lumoti berilmagan bo'lsa —
+    # front foydalanuvchini o'sha qadamga yuboradi
+    step = onboarding_step(user)
 
     return Response({
         **tokens_for(user),
         'user': UserSerializer(user, context={'request': request}).data,
-        'needs_profile': needs_role,
+        'needs_profile': step is not None,
+        'onboarding': step,
     })
 
 

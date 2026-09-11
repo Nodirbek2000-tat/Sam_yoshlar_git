@@ -3,16 +3,20 @@
 Qoida: API faqat frontendga kerak bo'lgan maydonlarni beradi.
 Telefon, email kabi shaxsiy ma'lumotlar ochiq ro'yxatlarga tushmaydi.
 """
+import re
+
 from django.contrib.auth import get_user_model
+from django.core.exceptions import ValidationError as DjangoValidationError
+from django.core.validators import URLValidator
 from django.utils import timezone
 from rest_framework import serializers
 
 from apps.abroad.models import Peer
+from apps.business.models import BusinessProfile, GalleryImage
 from apps.content.models import Announcement, Event, News
 from apps.initiatives.directions import DIRECTIONS, get_direction
 from apps.initiatives.models import (Initiative, InitiativeComment, Organization,
                                      Problem, Solution)
-from apps.business.models import BusinessProfile
 from apps.startups.models import Startup
 
 User = get_user_model()
@@ -36,12 +40,14 @@ class UserSerializer(serializers.ModelSerializer):
     region_display = serializers.CharField(source='get_region_display', read_only=True)
     initials = serializers.CharField(read_only=True)
     is_panel_admin = serializers.SerializerMethodField()
+    onboarding = serializers.SerializerMethodField()
 
     class Meta:
         model = User
         fields = ['id', 'full_name', 'email', 'phone', 'role', 'role_display',
                   'region', 'region_display', 'district', 'bio', 'avatar',
-                  'initials', 'telegram_username', 'is_verified', 'is_panel_admin']
+                  'initials', 'telegram_username', 'is_verified', 'is_panel_admin',
+                  'onboarding']
         read_only_fields = ['id', 'email', 'phone', 'telegram_username', 'is_verified']
 
     def get_avatar(self, obj):
@@ -50,6 +56,10 @@ class UserSerializer(serializers.ModelSerializer):
     def get_is_panel_admin(self, obj):
         from apps.panel.mixins import is_panel_admin
         return is_panel_admin(obj)
+
+    def get_onboarding(self, obj):
+        from .onboarding import onboarding_step
+        return onboarding_step(obj)
 
 
 class ProfileUpdateSerializer(serializers.ModelSerializer):
@@ -357,17 +367,53 @@ class SolutionSerializer(serializers.ModelSerializer):
 # Chet eldagi tengdoshlar va startaplar
 # --------------------------------------------------------------------------
 
-class StartupSetupSerializer(serializers.ModelSerializer):
-    """Ro'yxatdan o'tgan startupperdan so'raladigan eng zarur ma'lumot.
+def normalize_website(value):
+    """`mysite.uz` ham qabul qilinsin — boshiga `https://` qo'shamiz."""
+    value = (value or '').strip()
+    if not value:
+        return ''
+    if not re.match(r'^https?://', value, re.I):
+        value = f"https://{value}"
+    try:
+        URLValidator()(value)
+    except DjangoValidationError:
+        raise serializers.ValidationError("Sayt manzilini tekshiring.")
+    return value
 
-    Anketaning to'liq shakli kabinetda to'ldiriladi; bu yerda faqat
-    startapni ro'yxatga qo'yish uchun yetarli maydonlar bor.
-    """
+
+def validate_image_size(file, limit_mb=5):
+    if file and file.size > limit_mb * 1024 * 1024:
+        raise serializers.ValidationError(f"Rasm {limit_mb} MB dan oshmasin.")
+    return file
+
+
+class StartupSetupSerializer(serializers.ModelSerializer):
+    """Startupperdan so'raladigan anketa — ro'yxatdan o'tishda ham,
+    kabinetdagi «Startapim» bo'limida ham shu ishlatiladi."""
+
+    logo = serializers.ImageField(required=False, allow_null=True, write_only=True)
+    pitch_file = serializers.FileField(required=False, allow_null=True, write_only=True)
+    website = serializers.CharField(required=False, allow_blank=True, max_length=200)
+
+    logo_url = serializers.SerializerMethodField()
+    pitch_url = serializers.SerializerMethodField()
+    sphere_display = serializers.CharField(source='get_sphere_display', read_only=True)
+    stage_display = serializers.CharField(source='get_stage_display', read_only=True)
+    status_display = serializers.CharField(source='get_status_display', read_only=True)
 
     class Meta:
         model = Startup
-        fields = ['id', 'name', 'sphere', 'stage', 'about', 'problem_solved', 'team_size']
-        read_only_fields = ['id']
+        fields = ['id', 'name', 'sphere', 'sphere_display', 'stage', 'stage_display',
+                  'about', 'problem_solved', 'team_size', 'needed_investment',
+                  'website', 'logo', 'logo_url', 'pitch_file', 'pitch_url',
+                  'status', 'status_display', 'admin_note', 'created_at']
+        read_only_fields = ['id', 'status', 'admin_note', 'created_at']
+
+    def get_logo_url(self, obj):
+        return absolute(self.context.get('request'), obj.logo)
+
+    def get_pitch_url(self, obj):
+        return absolute(self.context.get('request'), obj.pitch_file)
 
     def validate_about(self, value):
         value = value.strip()
@@ -376,14 +422,63 @@ class StartupSetupSerializer(serializers.ModelSerializer):
                 "Startapingizni biroz batafsilroq tanishtiring.")
         return value
 
+    def validate_team_size(self, value):
+        if value is not None and value < 1:
+            raise serializers.ValidationError("Kamida bir kishi.")
+        return value
+
+    def validate_website(self, value):
+        return normalize_website(value)
+
+    def validate_logo(self, value):
+        return validate_image_size(value)
+
+    def validate_pitch_file(self, value):
+        if value and value.size > 20 * 1024 * 1024:
+            raise serializers.ValidationError("Pitch fayl 20 MB dan oshmasin.")
+        return value
+
+    def validate(self, attrs):
+        # Logotip majburiy: ro'yxatda startap shu bilan tanilinadi
+        if not attrs.get('logo') and not (self.instance and self.instance.logo):
+            raise serializers.ValidationError({'logo': "Logotipni yuklang."})
+        return attrs
+
+
+class GalleryImageSerializer(serializers.ModelSerializer):
+    url = serializers.SerializerMethodField()
+
+    class Meta:
+        model = GalleryImage
+        fields = ['id', 'url', 'caption']
+
+    def get_url(self, obj):
+        return absolute(self.context.get('request'), obj.image)
+
 
 class BusinessSetupSerializer(serializers.ModelSerializer):
-    """Tadbirkordan so'raladigan biznes ma'lumoti."""
+    """Tadbirkordan so'raladigan biznes ma'lumoti — ro'yxatdan o'tishda ham,
+    kabinetdagi «Biznesim» bo'limida ham."""
+
+    logo = serializers.ImageField(required=False, allow_null=True, write_only=True)
+    website = serializers.CharField(required=False, allow_blank=True, max_length=200)
+
+    logo_url = serializers.SerializerMethodField()
+    sphere_display = serializers.CharField(source='get_sphere_display', read_only=True)
+    region_display = serializers.CharField(source='get_region_display', read_only=True)
+    status_display = serializers.CharField(source='get_status_display', read_only=True)
+    gallery = GalleryImageSerializer(many=True, read_only=True)
 
     class Meta:
         model = BusinessProfile
-        fields = ['id', 'name', 'sphere', 'founded_year', 'employees', 'description']
-        read_only_fields = ['id']
+        fields = ['id', 'name', 'sphere', 'sphere_display', 'stir', 'founded_year',
+                  'employees', 'region', 'region_display', 'district', 'address',
+                  'description', 'website', 'phone', 'email', 'telegram', 'instagram',
+                  'logo', 'logo_url', 'gallery', 'status', 'status_display', 'created_at']
+        read_only_fields = ['id', 'status', 'created_at']
+
+    def get_logo_url(self, obj):
+        return absolute(self.context.get('request'), obj.logo)
 
     def validate_description(self, value):
         value = value.strip()
@@ -395,6 +490,108 @@ class BusinessSetupSerializer(serializers.ModelSerializer):
         if value and not 1900 <= value <= timezone.now().year:
             raise serializers.ValidationError("Yilni tekshiring.")
         return value
+
+    def validate_employees(self, value):
+        if value is not None and value < 1:
+            raise serializers.ValidationError("Kamida bir kishi.")
+        return value
+
+    def validate_stir(self, value):
+        value = (value or '').strip().replace(' ', '')
+        if value and (not value.isdigit() or len(value) != 9):
+            raise serializers.ValidationError("STIR 9 ta raqamdan iborat bo'ladi.")
+        return value
+
+    def validate_website(self, value):
+        return normalize_website(value)
+
+    def validate_instagram(self, value):
+        return (value or '').strip().lstrip('@')
+
+    def validate_telegram(self, value):
+        return (value or '').strip().lstrip('@')
+
+    def validate_logo(self, value):
+        return validate_image_size(value)
+
+    def validate(self, attrs):
+        if not attrs.get('logo') and not (self.instance and self.instance.logo):
+            raise serializers.ValidationError({'logo': "Logotipni yuklang."})
+        return attrs
+
+
+# --------------------------------------------------------------------------
+# Ochiq ro'yxatlar: tadbirkorlar va startaplar
+# --------------------------------------------------------------------------
+
+class PublicBusinessSerializer(serializers.ModelSerializer):
+    """Ro'yxatdagi karta: logo, muqova (birinchi rasm), qisqa ma'lumot."""
+
+    sphere_display = serializers.CharField(source='get_sphere_display', read_only=True)
+    sphere_icon = serializers.CharField(read_only=True)
+    region_display = serializers.CharField(source='get_region_display', read_only=True)
+    logo_url = serializers.SerializerMethodField()
+    cover_url = serializers.SerializerMethodField()
+    photo_count = serializers.SerializerMethodField()
+
+    class Meta:
+        model = BusinessProfile
+        fields = ['id', 'name', 'sphere', 'sphere_display', 'sphere_icon', 'region',
+                  'region_display', 'district', 'description', 'employees', 'founded_year',
+                  'logo_url', 'cover_url', 'photo_count', 'created_at']
+
+    def get_logo_url(self, obj):
+        return absolute(self.context.get('request'), obj.logo)
+
+    def get_cover_url(self, obj):
+        photos = list(obj.gallery.all())
+        return absolute(self.context.get('request'), photos[-1].image) if photos else None
+
+    def get_photo_count(self, obj):
+        return len(obj.gallery.all())
+
+
+class PublicBusinessDetailSerializer(PublicBusinessSerializer):
+    """Tadbirkor sahifasi: hamma rasm va aloqa."""
+
+    gallery = GalleryImageSerializer(many=True, read_only=True)
+    owner_name = serializers.SerializerMethodField()
+
+    class Meta(PublicBusinessSerializer.Meta):
+        fields = PublicBusinessSerializer.Meta.fields + [
+            'address', 'website', 'phone', 'email', 'telegram', 'instagram',
+            'gallery', 'owner_name']
+
+    def get_owner_name(self, obj):
+        return obj.user.full_name if obj.user_id else ''
+
+
+class PublicStartupSerializer(serializers.ModelSerializer):
+    sphere_display = serializers.CharField(source='get_sphere_display', read_only=True)
+    sphere_icon = serializers.CharField(read_only=True)
+    stage_display = serializers.CharField(source='get_stage_display', read_only=True)
+    region_display = serializers.CharField(source='get_region_display', read_only=True)
+    logo_url = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Startup
+        fields = ['id', 'name', 'sphere', 'sphere_display', 'sphere_icon', 'stage',
+                  'stage_display', 'about', 'team_size', 'needed_investment',
+                  'region', 'region_display', 'logo_url', 'created_at']
+
+    def get_logo_url(self, obj):
+        return absolute(self.context.get('request'), obj.logo)
+
+
+class PublicStartupDetailSerializer(PublicStartupSerializer):
+    pitch_url = serializers.SerializerMethodField()
+
+    class Meta(PublicStartupSerializer.Meta):
+        fields = PublicStartupSerializer.Meta.fields + [
+            'problem_solved', 'website', 'pitch_url', 'full_name']
+
+    def get_pitch_url(self, obj):
+        return absolute(self.context.get('request'), obj.pitch_file)
 
 
 class PeerSerializer(serializers.ModelSerializer):

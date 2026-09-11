@@ -19,6 +19,23 @@ class BusinessSphere(models.TextChoices):
     OTHER = 'boshqa', "Boshqa"
 
 
+#: Soha -> ikonka kaliti (frontdagi `CategoryTile` shu kalitni taniydi)
+BUSINESS_SPHERE_ICONS = {
+    BusinessSphere.IT: 'ic-computer',
+    BusinessSphere.AGRICULTURE: 'ic-wheat',
+    BusinessSphere.MANUFACTURING: 'ic-package',
+    BusinessSphere.SERVICES: 'ic-briefcase',
+    BusinessSphere.TRADE: 'ic-cart',
+    BusinessSphere.EDUCATION: 'ic-graduation',
+    BusinessSphere.TOURISM: 'ic-globe',
+    BusinessSphere.HEALTHCARE: 'ic-stethoscope',
+    BusinessSphere.CONSTRUCTION: 'ic-building',
+    BusinessSphere.FOOD: 'ic-seedling',
+    BusinessSphere.LOGISTICS: 'ic-truck',
+    BusinessSphere.OTHER: 'ic-briefcase',
+}
+
+
 class BusinessProfile(TimeStampedModel):
     """Tadbirkorning biznes profili — kabinetdagi 'Biznes' bo'limi."""
 
@@ -49,6 +66,10 @@ class BusinessProfile(TimeStampedModel):
 
     def __str__(self):
         return self.name
+
+    @property
+    def sphere_icon(self):
+        return BUSINESS_SPHERE_ICONS.get(self.sphere, 'ic-briefcase')
 
 
 class Product(TimeStampedModel):

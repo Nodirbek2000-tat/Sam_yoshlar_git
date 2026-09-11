@@ -8,10 +8,12 @@ from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from rest_framework import serializers, status
 from rest_framework.decorators import api_view, permission_classes
+from rest_framework.parsers import FormParser, JSONParser, MultiPartParser
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from apps.business.models import BusinessProfile, GalleryImage
 from apps.cabinet.models import Appeal, Notification, Suggestion
 from apps.content.models import EventRegistration
 from apps.core.constants import Status
@@ -213,46 +215,132 @@ class MySuggestions(APIView):
 
 
 class MyStartup(APIView):
-    """Startupperning startapi — ro'yxatdan keyingi ikkinchi qadam.
+    """Startupperning startapi — ro'yxatdan o'tishning ikkinchi qadami
+    va kabinetdagi «Startapim» bo'limi.
 
-    Bitta foydalanuvchida bir nechta startap bo'lishi mumkin, lekin
-    ro'yxatdan o'tishda birinchisi to'ldiriladi: bor bo'lsa yangilanadi,
-    bo'lmasa yaratiladi.
+    Bitta foydalanuvchida bir nechta startap bo'lishi mumkin, lekin bu yerda
+    birinchisi boshqariladi: bor bo'lsa yangilanadi, bo'lmasa yaratiladi.
+    Logo va pitch fayl bo'lgani uchun multipart ham qabul qilinadi.
     """
 
     permission_classes = [IsAuthenticated]
+    parser_classes = [JSONParser, MultiPartParser, FormParser]
 
     def get(self, request):
         startup = request.user.startups.first()
-        return Response(s.StartupSetupSerializer(startup).data if startup else {})
+        if not startup:
+            return Response({})
+        return Response(s.StartupSetupSerializer(startup, context={'request': request}).data)
 
     def post(self, request):
         startup = request.user.startups.first()
-        serializer = s.StartupSetupSerializer(startup, data=request.data, partial=bool(startup))
+        serializer = s.StartupSetupSerializer(startup, data=request.data, partial=bool(startup),
+                                              context={'request': request})
         serializer.is_valid(raise_exception=True)
-        serializer.save(user=request.user,
-                        full_name=request.user.full_name,
-                        phone=request.user.phone,
-                        email=request.user.email,
-                        region=request.user.region)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        extra = {}
+        if startup is None:
+            user = request.user
+            extra = {'user': user, 'full_name': user.full_name, 'phone': user.phone,
+                     'email': user.email, 'region': user.region}
+        elif startup.status == Status.REJECTED:
+            # Rad etilgan anketani tuzatib yuborsa — qayta ko'rib chiqiladi
+            extra = {'status': Status.PENDING}
+
+        saved = serializer.save(**extra)
+        return Response(s.StartupSetupSerializer(saved, context={'request': request}).data,
+                        status=status.HTTP_201_CREATED if startup is None else status.HTTP_200_OK)
 
 
 class MyBusiness(APIView):
-    """Tadbirkorning biznes profili. Foydalanuvchida bittasi bo'ladi."""
+    """Tadbirkorning biznes profili — ro'yxatdan o'tishning ikkinchi qadami
+    va kabinetdagi «Biznesim» bo'limi. Foydalanuvchida bittasi bo'ladi."""
 
     permission_classes = [IsAuthenticated]
+    parser_classes = [JSONParser, MultiPartParser, FormParser]
 
     def get(self, request):
-        profile = getattr(request.user, 'business', None)
-        return Response(s.BusinessSetupSerializer(profile).data if profile else {})
+        profile = BusinessProfile.objects.filter(user=request.user).first()
+        if not profile:
+            return Response({})
+        return Response(s.BusinessSetupSerializer(profile, context={'request': request}).data)
 
     def post(self, request):
-        profile = getattr(request.user, 'business', None)
-        serializer = s.BusinessSetupSerializer(profile, data=request.data, partial=bool(profile))
+        profile = BusinessProfile.objects.filter(user=request.user).first()
+        serializer = s.BusinessSetupSerializer(profile, data=request.data, partial=bool(profile),
+                                               context={'request': request})
         serializer.is_valid(raise_exception=True)
-        serializer.save(user=request.user,
-                        region=request.user.region,
-                        phone=request.user.phone,
-                        email=request.user.email)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        extra = {}
+        if profile is None:
+            user = request.user
+            extra = {'user': user}
+            # Aloqa berilmagan bo'lsa — hisobdagisini olamiz
+            if not serializer.validated_data.get('phone'):
+                extra['phone'] = user.phone
+            if not serializer.validated_data.get('region'):
+                extra['region'] = user.region
+        elif profile.status == Status.REJECTED:
+            extra = {'status': Status.PENDING}
+
+        saved = serializer.save(**extra)
+        return Response(s.BusinessSetupSerializer(saved, context={'request': request}).data,
+                        status=status.HTTP_201_CREATED if profile is None else status.HTTP_200_OK)
+
+
+#: Bitta biznesga nechta rasm yuklash mumkin
+GALLERY_LIMIT = 8
+
+
+class MyBusinessGallery(APIView):
+    """Biznes rasmlari: ish joyi, mahsulot, jamoa.
+
+    Bir so'rovda bir nechta rasm yuborish mumkin (`images` maydoni).
+    """
+
+    permission_classes = [IsAuthenticated]
+    parser_classes = [MultiPartParser, FormParser]
+
+    def post(self, request):
+        profile = BusinessProfile.objects.filter(user=request.user).first()
+        if profile is None:
+            return Response({'detail': "Avval biznes ma'lumotlarini saqlang."},
+                            status=status.HTTP_400_BAD_REQUEST)
+
+        files = request.FILES.getlist('images')
+        if not files:
+            return Response({'detail': "Rasm tanlanmadi."}, status=status.HTTP_400_BAD_REQUEST)
+
+        room = GALLERY_LIMIT - profile.gallery.count()
+        if len(files) > room:
+            return Response(
+                {'detail': (f"Ko'pi bilan {GALLERY_LIMIT} ta rasm. "
+                            f"Yana {max(room, 0)} ta qo'shish mumkin.")},
+                status=status.HTTP_400_BAD_REQUEST)
+
+        checker = serializers.ImageField()
+        for file in files:
+            try:
+                checker.run_validation(file)
+                s.validate_image_size(file)
+            except serializers.ValidationError:
+                return Response({'detail': f"«{file.name}» rasm emas yoki 5 MB dan katta."},
+                                status=status.HTTP_400_BAD_REQUEST)
+
+        for file in files:
+            GalleryImage.objects.create(business=profile, image=file)
+
+        return Response(
+            s.GalleryImageSerializer(profile.gallery.order_by('created_at'), many=True,
+                                     context={'request': request}).data,
+            status=status.HTTP_201_CREATED)
+
+
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
+def delete_gallery_image(request, pk):
+    """Faqat o'z biznesining rasmini o'chira oladi."""
+    image = get_object_or_404(GalleryImage, pk=pk, business__user=request.user)
+    image.image.delete(save=False)
+    image.delete()
+    return Response(status=status.HTTP_204_NO_CONTENT)

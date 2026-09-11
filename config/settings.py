@@ -24,6 +24,12 @@ def env_bool(key, default=False):
 SECRET_KEY = env('SECRET_KEY', 'django-insecure-dev-only-change-me')
 DEBUG = env_bool('DEBUG', True)
 ALLOWED_HOSTS = [h.strip() for h in env('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',') if h.strip()]
+
+# Docker ichida Next server tomonda `http://web:8000` ga murojaat qiladi —
+# `Host` sarlavhasi `web` bo'lib keladi. Ro'yxatda bo'lmasa Django 400
+# qaytaradi va front hech qanday ma'lumot ololmaydi.
+if 'web' not in ALLOWED_HOSTS:
+    ALLOWED_HOSTS.append('web')
 CSRF_TRUSTED_ORIGINS = [o.strip() for o in env('CSRF_TRUSTED_ORIGINS', '').split(',') if o.strip()]
 
 

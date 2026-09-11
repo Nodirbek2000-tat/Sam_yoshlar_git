@@ -3,7 +3,7 @@
 Ko'rish hamma uchun ochiq. Ovoz berish, taklif yozish, tadbirga yozilish va
 tashabbus bildirish uchun JWT bilan kirish talab qilinadi.
 """
-from django.db.models import Count, F, Sum, Value
+from django.db.models import Count, F, Q, Sum, Value
 from django.db.models.functions import Greatest
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
@@ -23,7 +23,7 @@ from apps.initiatives.directions import DIRECTIONS, MILESTONES, get_direction, r
 from apps.initiatives.models import (PROBLEM_QUESTIONS, Initiative, InitiativeComment,
                                      InitiativeVote, Problem, ProblemCategory,
                                      Solution, SolutionLike)
-from apps.business.models import BusinessSphere
+from apps.business.models import BusinessProfile, BusinessSphere
 from apps.startups.models import Startup, StartupSphere, StartupStage
 
 from . import serializers as s
@@ -529,10 +529,70 @@ class PeerDetail(generics.RetrieveAPIView):
     queryset = Peer.objects.filter(is_published=True, status=Status.APPROVED)
 
 
+def public_startups():
+    """Saytda faqat kengash tasdiqlagan va yashirilmagan startaplar."""
+    return Startup.objects.filter(is_public=True, status=Status.APPROVED)
+
+
+def public_businesses():
+    return (BusinessProfile.objects.filter(is_public=True, status=Status.APPROVED)
+            .select_related('user').prefetch_related('gallery'))
+
+
 class StartupList(generics.ListAPIView):
-    serializer_class = s.StartupSerializer
+    """Startaplar ro'yxati: `?soha=`, `?bosqich=`, `?q=` bilan filtrlanadi."""
+
+    serializer_class = s.PublicStartupSerializer
     permission_classes = [AllowAny]
-    queryset = Startup.objects.filter(is_public=True, status=Status.APPROVED)
+
+    def get_queryset(self):
+        queryset = public_startups().order_by('-created_at')
+        params = self.request.query_params
+
+        if params.get('soha'):
+            queryset = queryset.filter(sphere=params['soha'])
+        if params.get('bosqich'):
+            queryset = queryset.filter(stage=params['bosqich'])
+        if params.get('q'):
+            queryset = queryset.filter(Q(name__icontains=params['q'])
+                                       | Q(about__icontains=params['q']))
+        return queryset
+
+
+class StartupDetail(generics.RetrieveAPIView):
+    serializer_class = s.PublicStartupDetailSerializer
+    permission_classes = [AllowAny]
+
+    def get_queryset(self):
+        return public_startups()
+
+
+class BusinessList(generics.ListAPIView):
+    """Tadbirkorlar ro'yxati: `?soha=`, `?hudud=`, `?q=` bilan filtrlanadi."""
+
+    serializer_class = s.PublicBusinessSerializer
+    permission_classes = [AllowAny]
+
+    def get_queryset(self):
+        queryset = public_businesses().order_by('-created_at')
+        params = self.request.query_params
+
+        if params.get('soha'):
+            queryset = queryset.filter(sphere=params['soha'])
+        if params.get('hudud'):
+            queryset = queryset.filter(region=params['hudud'])
+        if params.get('q'):
+            queryset = queryset.filter(Q(name__icontains=params['q'])
+                                       | Q(description__icontains=params['q']))
+        return queryset
+
+
+class BusinessDetail(generics.RetrieveAPIView):
+    serializer_class = s.PublicBusinessDetailSerializer
+    permission_classes = [AllowAny]
+
+    def get_queryset(self):
+        return public_businesses()
 
 
 # --------------------------------------------------------------------------
@@ -560,6 +620,8 @@ class Overview(APIView):
                 'solutions': Solution.objects.count(),
                 'peers': Peer.objects.filter(is_published=True).count(),
                 'events': Event.objects.published().filter(starts_at__gte=now).count(),
+                'businesses': public_businesses().count(),
+                'startups': public_startups().count(),
             },
             'top_initiatives': s.InitiativeListSerializer(
                 top, many=True,
@@ -575,6 +637,12 @@ class Overview(APIView):
             'peers': s.PeerSerializer(
                 Peer.objects.filter(is_published=True, status=Status.APPROVED)
                 .order_by('-created_at')[:4],
+                many=True, context=context).data,
+            'businesses': s.PublicBusinessSerializer(
+                public_businesses().order_by('-created_at')[:3],
+                many=True, context=context).data,
+            'startups': s.PublicStartupSerializer(
+                public_startups().order_by('-created_at')[:4],
                 many=True, context=context).data,
             'open_problems': s.ProblemSerializer(
                 Problem.objects.filter(is_published=True).select_related('organization')
