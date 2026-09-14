@@ -15,6 +15,15 @@ class Role(models.TextChoices):
     ADMIN = 'admin', "Administrator"
 
 
+#: Saytga faqat shu yoshgacha bo'lganlar kiradi (30 yosh ham mumkin)
+AGE_LIMIT = 30
+
+
+class StudyLocation(models.TextChoices):
+    UZBEKISTAN = 'uz', "O'zbekistonda"
+    ABROAD = 'abroad', "Chet elda"
+
+
 class UserManager(BaseUserManager):
     use_in_migrations = True
 
@@ -56,6 +65,10 @@ class User(AbstractBaseUser, PermissionsMixin):
     region = models.CharField("Viloyat", max_length=30, choices=Region.choices, blank=True)
     district = models.CharField("Tuman / shahar", max_length=100, blank=True)
     birth_date = models.DateField("Tug'ilgan sana", null=True, blank=True)
+    # Botda so'raladi — AGE_LIMIT dan kattalarga kirish kodi berilmaydi
+    age = models.PositiveSmallIntegerField("Yoshi", null=True, blank=True)
+    study_location = models.CharField("Qayerda ta'lim oladi", max_length=10,
+                                      choices=StudyLocation.choices, blank=True)
     avatar = models.ImageField("Rasm", upload_to='avatars/%Y/%m/', blank=True)
     bio = models.TextField("O'zi haqida", blank=True)
 

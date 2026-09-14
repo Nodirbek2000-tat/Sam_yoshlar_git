@@ -47,8 +47,8 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ['id', 'full_name', 'email', 'phone', 'role', 'role_display',
                   'region', 'region_display', 'district', 'bio', 'avatar',
                   'initials', 'telegram_username', 'is_verified', 'is_panel_admin',
-                  'onboarding']
-        read_only_fields = ['id', 'email', 'phone', 'telegram_username', 'is_verified']
+                  'onboarding', 'age', 'study_location']
+        read_only_fields = ['id', 'email', 'phone', 'telegram_username', 'is_verified', 'age']
 
     def get_avatar(self, obj):
         return absolute(self.context.get('request'), obj.avatar)
@@ -67,7 +67,7 @@ class ProfileUpdateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['full_name', 'role', 'region', 'district', 'bio']
+        fields = ['full_name', 'role', 'region', 'district', 'bio', 'study_location']
 
     def validate_role(self, value):
         from apps.accounts.models import Role
@@ -604,16 +604,69 @@ class PeerSerializer(serializers.ModelSerializer):
                                                 read_only=True)
     initials = serializers.CharField(read_only=True)
     photo = serializers.SerializerMethodField()
+    age = serializers.SerializerMethodField()
 
     class Meta:
         model = Peer
         fields = ['id', 'full_name', 'country', 'country_name', 'country_short',
                   'country_color', 'city', 'home_region', 'home_region_display',
                   'purpose', 'purpose_display', 'purpose_icon', 'institution', 'field',
-                  'since_year', 'about', 'can_help', 'photo', 'initials', 'created_at']
+                  'since_year', 'course', 'achievements', 'about', 'can_help',
+                  'telegram', 'email', 'phone', 'age', 'photo', 'initials', 'created_at']
 
     def get_photo(self, obj):
         return absolute(self.context.get('request'), obj.photo)
+
+    def get_age(self, obj):
+        return obj.user.age if obj.user_id else None
+
+
+class PeerSetupSerializer(serializers.ModelSerializer):
+    """Chet elda o'qiydigan yoshning anketasi — ro'yxatdan o'tishda ham,
+    kabinetdagi «Tengdosh profilim» bo'limida ham shu ishlatiladi."""
+
+    photo = serializers.ImageField(required=False, allow_null=True, write_only=True)
+    photo_url = serializers.SerializerMethodField()
+    country_name = serializers.CharField(source='get_country_display', read_only=True)
+
+    class Meta:
+        model = Peer
+        fields = ['id', 'country', 'country_name', 'city', 'institution', 'course', 'field',
+                  'achievements', 'phone', 'telegram', 'email', 'photo', 'photo_url',
+                  'status', 'created_at']
+        read_only_fields = ['id', 'status', 'created_at']
+        extra_kwargs = {
+            'institution': {'required': True, 'allow_blank': False},
+            'field': {'required': True, 'allow_blank': False},
+            'course': {'required': True, 'allow_null': False},
+            'phone': {'required': True, 'allow_blank': False},
+        }
+
+    def get_photo_url(self, obj):
+        return absolute(self.context.get('request'), obj.photo)
+
+    def validate_course(self, value):
+        if value is None or not 1 <= value <= 7:
+            raise serializers.ValidationError("Kurs 1 dan 7 gacha bo'ladi.")
+        return value
+
+    def validate_achievements(self, value):
+        value = (value or '').strip()
+        if len(value) > 300:
+            raise serializers.ValidationError("Yutuqlar 300 ta belgidan oshmasin.")
+        return value
+
+    def validate_telegram(self, value):
+        return (value or '').strip().lstrip('@')
+
+    def validate_photo(self, value):
+        return validate_image_size(value)
+
+    def validate(self, attrs):
+        has_photo = attrs.get('photo') or (self.instance and self.instance.photo)
+        if not has_photo:
+            raise serializers.ValidationError({'photo': "Rasmingizni yuklang."})
+        return attrs
 
 
 class StartupSerializer(serializers.ModelSerializer):

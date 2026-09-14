@@ -13,6 +13,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from apps.abroad.models import Peer, PeerPurpose
+from apps.accounts.models import StudyLocation
 from apps.business.models import BusinessProfile, GalleryImage
 from apps.cabinet.models import Appeal, Notification, Suggestion
 from apps.content.models import EventRegistration
@@ -250,6 +252,45 @@ class MyStartup(APIView):
         saved = serializer.save(**extra)
         return Response(s.StartupSetupSerializer(saved, context={'request': request}).data,
                         status=status.HTTP_201_CREATED if startup is None else status.HTTP_200_OK)
+
+
+class MyPeer(APIView):
+    """Chet elda o'qiydigan yoshning tengdosh anketasi — ro'yxatdan o'tishning
+    davomi va kabinetdagi «Tengdosh profilim» bo'limi.
+
+    Anketa kengash kutmasdan darhol «Chet eldagi tengdoshlar» ro'yxatiga
+    chiqadi; kerak bo'lsa panel orqali yashiriladi.
+    """
+
+    permission_classes = [IsAuthenticated]
+    parser_classes = [JSONParser, MultiPartParser, FormParser]
+
+    def get(self, request):
+        peer = Peer.objects.filter(user=request.user).first()
+        if not peer:
+            return Response({})
+        return Response(s.PeerSetupSerializer(peer, context={'request': request}).data)
+
+    def post(self, request):
+        user = request.user
+        peer = Peer.objects.filter(user=user).first()
+        serializer = s.PeerSetupSerializer(peer, data=request.data, partial=bool(peer),
+                                           context={'request': request})
+        serializer.is_valid(raise_exception=True)
+
+        extra = {'full_name': user.full_name, 'home_region': user.region}
+        if peer is None:
+            extra.update(user=user, purpose=PeerPurpose.STUDY,
+                         status=Status.APPROVED, is_published=True)
+
+        saved = serializer.save(**extra)
+
+        if user.study_location != StudyLocation.ABROAD:
+            user.study_location = StudyLocation.ABROAD
+            user.save(update_fields=['study_location'])
+
+        return Response(s.PeerSetupSerializer(saved, context={'request': request}).data,
+                        status=status.HTTP_201_CREATED if peer is None else status.HTTP_200_OK)
 
 
 class MyBusiness(APIView):

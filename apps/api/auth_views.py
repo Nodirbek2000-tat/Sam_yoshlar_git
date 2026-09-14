@@ -108,6 +108,14 @@ def telegram_login(request):
         return Response({'detail': "Kod eskirgan. Botdan yangi kod oling."},
                         status=status.HTTP_400_BAD_REQUEST)
 
+    from apps.accounts.models import AGE_LIMIT
+    from apps.accounts.telegram_views import is_age_exempt
+
+    # Bot yosh katta bo'lsa kod bermaydi; bu — eski kod bilan kirib qolmasin
+    if not is_age_exempt(entry.user) and (entry.user.age or 0) > AGE_LIMIT:
+        return Response({'detail': f"Bu saytga faqat {AGE_LIMIT} yoshgacha bo'lgan yoshlar kira oladi."},
+                        status=status.HTTP_403_FORBIDDEN)
+
     entry.used_at = timezone.now()
     entry.save(update_fields=['used_at'])
 

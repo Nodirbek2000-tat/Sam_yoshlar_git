@@ -49,8 +49,10 @@ class Peer(TimeStampedModel):
     institution = models.CharField("Universitet / kompaniya", max_length=200, blank=True)
     field = models.CharField("Yo'nalish / kasb", max_length=150, blank=True)
     since_year = models.PositiveIntegerField("Qaysi yildan beri", null=True, blank=True)
+    course = models.PositiveSmallIntegerField("Nechanchi kurs", null=True, blank=True)
+    achievements = models.CharField("Yutuqlari", max_length=300, blank=True)
 
-    about = models.TextField("O'zi haqida")
+    about = models.TextField("O'zi haqida", blank=True)
     can_help = models.TextField("Nimada yordam bera oladi", blank=True)
 
     telegram = models.CharField("Telegram", max_length=100, blank=True)

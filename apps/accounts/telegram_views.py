@@ -22,7 +22,7 @@ from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 
-from .models import TelegramAuthCode
+from .models import AGE_LIMIT, Role, TelegramAuthCode
 
 User = get_user_model()
 
@@ -93,8 +93,11 @@ def telegram_login(request):
 def telegram_issue_code(request):
     """Bot chaqiradi: foydalanuvchi ma'lumotlari -> hisob + kod.
 
-    Kutiladi: telegram_id, first_name, last_name, username, phone
-    Ixtiyoriy: photo (fayl)
+    Kutiladi: telegram_id, first_name, last_name, username
+    Ixtiyoriy: phone (birinchi marta majburiy), age, photo (fayl)
+
+    Kod berilmasa `ok: false` va bot nima so'rashi kerakligi qaytadi:
+    `need_phone`, `need_age`, `age_limit` (AGE_LIMIT dan katta), `bad_age`.
     """
     secret = _api_secret()
     provided = request.headers.get('X-Bot-Secret', '')
@@ -109,16 +112,38 @@ def telegram_issue_code(request):
     if not telegram_id:
         return JsonResponse({'ok': False, 'error': 'missing_telegram_id'}, status=400)
 
+    age, age_error = _parse_age(data.get('age'))
+    if age_error:
+        return JsonResponse({'ok': False, 'error': 'bad_age'})
+
+    phone = normalize_phone(data.get('phone'))
+    username = (data.get('username') or '').strip().lstrip('@')
+
+    # Raqam faqat birinchi marta so'raladi: hisob bo'lsa, u telegram_id bo'yicha topiladi
+    if not phone and not User.objects.filter(telegram_id=int(telegram_id)).exists():
+        return JsonResponse({'ok': False, 'error': 'need_phone'})
+
     user, created = _get_or_create_user(
         telegram_id=int(telegram_id),
         first_name=(data.get('first_name') or '').strip(),
         last_name=(data.get('last_name') or '').strip(),
-        username=(data.get('username') or '').strip().lstrip('@'),
-        phone=normalize_phone(data.get('phone')),
+        username=username,
+        phone=phone,
     )
 
     if photo and not user.avatar:
         user.avatar.save(f"tg_{telegram_id}.jpg", ContentFile(photo.read()), save=True)
+
+    if age is not None and user.age != age:
+        user.age = age
+        user.save(update_fields=['age'])
+
+    # Adminlar va tashkilotlarning hisobini biz ochamiz — ulardan yosh so'ralmaydi
+    if not is_age_exempt(user):
+        if user.age is None:
+            return JsonResponse({'ok': False, 'error': 'need_age', 'created': created})
+        if user.age > AGE_LIMIT:
+            return JsonResponse({'ok': False, 'error': 'age_limit', 'limit': AGE_LIMIT})
 
     # Eski kodlarni bekor qilamiz — bir vaqtda bitta amaldagi kod bo'lsin
     TelegramAuthCode.objects.filter(user=user, used_at__isnull=True).update(
@@ -137,6 +162,23 @@ def telegram_issue_code(request):
         'created': created,
         'name': user.full_name,
     })
+
+
+def is_age_exempt(user):
+    return user.is_superuser or user.is_staff or user.role in (Role.ADMIN, Role.ORGANIZATION)
+
+
+def _parse_age(raw):
+    """(yosh, xato) — yosh berilmagan bo'lsa (None, False)."""
+    if raw in (None, ''):
+        return None, False
+    try:
+        age = int(str(raw).strip())
+    except ValueError:
+        return None, True
+    if not 7 <= age <= 100:
+        return None, True
+    return age, False
 
 
 def _read_payload(request):

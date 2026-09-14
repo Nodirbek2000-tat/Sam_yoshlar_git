@@ -1085,7 +1085,14 @@ class OnboardingTests(TestCase):
         user.role = 'startupper'
         self.assertEqual(onboarding_step(user), 'startup')
 
+        # Yoshdan qayerda o'qishi so'raladi; chet elda bo'lsa — rasmli anketa
         user.role = 'yosh'
+        self.assertEqual(onboarding_step(user), 'study')
+
+        user.study_location = 'abroad'
+        self.assertEqual(onboarding_step(user), 'peer')
+
+        user.study_location = 'uz'
         self.assertIsNone(onboarding_step(user))
 
         # Tashkilot va admin hisobini biz ochamiz — ulardan so'ralmaydi
@@ -1413,3 +1420,74 @@ class PublicDirectoryTests(TestCase):
         self.assertEqual(data['stats']['startups'], 1)
         self.assertEqual(len(data['businesses']), 1)
         self.assertEqual(len(data['startups']), 1)
+
+
+@override_settings(MEDIA_ROOT=tempfile.mkdtemp())
+class PeerOnboardingTests(TestCase):
+    """Yosh: qayerda o'qiydi → chet elda bo'lsa anketa → tengdoshlar ro'yxatida."""
+
+    def setUp(self):
+        self.user = User.objects.create_user(
+            email='talaba@test.uz', full_name="Malika Rahimova", role='yosh',
+            is_verified=True, age=21, phone='+998901112233', region='buxoro')
+        self.auth = {'HTTP_AUTHORIZATION': f"Bearer {tokens_for(self.user)['access']}"}
+
+    def _form(self, **extra):
+        data = {'country': 'korea', 'institution': "Seoul National University", 'course': '2',
+                'field': "Kompyuter injiniringi", 'achievements': "Olimpiada g'olibi",
+                'phone': '+821012345678', 'telegram': '@malika', 'email': 'malika@gmail.com',
+                'photo': _png('men.png')}
+        data.update(extra)
+        return data
+
+    def test_uzbekistan_finishes_onboarding(self):
+        response = self.client.patch('/api/v1/auth/me/', {'study_location': 'uz'},
+                                     content_type='application/json', **self.auth)
+        self.assertEqual(response.status_code, 200)
+        self.assertIsNone(response.json()['onboarding'])
+
+    def test_abroad_profile_is_published_immediately(self):
+        self.client.patch('/api/v1/auth/me/', {'study_location': 'abroad'},
+                          content_type='application/json', **self.auth)
+        me = self.client.get('/api/v1/auth/me/', **self.auth).json()
+        self.assertEqual(me['onboarding'], 'peer')
+
+        response = self.client.post('/api/v1/me/peer/', self._form(), **self.auth)
+        self.assertEqual(response.status_code, 201, response.content)
+        self.assertEqual(response.json()['telegram'], 'malika')
+
+        me = self.client.get('/api/v1/auth/me/', **self.auth).json()
+        self.assertIsNone(me['onboarding'])
+        self.assertEqual(me['age'], 21)
+
+        rows = self.client.get('/api/v1/peers/').json()['results']
+        self.assertEqual(len(rows), 1)
+        self.assertEqual(rows[0]['full_name'], "Malika Rahimova")
+        self.assertEqual(rows[0]['course'], 2)
+        self.assertEqual(rows[0]['age'], 21)
+        self.assertEqual(rows[0]['home_region'], 'buxoro')
+
+    def test_photo_required_and_achievements_limited(self):
+        form = self._form(achievements='x' * 301)
+        del form['photo']
+        response = self.client.post('/api/v1/me/peer/', form, **self.auth)
+        self.assertEqual(response.status_code, 400)
+        self.assertIn('achievements', response.json())
+
+        response = self.client.post('/api/v1/me/peer/', self._form(photo=''), **self.auth)
+        self.assertEqual(response.status_code, 400)
+        self.assertIn('photo', response.json())
+
+    def test_edit_keeps_photo(self):
+        self.client.post('/api/v1/me/peer/', self._form(), **self.auth)
+        form = self._form(course='3')
+        del form['photo']
+        response = self.client.post('/api/v1/me/peer/', form, **self.auth)
+        self.assertEqual(response.status_code, 200, response.content)
+        self.assertEqual(response.json()['course'], 3)
+
+    def test_overview_counts_youth_only(self):
+        User.objects.create_user(email='katta@test.uz', full_name="Katta", role='yosh', age=45)
+        User.objects.create_user(email='org@test.uz', full_name="Tashkilot", role='organization')
+        data = self.client.get('/api/v1/overview/').json()
+        self.assertEqual(data['stats']['users'], 1)

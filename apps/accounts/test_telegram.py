@@ -27,6 +27,7 @@ class TelegramCodeTests(TestCase):
             'last_name': "Shukurov",
             'username': "nodirbek",
             'phone': "+998500056821",
+            'age': 22,
         }
         data.update(overrides)
         return self.client.post(self.api_url, data, HTTP_X_BOT_SECRET=secret)
@@ -62,7 +63,7 @@ class TelegramCodeTests(TestCase):
     def test_json_payload_accepted(self):
         response = self.client.post(
             self.api_url,
-            {'telegram_id': 888, 'first_name': "Json"},
+            {'telegram_id': 888, 'first_name': "Json", 'phone': '+998901234567', 'age': 20},
             content_type='application/json',
             HTTP_X_BOT_SECRET=SECRET,
         )
@@ -199,7 +200,8 @@ class PhoneMatchingTests(TestCase):
         """Yangi odam Telegram orqali kirsa — oddiy foydalanuvchi bo'ladi."""
         response = self.client.post(
             self.api_url,
-            {'telegram_id': 111000222, 'first_name': "Begona", 'phone': '998901112233'},
+            {'telegram_id': 111000222, 'first_name': "Begona", 'phone': '998901112233',
+             'age': 19},
             HTTP_X_BOT_SECRET=SECRET,
         )
         self.assertTrue(response.json()['created'])
@@ -220,3 +222,63 @@ class PhoneMatchingTests(TestCase):
             HTTP_X_BOT_SECRET=SECRET,
         )
         self.assertEqual(User.objects.get(telegram_id=555).phone, '+998901112233')
+
+
+@override_settings(TELEGRAM_API_SECRET=SECRET)
+class BotAgeFlowTests(TestCase):
+    """Raqam bir marta, keyin yosh; 30 dan kattaga kod berilmaydi."""
+
+    def setUp(self):
+        self.api_url = reverse('accounts:telegram_issue_code')
+
+    def _issue(self, **data):
+        payload = {'telegram_id': 900100, 'first_name': "Aziz"}
+        payload.update(data)
+        return self.client.post(self.api_url, payload, HTTP_X_BOT_SECRET=SECRET).json()
+
+    def test_unknown_user_needs_phone_first(self):
+        self.assertEqual(self._issue(), {'ok': False, 'error': 'need_phone'})
+        self.assertFalse(User.objects.exists())
+
+    def test_phone_then_age_then_code_without_phone(self):
+        first = self._issue(phone='+998901112233')
+        self.assertEqual(first['error'], 'need_age')
+        self.assertTrue(User.objects.filter(telegram_id=900100, phone='+998901112233').exists())
+
+        second = self._issue(age='24')
+        self.assertTrue(second['ok'])
+        self.assertEqual(User.objects.get(telegram_id=900100).age, 24)
+
+        # Keyingi /start: raqam ham, yosh ham so'ralmaydi
+        third = self._issue()
+        self.assertTrue(third['ok'])
+        self.assertNotEqual(third['code'], second['code'])
+
+    def test_over_limit_gets_no_code_and_is_asked_again(self):
+        self._issue(phone='+998901112233')
+        response = self._issue(age='31')
+        self.assertEqual(response, {'ok': False, 'error': 'age_limit', 'limit': 30})
+        self.assertFalse(TelegramAuthCode.objects.exists())
+
+        # Qayta /start — yana yosh so'raladi, 30 va undan kichik bo'lsa kod
+        self.assertEqual(self._issue()['error'], 'age_limit')
+        self.assertTrue(self._issue(age='30')['ok'])
+
+    def test_bad_age_rejected(self):
+        self._issue(phone='+998901112233')
+        self.assertEqual(self._issue(age='abc')['error'], 'bad_age')
+        self.assertEqual(self._issue(age='250')['error'], 'bad_age')
+
+    def test_over_limit_user_cannot_use_old_code(self):
+        self._issue(phone='+998901112233')
+        code = self._issue(age='25')['code']
+        User.objects.filter(telegram_id=900100).update(age=40)
+
+        response = self.client.post('/api/v1/auth/telegram/', {'code': code},
+                                    content_type='application/json')
+        self.assertEqual(response.status_code, 403)
+
+    def test_organization_is_not_asked_age(self):
+        User.objects.create_user(email='org@test.uz', full_name="Tashkilot",
+                                 role='organization', telegram_id=900100)
+        self.assertTrue(self._issue()['ok'])

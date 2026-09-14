@@ -146,7 +146,7 @@ class PanelUsers(APIView):
             'pages': (total + page_size - 1) // page_size,
             'results': [
                 {'id': user.pk, 'full_name': user.full_name, 'email': user.email,
-                 'phone': user.phone, 'role': user.role,
+                 'phone': user.phone, 'role': user.role, 'age': user.age,
                  'role_display': user.get_role_display(),
                  'region_display': user.get_region_display(),
                  'initials': user.initials, 'is_verified': user.is_verified,
@@ -193,8 +193,12 @@ class PanelUserDetail(APIView):
                 'is_admin': is_panel_admin(user), 'is_superuser': user.is_superuser,
                 'telegram_username': user.telegram_username,
                 'onboarding': onboarding_step(user),
+                'age': user.age, 'study_location': user.study_location,
+                'study_location_display': user.get_study_location_display(),
                 'created_at': user.date_joined, 'last_login': user.last_login,
             },
+            'peer': (s.PeerSerializer(user.peer_profiles.first(), context={'request': request}).data
+                     if user.peer_profiles.exists() else None),
             'business': (s.BusinessSetupSerializer(business, context={'request': request}).data
                          if business else None),
             'startups': s.StartupSetupSerializer(user.startups.all(), many=True,
@@ -222,6 +226,8 @@ class PanelUserDetail(APIView):
         # reyestrda yurmasin, birga o'chiriladi
         startups = user.startups.count()
         user.startups.all().delete()
+        # Tengdosh anketasi ham shunday — egasiz ro'yxatda qolmasin
+        user.peer_profiles.all().delete()
         user.delete()
 
         return Response({'deleted': True, 'label': label, 'startups': startups})

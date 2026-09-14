@@ -508,12 +508,24 @@ def solution_like(request, pk):
 # Chet eldagi tengdoshlar, startaplar
 # --------------------------------------------------------------------------
 
+def public_user_count():
+    """Saytdagi yoshlar soni: admin, tashkilot va yosh chegarasidan o'tganlar sanalmaydi."""
+    from django.contrib.auth import get_user_model
+
+    from apps.accounts.models import AGE_LIMIT
+
+    return (get_user_model().objects.filter(is_active=True, is_superuser=False)
+            .exclude(role__in=[Role.ADMIN, Role.ORGANIZATION])
+            .exclude(age__gt=AGE_LIMIT).count())
+
+
 class PeerList(generics.ListAPIView):
     serializer_class = s.PeerSerializer
     permission_classes = [AllowAny]
 
     def get_queryset(self):
-        queryset = Peer.objects.filter(is_published=True, status=Status.APPROVED)
+        queryset = (Peer.objects.filter(is_published=True, status=Status.APPROVED)
+                    .select_related('user'))
         country = self.request.query_params.get('davlat')
         if country:
             queryset = queryset.filter(country=country)
@@ -526,7 +538,8 @@ class PeerList(generics.ListAPIView):
 class PeerDetail(generics.RetrieveAPIView):
     serializer_class = s.PeerSerializer
     permission_classes = [AllowAny]
-    queryset = Peer.objects.filter(is_published=True, status=Status.APPROVED)
+    queryset = (Peer.objects.filter(is_published=True, status=Status.APPROVED)
+                .select_related('user'))
 
 
 def public_startups():
@@ -619,6 +632,7 @@ class Overview(APIView):
                 'problems': Problem.objects.filter(is_published=True).count(),
                 'solutions': Solution.objects.count(),
                 'peers': Peer.objects.filter(is_published=True).count(),
+                'users': public_user_count(),
                 'events': Event.objects.published().filter(starts_at__gte=now).count(),
                 'businesses': public_businesses().count(),
                 'startups': public_startups().count(),
@@ -636,7 +650,7 @@ class Overview(APIView):
                 many=True, context=context).data,
             'peers': s.PeerSerializer(
                 Peer.objects.filter(is_published=True, status=Status.APPROVED)
-                .order_by('-created_at')[:4],
+                .select_related('user').order_by('-created_at')[:4],
                 many=True, context=context).data,
             'businesses': s.PublicBusinessSerializer(
                 public_businesses().order_by('-created_at')[:3],

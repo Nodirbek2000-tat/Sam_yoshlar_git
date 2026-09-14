@@ -27,6 +27,7 @@ urlpatterns = [
     path('me/suggestions/', cabinet_views.MySuggestions.as_view(), name='me_suggestions'),
     path('me/problems/', views.MyProblems.as_view(), name='me_problems'),
     path('me/startup/', cabinet_views.MyStartup.as_view(), name='me_startup'),
+    path('me/peer/', cabinet_views.MyPeer.as_view(), name='me_peer'),
     path('me/business/', cabinet_views.MyBusiness.as_view(), name='me_business'),
     path('me/business/gallery/', cabinet_views.MyBusinessGallery.as_view(),
          name='me_business_gallery'),
