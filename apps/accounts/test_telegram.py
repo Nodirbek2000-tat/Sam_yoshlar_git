@@ -46,7 +46,10 @@ class TelegramCodeTests(TestCase):
         user = User.objects.get(telegram_id=555000111)
         self.assertEqual(user.full_name, "Nodirbek Shukurov")
         self.assertEqual(user.phone, "+998500056821")
-        self.assertTrue(user.is_verified)
+        # Rol hali tanlanmagan — saytda birinchi bo'lib rol so'raladi
+        self.assertFalse(user.is_verified)
+        from apps.api.onboarding import onboarding_step
+        self.assertEqual(onboarding_step(user), 'role')
         self.assertFalse(user.has_usable_password())
 
     def test_urlencoded_payload_accepted(self):

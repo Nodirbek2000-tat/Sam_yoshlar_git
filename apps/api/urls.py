@@ -28,6 +28,9 @@ urlpatterns = [
     path('me/problems/', views.MyProblems.as_view(), name='me_problems'),
     path('me/startup/', cabinet_views.MyStartup.as_view(), name='me_startup'),
     path('me/peer/', cabinet_views.MyPeer.as_view(), name='me_peer'),
+    path('me/startups/', cabinet_views.MyStartups.as_view(), name='me_startups'),
+    path('me/startups/<int:pk>/', cabinet_views.MyStartupDetail.as_view(),
+         name='me_startup_detail'),
     path('me/business/', cabinet_views.MyBusiness.as_view(), name='me_business'),
     path('me/business/gallery/', cabinet_views.MyBusinessGallery.as_view(),
          name='me_business_gallery'),
@@ -107,6 +110,8 @@ urlpatterns = [
          admin_views.PanelAnnouncementDetail.as_view(), name='panel_announcement_detail'),
     path('panel/<slug:resource>/<int:pk>/holat/', admin_views.panel_moderate,
          name='panel_moderate'),
+    path('panel/<slug:resource>/hammasi/', admin_views.panel_delete_all,
+         name='panel_delete_all'),
     path('panel/<slug:resource>/', admin_views.PanelList.as_view(), name='panel_list'),
     path('panel/<slug:resource>/<int:pk>/', admin_views.panel_delete, name='panel_delete'),
 ]

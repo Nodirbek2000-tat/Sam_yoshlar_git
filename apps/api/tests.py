@@ -1491,3 +1491,177 @@ class PeerOnboardingTests(TestCase):
         User.objects.create_user(email='org@test.uz', full_name="Tashkilot", role='organization')
         data = self.client.get('/api/v1/overview/').json()
         self.assertEqual(data['stats']['users'], 1)
+
+
+@override_settings(MEDIA_ROOT=tempfile.mkdtemp())
+class MediaUrlTests(TestCase):
+    """Rasm havolasi brauzerda ochiladigan bo'lsin (ichki `web:8000` emas)."""
+
+    def setUp(self):
+        from apps.abroad.models import Peer
+        user = User.objects.create_user(email='rasm@test.uz', full_name="Rasm Test", role='yosh')
+        self.peer = Peer(user=user, full_name="Rasm Test", country='korea', status='approved',
+                         is_published=True)
+        self.peer.photo.save('men.png', _png(), save=True)
+
+    def _photo(self, **headers):
+        return self.client.get(f'/api/v1/peers/{self.peer.pk}/', **headers).json()['photo']
+
+    @override_settings(SITE_URL='https://mentadbirkor.uz', ALLOWED_HOSTS=['*'])
+    def test_site_url_is_used_for_internal_requests(self):
+        photo = self._photo(HTTP_HOST='web:8000')
+        self.assertTrue(photo.startswith('https://mentadbirkor.uz/media/peers/'), photo)
+
+    @override_settings(SITE_URL='', ALLOWED_HOSTS=['*'])
+    def test_internal_host_without_site_url_gives_relative(self):
+        self.assertTrue(self._photo(HTTP_HOST='web:8000').startswith('/media/peers/'))
+
+    @override_settings(SITE_URL='')
+    def test_local_development_keeps_absolute(self):
+        self.assertTrue(self._photo().startswith('http://testserver/media/'))
+
+
+@override_settings(MEDIA_ROOT=tempfile.mkdtemp())
+class MultiRoleTests(TestCase):
+    """Bir odam yosh ham, startupper ham, tadbirkor ham bo'la oladi."""
+
+    def setUp(self):
+        self.user = User.objects.create_user(
+            email='kop@test.uz', full_name="Ko'p Rolli", role='yosh', is_verified=True,
+            study_location='uz', phone='+998901112233', age=22)
+        self.auth = {'HTTP_AUTHORIZATION': f"Bearer {tokens_for(self.user)['access']}"}
+
+    def _startup(self, name, **extra):
+        from apps.startups.models import StartupSphere, StartupStage
+        data = {'name': name, 'sphere': StartupSphere.values[0], 'stage': StartupStage.values[0],
+                'about': "Bu startap yoshlarga kasb tanlashda yordam beradigan platforma.",
+                'team_size': '2', 'logo': _png('logo.png')}
+        data.update(extra)
+        return self.client.post('/api/v1/me/startups/', data, **self.auth)
+
+    def test_youth_can_add_up_to_three_startups(self):
+        for index in range(3):
+            response = self._startup(f"Startap {index}")
+            self.assertEqual(response.status_code, 201, response.content)
+
+        self.assertEqual(self._startup("To'rtinchi").status_code, 400)
+
+        data = self.client.get('/api/v1/me/startups/', **self.auth).json()
+        self.assertEqual(data['limit'], 3)
+        self.assertEqual(len(data['results']), 3)
+
+        me = self.client.get('/api/v1/auth/me/', **self.auth).json()
+        self.assertEqual(me['capabilities']['startups'], 3)
+        # Asosiy roli yosh bo'lib qoladi, ro'yxatdan o'tish tugagan
+        self.assertEqual(me['role'], 'yosh')
+        self.assertIsNone(me['onboarding'])
+
+    def test_edit_and_delete_own_startup_only(self):
+        startup_id = self._startup("Birinchi").json()['id']
+
+        response = self.client.post(f'/api/v1/me/startups/{startup_id}/',
+                                    {'name': "Yangi nom"}, **self.auth)
+        self.assertEqual(response.status_code, 200, response.content)
+        self.assertEqual(response.json()['name'], "Yangi nom")
+
+        stranger = User.objects.create_user(email='begona@test.uz', full_name="Begona")
+        other = {'HTTP_AUTHORIZATION': f"Bearer {tokens_for(stranger)['access']}"}
+        self.assertEqual(
+            self.client.delete(f'/api/v1/me/startups/{startup_id}/', **other).status_code, 404)
+
+        self.assertEqual(
+            self.client.delete(f'/api/v1/me/startups/{startup_id}/', **self.auth).status_code, 204)
+        self.assertEqual(self.user.startups.count(), 0)
+
+    def test_choosing_uzbekistan_hides_peer_profile(self):
+        from apps.abroad.models import Peer
+        form = {'country': 'korea', 'institution': "SNU", 'course': '2', 'field': "IT",
+                'phone': '+821012345678', 'photo': _png('men.png')}
+        self.client.post('/api/v1/me/peer/', form, **self.auth)
+        self.assertEqual(self.client.get('/api/v1/peers/').json()['count'], 1)
+
+        self.client.patch('/api/v1/auth/me/', {'study_location': 'uz'},
+                          content_type='application/json', **self.auth)
+        self.assertEqual(self.client.get('/api/v1/peers/').json()['count'], 0)
+
+        # Chet elga qaytsa — yana ko'rinadi
+        self.client.post('/api/v1/me/peer/', {'course': '3'}, **self.auth)
+        self.assertEqual(self.client.get('/api/v1/peers/').json()['count'], 1)
+        self.assertTrue(Peer.objects.get().is_published)
+
+    def test_session_lasts_24_hours(self):
+        from datetime import timedelta
+        self.assertEqual(settings.SIMPLE_JWT['ACCESS_TOKEN_LIFETIME'], timedelta(hours=24))
+        self.assertEqual(settings.SIMPLE_JWT['REFRESH_TOKEN_LIFETIME'], timedelta(hours=24))
+        self.assertFalse(settings.SIMPLE_JWT['ROTATE_REFRESH_TOKENS'])
+
+
+@override_settings(MEDIA_ROOT=tempfile.mkdtemp())
+class SiteCleanupTests(TestCase):
+    """`saytni_tozalash`: `--ha` siz hech narsa o'chmaydi."""
+
+    def setUp(self):
+        from apps.abroad.models import Peer
+        from apps.cabinet.models import Notification
+
+        self.admin = User.objects.create_superuser(email='bosh@test.uz', password='x', full_name="Bosh")
+        self.youth = User.objects.create_user(email='yosh@test.uz', full_name="Yosh", role='yosh')
+        peer = Peer(user=self.youth, full_name="Yosh", country='korea')
+        peer.photo.save('men.png', _png(), save=True)
+        Notification.objects.create(user=self.youth, title="Salom", message="Sinov")
+
+    def test_dry_run_changes_nothing(self):
+        from io import StringIO
+
+        from django.core.management import call_command
+
+        from apps.abroad.models import Peer
+        out = StringIO()
+        call_command('saytni_tozalash', stdout=out)
+        self.assertIn("Hech narsa o'chirilmadi", out.getvalue())
+        self.assertEqual(Peer.objects.count(), 1)
+
+    def test_delete_content_and_optionally_users(self):
+        from io import StringIO
+
+        from django.core.management import call_command
+
+        from apps.abroad.models import Peer
+        from apps.cabinet.models import Notification
+        call_command('saytni_tozalash', '--ha', stdout=StringIO())
+        self.assertEqual(Peer.objects.count(), 0)
+        self.assertEqual(Notification.objects.count(), 0)
+        self.assertTrue(User.objects.filter(pk=self.youth.pk).exists())
+
+        call_command('saytni_tozalash', '--ha', '--userlar', stdout=StringIO())
+        self.assertFalse(User.objects.filter(pk=self.youth.pk).exists())
+        self.assertTrue(User.objects.filter(pk=self.admin.pk).exists())
+
+
+class PanelDeleteAllTests(TestCase):
+    """Panelning «Hammasini o'chirish» tugmasi."""
+
+    def setUp(self):
+        self.admin = User.objects.create_superuser(email='panel@test.uz', password='x', full_name="Panel")
+        self.auth = {'HTTP_AUTHORIZATION': f"Bearer {tokens_for(self.admin)['access']}"}
+        for index in range(3):
+            Initiative.objects.create(direction='eco', kind='idea', title=f"G'oya {index}",
+                                      description="X", author_name="A", vote_count=5)
+
+    def test_admin_deletes_every_initiative(self):
+        response = self.client.delete('/api/v1/panel/initiatives/hammasi/', **self.auth)
+        self.assertEqual(response.status_code, 200, response.content)
+        self.assertEqual(response.json()['deleted'], 3)
+        self.assertFalse(Initiative.objects.exists())
+
+    def test_regular_user_cannot(self):
+        user = User.objects.create_user(email='oddiy@test.uz', full_name="Oddiy")
+        auth = {'HTTP_AUTHORIZATION': f"Bearer {tokens_for(user)['access']}"}
+        response = self.client.delete('/api/v1/panel/initiatives/hammasi/', **auth)
+        self.assertIn(response.status_code, (403, 404))
+        self.assertEqual(Initiative.objects.count(), 3)
+
+    def test_unknown_resource(self):
+        response = self.client.delete('/api/v1/panel/users/hammasi/', **self.auth)
+        self.assertEqual(response.status_code, 404)
+        self.assertTrue(User.objects.filter(pk=self.admin.pk).exists())

@@ -23,11 +23,27 @@ User = get_user_model()
 
 
 def absolute(request, file_field):
-    """Rasm uchun to'liq URL — frontend boshqa domenda turadi."""
+    """Rasm uchun to'liq URL.
+
+    Serverda sayt Django'ga ichki `http://web:8000` orqali murojaat qiladi —
+    so'rovdan yasalgan manzil brauzerda ochilmaydi. Shuning uchun `SITE_URL`
+    berilgan bo'lsa, manzil doim tashqi domen bilan yasaladi.
+    """
     if not file_field:
         return None
     url = file_field.url
-    return request.build_absolute_uri(url) if request else url
+
+    from django.conf import settings
+
+    site = (getattr(settings, 'SITE_URL', '') or '').rstrip('/')
+    if site:
+        return f"{site}{url}"
+    if request is None:
+        return url
+    # Ichki xost bo'lsa (SITE_URL yo'q) — nisbiy manzil, nginx o'zi beradi
+    if request.get_host().split(':')[0] == 'web':
+        return url
+    return request.build_absolute_uri(url)
 
 
 # --------------------------------------------------------------------------
@@ -47,8 +63,21 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ['id', 'full_name', 'email', 'phone', 'role', 'role_display',
                   'region', 'region_display', 'district', 'bio', 'avatar',
                   'initials', 'telegram_username', 'is_verified', 'is_panel_admin',
-                  'onboarding', 'age', 'study_location']
+                  'onboarding', 'age', 'study_location', 'capabilities']
         read_only_fields = ['id', 'email', 'phone', 'telegram_username', 'is_verified', 'age']
+
+    capabilities = serializers.SerializerMethodField()
+
+    def get_capabilities(self, obj):
+        """Bir odam bir nechta rolda bo'la oladi: nimasi borligi."""
+        from apps.abroad.models import Peer
+        from apps.business.models import BusinessProfile
+
+        return {
+            'business': BusinessProfile.objects.filter(user=obj).exists(),
+            'startups': obj.startups.count(),
+            'peer': Peer.objects.filter(user=obj).exists(),
+        }
 
     def get_avatar(self, obj):
         return absolute(self.context.get('request'), obj.avatar)

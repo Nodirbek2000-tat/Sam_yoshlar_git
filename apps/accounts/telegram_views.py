@@ -274,7 +274,9 @@ def _get_or_create_user(telegram_id, first_name, last_name, username, phone):
         phone=phone,
         telegram_id=telegram_id,
         telegram_username=username,
-        is_verified=True,
+        # Tasdiq = rol tanlangan. Yangi odam avval «kim sifatida qatnashasiz?»
+        # savolini ko'rsin — aks holda standart rol bilan anketaga otib ketadi
+        is_verified=False,
     )
     user.set_unusable_password()
     user.save(update_fields=['password'])

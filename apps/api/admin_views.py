@@ -25,6 +25,7 @@ from apps.abroad.models import Peer
 from apps.business.models import BusinessProfile
 from apps.cabinet.models import Appeal, Notification, Suggestion
 from apps.content.models import Announcement, Event, News
+from apps.core.cleanup import delete_with_files
 from apps.core.constants import Region, Status
 from apps.initiatives.directions import DIRECTIONS
 from apps.initiatives.models import (Initiative, InitiativeComment, Organization,
@@ -161,14 +162,21 @@ class PanelUsers(APIView):
 
 
 def profile_status(user):
-    """Tadbirkor/startupper anketasining holati — ro'yxatda nishon uchun."""
-    if user.role == 'entrepreneur':
-        business = BusinessProfile.objects.filter(user=user).only('status').first()
-        return business.status if business else None
-    if user.role == 'startupper':
-        startup = user.startups.only('status').first()
-        return startup.status if startup else None
-    return None
+    """Biznes va startap anketalarining umumiy holati — ro'yxatda nishon uchun.
+
+    Bir odamda ikkalasi ham, bir nechta startap ham bo'lishi mumkin:
+    birortasi kutilayotgan bo'lsa — `pending`, qaytarilgani bo'lsa — `rejected`.
+    """
+    statuses = list(user.startups.values_list('status', flat=True))
+    business = BusinessProfile.objects.filter(user=user).values_list('status', flat=True).first()
+    if business:
+        statuses.append(business)
+    if not statuses:
+        return None
+    for candidate in (Status.PENDING, Status.REJECTED):
+        if candidate in statuses:
+            return candidate
+    return Status.APPROVED
 
 
 class PanelUserDetail(APIView):
@@ -249,25 +257,29 @@ def moderate_profile(request, pk):
         return Response({'detail': "Holat `approved` yoki `rejected` bo'lishi kerak."},
                         status=status.HTTP_400_BAD_REQUEST)
 
-    if user.role == 'entrepreneur':
-        profile = BusinessProfile.objects.filter(user=user).first()
-        kind, link = "Biznes profilingiz", "/kabinet/biznesim"
-    elif user.role == 'startupper':
-        profile = user.startups.first()
-        kind, link = "Startap anketangiz", "/kabinet/startapim"
-    else:
-        profile = None
+    # Rol cheklov emas: biznesi ham, startaplari ham bo'lishi mumkin — hammasi birga
+    business = BusinessProfile.objects.filter(user=user).first()
+    startups = list(user.startups.all())
+    profiles = ([business] if business else []) + startups
 
-    if profile is None:
+    if not profiles:
         return Response({'detail': "Bu foydalanuvchida tekshiriladigan anketa yo'q."},
                         status=status.HTTP_400_BAD_REQUEST)
 
-    profile.status = new_status
-    fields = ['status', 'updated_at']
-    if hasattr(profile, 'admin_note'):
-        profile.admin_note = note
-        fields.append('admin_note')
-    profile.save(update_fields=fields)
+    if business and startups:
+        kind, link = "Biznes va startap anketalaringiz", "/kabinet/startapim"
+    elif business:
+        kind, link = "Biznes profilingiz", "/kabinet/biznesim"
+    else:
+        kind, link = "Startap anketangiz", "/kabinet/startapim"
+
+    for profile in profiles:
+        profile.status = new_status
+        fields = ['status', 'updated_at']
+        if hasattr(profile, 'admin_note'):
+            profile.admin_note = note
+            fields.append('admin_note')
+        profile.save(update_fields=fields)
 
     approved = new_status == Status.APPROVED
     Notification.objects.create(
@@ -918,6 +930,29 @@ def _generate_password(length=12):
     """
     alphabet = 'abcdefghijkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789'
     return ''.join(secrets.choice(alphabet) for _ in range(length))
+
+
+#: «Hammasini o'chirish»da CASCADE bilan birga ketadigan, fayli bor yozuvlar
+CASCADE_FILES = {
+    'problems': lambda: [Solution.objects.all()],
+}
+
+
+@api_view(['DELETE'])
+@permission_classes([IsPanelAdmin])
+def panel_delete_all(request, resource):
+    """Bo'limdagi hamma yozuvni o'chiradi.
+
+    Tashabbuslar ovoz va izohlari bilan, muammolar takliflari bilan,
+    tadbirlar yozilishlari bilan birga ketadi (CASCADE). Fayllari ham o'chadi.
+    """
+    if resource not in MODELS:
+        raise Http404
+
+    model, _serializer = MODELS[resource]
+    related = CASCADE_FILES.get(resource, lambda: [])()
+    count, files = delete_with_files(model.objects.all(), *related)
+    return Response({'deleted': count, 'files': files})
 
 
 class PanelOrganizations(APIView):

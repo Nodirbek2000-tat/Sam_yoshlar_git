@@ -282,6 +282,9 @@ class MyPeer(APIView):
         if peer is None:
             extra.update(user=user, purpose=PeerPurpose.STUDY,
                          status=Status.APPROVED, is_published=True)
+        elif user.study_location != StudyLocation.ABROAD:
+            # «O'zbekistonda» tanlanganda yashirilgan edi — chet elga qaytdi
+            extra['is_published'] = True
 
         saved = serializer.save(**extra)
 
@@ -291,6 +294,68 @@ class MyPeer(APIView):
 
         return Response(s.PeerSetupSerializer(saved, context={'request': request}).data,
                         status=status.HTTP_201_CREATED if peer is None else status.HTTP_200_OK)
+
+
+#: Bitta foydalanuvchi nechta startap kirita oladi
+STARTUP_LIMIT = 3
+
+
+class MyStartups(APIView):
+    """Kabinetdagi «Startaplarim» — 3 tagacha startap.
+
+    Rol bu yerda cheklov emas: yosh ham, tadbirkor ham startap qo'sha oladi —
+    bir odam bir vaqtda bir nechta rolda bo'lishi mumkin.
+    """
+
+    permission_classes = [IsAuthenticated]
+    parser_classes = [JSONParser, MultiPartParser, FormParser]
+
+    def get(self, request):
+        startups = request.user.startups.order_by('created_at')
+        return Response({
+            'limit': STARTUP_LIMIT,
+            'results': s.StartupSetupSerializer(startups, many=True,
+                                                context={'request': request}).data,
+        })
+
+    def post(self, request):
+        user = request.user
+        if user.startups.count() >= STARTUP_LIMIT:
+            return Response({'detail': f"Ko'pi bilan {STARTUP_LIMIT} ta startap kiritish mumkin."},
+                            status=status.HTTP_400_BAD_REQUEST)
+
+        serializer = s.StartupSetupSerializer(data=request.data, context={'request': request})
+        serializer.is_valid(raise_exception=True)
+        saved = serializer.save(user=user, full_name=user.full_name, phone=user.phone,
+                                email=user.email, region=user.region)
+        return Response(s.StartupSetupSerializer(saved, context={'request': request}).data,
+                        status=status.HTTP_201_CREATED)
+
+
+class MyStartupDetail(APIView):
+    """Bitta startapni tahrirlash (`POST`, fayl bo'lgani uchun) yoki o'chirish."""
+
+    permission_classes = [IsAuthenticated]
+    parser_classes = [JSONParser, MultiPartParser, FormParser]
+
+    def post(self, request, pk):
+        startup = get_object_or_404(request.user.startups, pk=pk)
+        serializer = s.StartupSetupSerializer(startup, data=request.data, partial=True,
+                                              context={'request': request})
+        serializer.is_valid(raise_exception=True)
+
+        # Rad etilgan anketani tuzatib yuborsa — qayta ko'rib chiqiladi
+        extra = {'status': Status.PENDING} if startup.status == Status.REJECTED else {}
+        saved = serializer.save(**extra)
+        return Response(s.StartupSetupSerializer(saved, context={'request': request}).data)
+
+    def delete(self, request, pk):
+        startup = get_object_or_404(request.user.startups, pk=pk)
+        for file in (startup.logo, startup.pitch_file):
+            if file:
+                file.delete(save=False)
+        startup.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class MyBusiness(APIView):

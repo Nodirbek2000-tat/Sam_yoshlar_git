@@ -148,6 +148,11 @@ class Me(RetrieveUpdateAPIView):
         response = super().update(request, *args, **kwargs)
         user = self.get_object()
 
+        # «O'zbekistonda o'qiyman» — chet eldagi tengdoshlar ro'yxatidan yashiriladi
+        if user.study_location == 'uz':
+            from apps.abroad.models import Peer
+            Peer.objects.filter(user=user, is_published=True).update(is_published=False)
+
         # Rol tanlangach hisob to'liq hisoblanadi
         if not user.is_verified:
             user.is_verified = True

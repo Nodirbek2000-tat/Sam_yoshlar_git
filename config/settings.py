@@ -149,6 +149,11 @@ AUTH_PASSWORD_VALIDATORS = [
 TELEGRAM_BOT_USERNAME = env('TELEGRAM_BOT_USERNAME', 'yoshtadbirkorlarbot')
 TELEGRAM_API_SECRET = env('TELEGRAM_API_SECRET', '')
 
+# Tashqi manzil (https://mentadbirkor.uz). API rasm havolalarini shu bilan
+# yasaydi — sayt Django'ga ichki `web:8000` orqali murojaat qilsa ham
+# brauzerga to'g'ri manzil boradi. Lokalda bo'sh qoladi.
+SITE_URL = env('SITE_URL', '').rstrip('/')
+
 
 # Internationalization
 
@@ -230,10 +235,12 @@ if DEBUG:
     REST_FRAMEWORK['DEFAULT_RENDERER_CLASSES'].append(
         'rest_framework.renderers.BrowsableAPIRenderer')
 
+# Kirish 24 soat amal qiladi, keyin qayta kirish so'raladi. Token
+# yangilanganda muddat uzaymasin — shuning uchun aylantirish o'chiq.
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(hours=12),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=30),
-    'ROTATE_REFRESH_TOKENS': True,
+    'ACCESS_TOKEN_LIFETIME': timedelta(hours=24),
+    'REFRESH_TOKEN_LIFETIME': timedelta(hours=24),
+    'ROTATE_REFRESH_TOKENS': False,
     'BLACKLIST_AFTER_ROTATION': False,
     'UPDATE_LAST_LOGIN': True,
     'AUTH_HEADER_TYPES': ('Bearer',),
