@@ -312,7 +312,8 @@ class InitiativeCommentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = InitiativeComment
-        fields = ['id', 'author_name', 'author_label', 'initials', 'text', 'created_at']
+        fields = ['id', 'author_id', 'author_name', 'author_label', 'initials', 'text',
+                  'created_at']
         read_only_fields = ['id', 'author_label', 'initials', 'created_at']
 
 
@@ -382,7 +383,8 @@ class SolutionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Solution
-        fields = ['id', 'author_name', 'title', 'description', 'technologies',
+        # `author_id` — profilga havola uchun (muallif ro'yxatdan o'tgan bo'lsa)
+        fields = ['id', 'author_id', 'author_name', 'title', 'description', 'technologies',
                   'expected_result', 'like_count', 'liked', 'created_at']
         # Muallif nomi kirgan foydalanuvchidan olinadi, so'rovdan emas
         read_only_fields = ['id', 'author_name', 'like_count', 'created_at']

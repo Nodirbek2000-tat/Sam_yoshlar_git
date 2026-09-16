@@ -69,6 +69,7 @@ class Peer(TimeStampedModel):
         verbose_name = "Chet eldagi tengdosh"
         verbose_name_plural = "Chet eldagi tengdoshlar"
         ordering = ['-created_at']
+        indexes = [models.Index(fields=['is_published', 'status', '-created_at'])]
 
     def __str__(self):
         return f"{self.full_name} — {self.get_country_display()}"

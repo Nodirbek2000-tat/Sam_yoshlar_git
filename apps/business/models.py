@@ -63,6 +63,7 @@ class BusinessProfile(TimeStampedModel):
         verbose_name = "Biznes profil"
         verbose_name_plural = "Biznes profillar"
         ordering = ['-created_at']
+        indexes = [models.Index(fields=['is_public', 'status', '-created_at'])]
 
     def __str__(self):
         return self.name

@@ -3,6 +3,7 @@ sam-yosh tadbirkor.uz — Django settings.
 """
 
 import os
+import sys
 from datetime import timedelta
 from pathlib import Path
 
@@ -210,6 +211,24 @@ if not DEBUG:
 # ---------------------------------------------------------------------------
 # REST API (Next.js frontend uchun)
 # ---------------------------------------------------------------------------
+
+# Kesh. Redis bo'lsa — hamma worker uchun umumiy (server); bo'lmasa
+# xotirada (lokal ishlab chiqish). Og'ir so'rovlar shu yerda saqlanadi.
+REDIS_URL = env('REDIS_URL', '')
+
+#: Testlar bir jarayonda ketma-ket ishlaydi — kesh ularni bir-biriga aralashtirmasin
+RUNNING_TESTS = 'test' in sys.argv
+
+CACHES = {
+    'default': {'BACKEND': 'django.core.cache.backends.dummy.DummyCache'} if RUNNING_TESTS else {
+        'BACKEND': 'django.core.cache.backends.redis.RedisCache',
+        'LOCATION': REDIS_URL,
+        'TIMEOUT': 300,
+    } if REDIS_URL else {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'samyosh-local',
+    }
+}
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [

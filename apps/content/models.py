@@ -63,6 +63,7 @@ class News(TimeStampedModel):
         verbose_name = "Yangilik"
         verbose_name_plural = "Yangiliklar"
         ordering = ['-published_at']
+        indexes = [models.Index(fields=['is_published', '-published_at'])]
 
     def __str__(self):
         return self.title
@@ -98,6 +99,7 @@ class Event(TimeStampedModel):
         verbose_name = "Tadbir"
         verbose_name_plural = "Tadbirlar"
         ordering = ['starts_at']
+        indexes = [models.Index(fields=['is_published', 'starts_at'])]
 
     def __str__(self):
         return self.title
@@ -171,6 +173,7 @@ class Announcement(TimeStampedModel):
         verbose_name = "E'lon"
         verbose_name_plural = "E'lonlar"
         ordering = ['-posted_at']
+        indexes = [models.Index(fields=['is_active', '-posted_at'])]
 
     def __str__(self):
         return self.title

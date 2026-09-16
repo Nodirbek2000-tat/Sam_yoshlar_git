@@ -74,6 +74,7 @@ class Startup(TimeStampedModel):
         verbose_name = "StartUp"
         verbose_name_plural = "StartUplar"
         ordering = ['-created_at']
+        indexes = [models.Index(fields=['is_public', 'status', '-created_at'])]
 
     def __str__(self):
         return f"{self.name} — {self.full_name}"

@@ -5,6 +5,7 @@ tashabbus bildirish uchun JWT bilan kirish talab qilinadi.
 """
 from django.db.models import Count, F, Q, Sum, Value
 from django.db.models.functions import Greatest
+from django.core.cache import cache
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from rest_framework import generics, status
@@ -75,7 +76,7 @@ class NewsList(generics.ListAPIView):
     permission_classes = [AllowAny]
 
     def get_queryset(self):
-        queryset = News.objects.published()
+        queryset = News.objects.published().select_related('author')
         category = self.request.query_params.get('kategoriya')
         if category:
             queryset = queryset.filter(category=category)
@@ -182,6 +183,11 @@ class DirectionList(APIView):
     permission_classes = [AllowAny]
 
     def get(self, request):
+        # Statistika har ovozdan keyin o'zgaradi, lekin bir daqiqa kechikish sezilmaydi
+        cached = cache.get('directions:v1')
+        if cached is not None:
+            return Response(cached)
+
         rows = (Initiative.objects.filter(is_published=True)
                 .values('direction')
                 .annotate(votes=Sum('vote_count'), ideas=Count('id')))
@@ -193,6 +199,8 @@ class DirectionList(APIView):
             data.append({**item,
                          'votes': row.get('votes') or 0,
                          'ideas': row.get('ideas') or 0})
+
+        cache.set('directions:v1', data, 60)
         return Response(data)
 
 
@@ -508,6 +516,68 @@ def solution_like(request, pk):
 # Chet eldagi tengdoshlar, startaplar
 # --------------------------------------------------------------------------
 
+class PublicProfile(APIView):
+    """Ommaviy profil: kim ekani, nimalari bor va qanday bog'lanish mumkin.
+
+    Tashkilot yoshning taklifini o'qib, ismiga bosadi va shu sahifaga tushadi.
+    Aloqa ma'lumoti odamning o'zi ommaga bergan anketalaridan olinadi.
+    """
+
+    permission_classes = [AllowAny]
+
+    def get(self, request, pk):
+        from django.contrib.auth import get_user_model
+
+        user = get_object_or_404(
+            get_user_model().objects.filter(is_active=True, is_superuser=False), pk=pk)
+        context = {'request': request}
+
+        business = public_businesses().filter(user=user).first()
+        startups = public_startups().filter(user=user)
+        peer = (Peer.objects.filter(user=user, is_published=True, status=Status.APPROVED)
+                .select_related('user').first())
+
+        roles = []
+        if user.role == Role.ORGANIZATION:
+            roles.append("Tashkilot")
+        else:
+            if user.role == Role.YOUTH or user.study_location:
+                roles.append("Yosh")
+            if business:
+                roles.append("Tadbirkor")
+            if startups:
+                roles.append("Startupper")
+        if not roles:
+            roles.append(user.get_role_display())
+
+        return Response({
+            'id': user.pk,
+            'full_name': user.full_name,
+            'initials': user.initials,
+            'avatar': s.absolute(request, user.avatar),
+            'role': user.role,
+            'role_display': user.get_role_display(),
+            'roles': roles,
+            'region_display': user.get_region_display(),
+            'district': user.district,
+            'age': user.age,
+            'study_location': user.study_location,
+            'study_location_display': user.get_study_location_display(),
+            'bio': user.bio,
+            'telegram_username': user.telegram_username,
+            'joined': user.date_joined,
+            'business': (s.PublicBusinessSerializer(business, context=context).data
+                         if business else None),
+            'startups': s.PublicStartupSerializer(startups, many=True, context=context).data,
+            'peer': s.PeerSerializer(peer, context=context).data if peer else None,
+            'stats': {
+                'initiatives': Initiative.objects.filter(author=user, is_published=True).count(),
+                'solutions': Solution.objects.filter(author=user).count(),
+                'votes': user.initiative_votes.count(),
+            },
+        })
+
+
 def public_user_count():
     """Saytdagi yoshlar soni: admin, tashkilot va yosh chegarasidan o'tganlar sanalmaydi."""
     from django.contrib.auth import get_user_model
@@ -617,7 +687,26 @@ class Overview(APIView):
 
     permission_classes = [AllowAny]
 
+    #: Mehmonlar uchun javob shu muddatga keshlanadi (soniya)
+    CACHE_SECONDS = 60
+    CACHE_KEY = 'overview:v1'
+
     def get(self, request):
+        # Kirgan odamning javobida «ovoz berganmi» belgisi bor — u keshlanmaydi
+        guest = not request.user.is_authenticated
+
+        if guest:
+            cached = cache.get(self.CACHE_KEY)
+            if cached is not None:
+                return Response(cached)
+
+        payload = self._payload(request)
+
+        if guest:
+            cache.set(self.CACHE_KEY, payload, self.CACHE_SECONDS)
+        return Response(payload)
+
+    def _payload(self, request):
         now = timezone.now()
         context = {'request': request}
 
@@ -625,7 +714,7 @@ class Overview(APIView):
                    .annotate(comment_total=Count('comments', distinct=True))
                    .order_by('-vote_count')[:5])
 
-        return Response({
+        return {
             'stats': {
                 'initiatives': Initiative.objects.filter(is_published=True).count(),
                 'votes': Initiative.objects.aggregate(t=Sum('vote_count'))['t'] or 0,
@@ -662,7 +751,7 @@ class Overview(APIView):
                 Problem.objects.filter(is_published=True).select_related('organization')
                 .annotate(solution_total=Count('solutions')).order_by('-created_at')[:3],
                 many=True, context=context).data,
-        })
+        }
 
 
 class ReferenceData(APIView):
@@ -671,6 +760,10 @@ class ReferenceData(APIView):
     permission_classes = [AllowAny]
 
     def get(self, request):
+        cached = cache.get('reference:v1')
+        if cached is not None:
+            return Response(cached)
+
         from apps.abroad.countries import COUNTRIES
         from apps.abroad.models import PeerPurpose
         from apps.accounts.models import Role
@@ -680,7 +773,7 @@ class ReferenceData(APIView):
         def choices(source):
             return [{'value': value, 'label': label} for value, label in source]
 
-        return Response({
+        data = {
             'regions': choices(Region.choices),
             # Tashkilot va admin hisobini biz o'zimiz beramiz — ro'yxatda ko'rinmaydi
             'roles': [row for row in choices(Role.choices)
@@ -705,4 +798,8 @@ class ReferenceData(APIView):
             'peer_purposes': choices(PeerPurpose.choices),
             'countries': [{'value': code, 'label': name, 'short': short, 'color': color}
                           for code, name, short, color in COUNTRIES],
-        })
+        }
+
+        # Ro'yxatlar kodda yozilgan — bir soat keshda tursa bo'ladi
+        cache.set('reference:v1', data, 3600)
+        return Response(data)

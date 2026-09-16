@@ -29,9 +29,17 @@ RUN chmod +x /app/docker/entrypoint.sh \
 EXPOSE 8000
 
 ENTRYPOINT ["/app/docker/entrypoint.sh"]
-CMD ["gunicorn", "config.wsgi:application", \
-     "--bind", "0.0.0.0:8000", \
-     "--workers", "3", \
-     "--timeout", "120", \
-     "--access-logfile", "-", \
-     "--error-logfile", "-"]
+# Worker soni yadroga qarab: (yadro × 2) + 1. 4 yadroli serverda — 9 ta.
+# Har biri 2 ta ip bilan: bir vaqtda ~18 so'rov. `--max-requests` — worker
+# vaqti-vaqti bilan yangilanadi, xotira sekin o'sib ketmasin.
+CMD ["sh", "-c", "gunicorn config.wsgi:application \
+     --bind 0.0.0.0:8000 \
+     --worker-class gthread \
+     --workers ${GUNICORN_WORKERS:-9} \
+     --threads ${GUNICORN_THREADS:-2} \
+     --timeout 120 \
+     --graceful-timeout 30 \
+     --max-requests 1200 \
+     --max-requests-jitter 200 \
+     --access-logfile - \
+     --error-logfile -"]

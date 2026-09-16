@@ -8,7 +8,7 @@ from django.urls import reverse
 
 from apps.api.auth_views import tokens_for
 from apps.business.models import BusinessProfile, GalleryImage
-from apps.content.models import News
+from apps.content.models import Announcement, News
 from apps.core.constants import Status
 from apps.initiatives.models import (Initiative, InitiativeVote, Organization,
                                      Problem, Solution, SolutionLike)
@@ -1665,3 +1665,118 @@ class PanelDeleteAllTests(TestCase):
         response = self.client.delete('/api/v1/panel/users/hammasi/', **self.auth)
         self.assertEqual(response.status_code, 404)
         self.assertTrue(User.objects.filter(pk=self.admin.pk).exists())
+
+
+@override_settings(MEDIA_ROOT=tempfile.mkdtemp())
+class PublicProfileTests(TestCase):
+    """Taklif yozgan yoshning ismiga bosilganda ochiladigan profil."""
+
+    def setUp(self):
+        self.user = User.objects.create_user(
+            email='yosh@test.uz', full_name="Aziz Rahimov", role='yosh', is_verified=True,
+            study_location='uz', age=20, region='samarqand', telegram_username='aziz')
+
+    def test_profile_shows_roles_and_public_profiles(self):
+        from apps.startups.models import Startup, StartupSphere, StartupStage
+        startup = Startup.objects.create(
+            user=self.user, name="Tilchi AI", sphere=StartupSphere.values[0],
+            stage=StartupStage.values[0], about="O'zbek tili uchun model.",
+            status=Status.APPROVED, is_public=True, full_name=self.user.full_name)
+        startup.logo.save('logo.png', _png(), save=True)
+
+        data = self.client.get(f'/api/v1/foydalanuvchilar/{self.user.pk}/').json()
+        self.assertEqual(data['full_name'], "Aziz Rahimov")
+        self.assertEqual(data['roles'], ["Yosh", "Startupper"])
+        self.assertEqual(data['telegram_username'], 'aziz')
+        self.assertEqual(len(data['startups']), 1)
+        self.assertIsNone(data['business'])
+        self.assertEqual(data['stats']['initiatives'], 0)
+
+    def test_superuser_profile_is_hidden(self):
+        admin = User.objects.create_superuser(email='bosh2@test.uz', password='x', full_name="Bosh")
+        self.assertEqual(
+            self.client.get(f'/api/v1/foydalanuvchilar/{admin.pk}/').status_code, 404)
+
+    def test_solution_carries_author_id(self):
+        organization = Organization.objects.create(name="AgroTech", sphere='qishloq_xojaligi',
+                                                   contact_person="Ali", phone='+998901112233')
+        problem = Problem.objects.create(organization=organization, category='main',
+                                         description="Sovuq ombor yo'q, hosil nobud bo'lyapti.")
+        Solution.objects.create(problem=problem, author=self.user, author_name="Aziz Rahimov",
+                                title="Quyoshli ombor", description="Quyosh panelida ishlaydi.",
+                                status=Status.APPROVED)
+
+        data = self.client.get(f'/api/v1/problems/{problem.pk}/').json()
+        self.assertEqual(data['solutions'][0]['author_id'], self.user.pk)
+
+
+class AnnouncementImportTests(TestCase):
+    """E'lonlarni JSON'dan yuklash."""
+
+    def setUp(self):
+        self.admin = User.objects.create_superuser(email='elon@test.uz', password='x', full_name="Admin")
+        self.auth = {'HTTP_AUTHORIZATION': f"Bearer {tokens_for(self.admin)['access']}"}
+
+    def _import(self, payload):
+        return self.client.post('/api/v1/panel/import/announcements/', payload,
+                                content_type='application/json', **self.auth)
+
+    def test_import_creates_and_skips_duplicates(self):
+        payload = {'announcements': [
+            {'title': "Grant e'loni", 'type': 'grant', 'body': "# Sarlavha\n**qalin** matn",
+             'posted_at': '2026-09-01', 'deadline': '2026-10-01'},
+            {'title': "Matnsiz", 'type': 'grant'},
+        ]}
+        response = self._import(payload)
+        self.assertEqual(response.status_code, 200, response.content)
+        self.assertEqual(response.json()['created'], 1)
+        self.assertEqual(len(response.json()['problems']), 1)
+
+        item = Announcement.objects.get(title="Grant e'loni")
+        self.assertEqual(str(item.deadline), '2026-10-01')
+        self.assertIn('**qalin**', item.body)
+
+        # Ikkinchi marta yuklash xavfsiz
+        self.assertEqual(self._import(payload).json()['skipped'], 1)
+
+    def test_wrong_file_is_explained(self):
+        response = self._import({'initiatives': []})
+        self.assertEqual(response.status_code, 400)
+        self.assertIn('tashabbus', response.json()['detail'].lower())
+
+
+@override_settings(CACHES={'default': {
+    'BACKEND': 'django.core.cache.backends.locmem.LocMemCache', 'LOCATION': 'sinov-kesh'}})
+class OverviewCacheTests(TestCase):
+    """Bosh sahifa javobi mehmonlar uchun keshlanadi — bazaga har safar borilmaydi."""
+
+    def setUp(self):
+        cache.clear()
+        Initiative.objects.create(direction='eco', kind='idea', title="Birinchi",
+                                  description="X", author_name="A")
+
+    def _count(self):
+        return self.client.get('/api/v1/overview/').json()['stats']['initiatives']
+
+    def test_guest_gets_cached_answer(self):
+        first = self._count()
+        Initiative.objects.create(direction='eco', kind='idea', title="Ikkinchi",
+                                  description="X", author_name="B")
+
+        # Kesh muddati tugamagan — eski javob qaytadi
+        self.assertEqual(self._count(), first)
+
+        cache.clear()
+        self.assertEqual(self._count(), first + 1)
+
+    def test_authenticated_answer_is_not_cached(self):
+        user = User.objects.create_user(email='kesh@test.uz', full_name="Kesh")
+        auth = {'HTTP_AUTHORIZATION': f"Bearer {tokens_for(user)['access']}"}
+
+        self.client.get('/api/v1/overview/')  # mehmon javobi keshga tushdi
+        Initiative.objects.create(direction='eco', kind='idea', title="Uchinchi",
+                                  description="X", author_name="C")
+
+        # Kirgan odam keshdan emas, bazadan oladi: setUp dagi 1 + yangisi
+        data = self.client.get('/api/v1/overview/', **auth).json()
+        self.assertEqual(data['stats']['initiatives'], 2)

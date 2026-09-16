@@ -106,6 +106,93 @@ class User(AbstractBaseUser, PermissionsMixin):
         return self.role == Role.ADMIN or self.is_superuser
 
 
+class RequiredChannel(models.Model):
+    """Majburiy obuna kanali yoki guruhi.
+
+    Bot kod berishdan oldin odam shu kanallarga obuna bo'lganini tekshiradi.
+    Kanal qo'shilishidan oldin bot o'sha yerda admin bo'lishi shart —
+    aks holda a'zolikni tekshira olmaydi.
+    """
+
+    chat_id = models.BigIntegerField("Chat ID", unique=True)
+    username = models.CharField("Username (@ siz)", max_length=64, blank=True)
+    title = models.CharField("Nomi", max_length=200)
+    invite_link = models.CharField("Havola", max_length=300, blank=True)
+    is_active = models.BooleanField("Majburiy", default=True)
+    added_by = models.BigIntegerField("Qo'shgan admin", null=True, blank=True)
+    created_at = models.DateTimeField("Qo'shilgan", default=timezone.now)
+
+    class Meta:
+        verbose_name = "Majburiy kanal"
+        verbose_name_plural = "Majburiy kanallar"
+        ordering = ['created_at']
+
+    def __str__(self):
+        return self.title
+
+    @property
+    def link(self):
+        if self.invite_link:
+            return self.invite_link
+        return f"https://t.me/{self.username}" if self.username else ''
+
+    @property
+    def joined_count(self):
+        """Bot orqali shu kanalga qo'shilgan odamlar soni."""
+        return self.joins.count()
+
+
+class ChannelJoin(models.Model):
+    """Kim qaysi kanalga bot talabi bilan qo'shilgani — statistika uchun."""
+
+    channel = models.ForeignKey(RequiredChannel, verbose_name="Kanal",
+                                on_delete=models.CASCADE, related_name='joins')
+    telegram_id = models.BigIntegerField("Telegram ID", db_index=True)
+    created_at = models.DateTimeField("Qo'shilgan", default=timezone.now)
+
+    class Meta:
+        verbose_name = "Kanalga qo'shilish"
+        verbose_name_plural = "Kanalga qo'shilishlar"
+        unique_together = [('channel', 'telegram_id')]
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"{self.telegram_id} → {self.channel.title}"
+
+
+class Broadcast(models.Model):
+    """Bot orqali yuborilgan reklama va uning natijasi."""
+
+    class Kind(models.TextChoices):
+        TEXT = 'text', "Matn"
+        PHOTO = 'photo', "Rasm"
+        VIDEO = 'video', "Video"
+        DOCUMENT = 'document', "Fayl"
+
+    text = models.TextField("Matn", blank=True)
+    kind = models.CharField("Turi", max_length=20, choices=Kind.choices, default=Kind.TEXT)
+    file_id = models.CharField("Telegram fayl id", max_length=300, blank=True)
+    #: [{"label": "Saytga o'tish", "url": "https://..."}]
+    buttons = models.JSONField("Tugmalar", default=list, blank=True)
+
+    total = models.PositiveIntegerField("Jami qabul qiluvchi", default=0)
+    sent = models.PositiveIntegerField("Yetkazildi", default=0)
+    failed = models.PositiveIntegerField("Yetmadi", default=0)
+    blocked = models.PositiveIntegerField("Botni bloklaganlar", default=0)
+
+    created_by = models.BigIntegerField("Yuborgan admin", null=True, blank=True)
+    created_at = models.DateTimeField("Boshlangan", default=timezone.now)
+    finished_at = models.DateTimeField("Tugagan", null=True, blank=True)
+
+    class Meta:
+        verbose_name = "Reklama"
+        verbose_name_plural = "Reklamalar"
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"{self.get_kind_display()} — {self.sent}/{self.total}"
+
+
 class TelegramAuthCode(models.Model):
     """Bot bergan bir martalik kod.
 

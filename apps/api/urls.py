@@ -72,6 +72,7 @@ urlpatterns = [
     path('solutions/<int:pk>/like/', views.solution_like, name='solution_like'),
 
     # --- Chet eldagi tengdoshlar ---
+    path('foydalanuvchilar/<int:pk>/', views.PublicProfile.as_view(), name='public_profile'),
     path('peers/', views.PeerList.as_view(), name='peer_list'),
     path('peers/<int:pk>/', views.PeerDetail.as_view(), name='peer_detail'),
 
@@ -99,6 +100,8 @@ urlpatterns = [
          name='panel_news_detail'),
     path('panel/import/initiatives/', admin_views.PanelImport.as_view(),
          name='panel_import'),
+    path('panel/import/announcements/', admin_views.PanelImportAnnouncements.as_view(),
+         name='panel_import_announcements'),
     path('panel/import/organizations/', admin_views.PanelImportOrganizations.as_view(),
          name='panel_import_organizations'),
     path('panel/events/', admin_views.PanelEvents.as_view(), name='panel_events'),

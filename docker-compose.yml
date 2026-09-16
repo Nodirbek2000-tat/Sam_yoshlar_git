@@ -13,6 +13,14 @@ services:
     image: postgres:16-alpine
     container_name: samyosh_db
     restart: unless-stopped
+    # Kattaroq server uchun: keshga ko'proq joy va ulanishlar zaxirasi
+    command: >
+      postgres
+      -c max_connections=200
+      -c shared_buffers=2GB
+      -c effective_cache_size=6GB
+      -c work_mem=16MB
+      -c maintenance_work_mem=512MB
     environment:
       POSTGRES_DB: ${DB_NAME:-samyosh}
       POSTGRES_USER: ${DB_USER:-samyosh}
@@ -36,14 +44,29 @@ services:
       DB_PORT: 5432
       USE_SQLITE: 0
       USE_WHITENOISE: 1
+      REDIS_URL: redis://redis:6379/1
+      # 4 yadro uchun 9 worker × 2 ip. Serverni kattalashtirsangiz shuni oshiring.
+      GUNICORN_WORKERS: ${GUNICORN_WORKERS:-9}
+      GUNICORN_THREADS: ${GUNICORN_THREADS:-2}
     volumes:
       - static_files:/app/staticfiles
       - media_files:/app/media
     depends_on:
       db:
         condition: service_healthy
+      redis:
+        condition: service_started
     expose:
       - 8000
+
+  redis:
+    image: redis:7-alpine
+    container_name: samyosh_redis
+    restart: unless-stopped
+    # Kesh — ma'lumot emas: joy tugasa eng eski yozuvlar o'chadi
+    command: redis-server --maxmemory 512mb --maxmemory-policy allkeys-lru --save ""
+    expose:
+      - 6379
 
   front:
     build:

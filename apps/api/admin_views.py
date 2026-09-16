@@ -24,7 +24,7 @@ from rest_framework.views import APIView
 from apps.abroad.models import Peer
 from apps.business.models import BusinessProfile
 from apps.cabinet.models import Appeal, Notification, Suggestion
-from apps.content.models import Announcement, Event, News
+from apps.content.models import Announcement, AnnouncementType, Event, News
 from apps.core.cleanup import delete_with_files
 from apps.core.constants import Region, Status
 from apps.initiatives.directions import DIRECTIONS
@@ -619,6 +619,76 @@ class PanelImport(APIView):
                 return None
 
         return request.data if isinstance(request.data, (dict, list)) else None
+
+
+class PanelImportAnnouncements(APIView):
+    """E'lonlarni JSON'dan yuklash.
+
+    Kutilayotgan shakl:
+
+        {"announcements": [
+            {"title": "...", "type": "grant", "body": "# Sarlavha\\n**qalin**",
+             "posted_at": "2026-09-01", "deadline": "2026-10-01", "is_active": true}
+        ]}
+
+    `body` oddiy matn bo'lishi ham mumkin. Belgilar bilan yozilsa sayt uni
+    chiroyli qilib chiqaradi: `#` sarlavha, `**qalin**`, `[matn](havola)`,
+    `>>` o'ngga, `-` ro'yxat, `---` ajratuvchi chiziq.
+
+    Shu sarlavhali e'lon bor bo'lsa — o'tkazib yuboriladi.
+    """
+
+    permission_classes = [IsPanelAdmin]
+    parser_classes = [JSONParser, MultiPartParser, FormParser]
+
+    def post(self, request):
+        payload = PanelImport._payload(request)
+        if payload is None:
+            return Response({'detail': "JSON o'qib bo'lmadi."},
+                            status=status.HTTP_400_BAD_REQUEST)
+
+        rows = payload.get('announcements') if isinstance(payload, dict) else payload
+        if not isinstance(rows, list):
+            return Response({'detail': wrong_file_message(payload, 'announcements')},
+                            status=status.HTTP_400_BAD_REQUEST)
+
+        valid_types = set(AnnouncementType.values)
+        created = skipped = 0
+        problems = []
+
+        for index, row in enumerate(rows, start=1):
+            if not isinstance(row, dict):
+                problems.append(f"{index}-yozuv: obyekt emas")
+                continue
+
+            title = (row.get('title') or '').strip()
+            body = (row.get('body') or '').strip()
+            if not title or not body:
+                problems.append(f"{index}-yozuv: sarlavha yoki matn yo'q")
+                continue
+
+            kind = row.get('type') or AnnouncementType.OTHER
+            if kind not in valid_types:
+                problems.append(f"{index}-yozuv: «{kind}» turi yo'q")
+                continue
+            if Announcement.objects.filter(title=title).exists():
+                skipped += 1
+                continue
+
+            posted = parse_datetime_loose(row.get('posted_at'))
+            deadline = parse_datetime_loose(row.get('deadline'))
+
+            Announcement.objects.create(
+                title=title[:250],
+                type=kind,
+                body=body,
+                posted_at=posted.date() if posted else timezone.localdate(),
+                deadline=deadline.date() if deadline else None,
+                is_active=bool(row.get('is_active', True)),
+            )
+            created += 1
+
+        return Response({'created': created, 'skipped': skipped, 'problems': problems[:20]})
 
 
 class PanelImportOrganizations(APIView):
