@@ -1,4 +1,4 @@
-# Serverga qo'yish — mentadbirkor.uz
+# Serverga qo'yish — samarqandyoshlari.uz
 
 Docker + nginx + PostgreSQL + Next.js + avtomatik SSL.
 
@@ -58,11 +58,11 @@ Docker bo'lishi kerak:
 curl -fsSL https://get.docker.com | sh
 ```
 
-DNS: **mentadbirkor.uz** va **www.mentadbirkor.uz** server IP manziliga `A` yozuv
+DNS: **samarqandyoshlari.uz** va **www.samarqandyoshlari.uz** server IP manziliga `A` yozuv
 bilan yo'naltirilgan bo'lsin. Bu shart — certbot shuni tekshiradi.
 
 ```bash
-dig +short mentadbirkor.uz @8.8.8.8
+dig +short samarqandyoshlari.uz @8.8.8.8
 ```
 
 ## 2. Sozlash
@@ -98,7 +98,7 @@ Skript o'zi:
 3. To'liq HTTPS konfiguratsiyaga o'tadi
 4. Hamma xizmatni ishga tushiradi
 
-Tayyor: **https://mentadbirkor.uz**
+Tayyor: **https://samarqandyoshlari.uz**
 
 ## 4. Admin va boshlang'ich ma'lumot
 
@@ -120,7 +120,7 @@ docker compose exec web python manage.py seed_initiatives
 ```
 BOT_TOKEN=BotFather bergan token
 ADMINS=telegram_id
-SITE_URL=https://mentadbirkor.uz
+SITE_URL=https://samarqandyoshlari.uz
 API_SECRET=<Django .env dagi TELEGRAM_API_SECRET bilan bir xil>
 ```
 

@@ -91,6 +91,7 @@ urlpatterns = [
          name='panel_moderate_profile'),
     path('panel/users/<int:pk>/admin/', admin_views.toggle_admin, name='panel_toggle_admin'),
     path('panel/initiatives/<int:pk>/votes/', admin_views.adjust_votes, name='panel_votes'),
+    path('panel/bot/', admin_views.PanelBot.as_view(), name='panel_bot'),
     path('panel/organizations/', admin_views.PanelOrganizations.as_view(),
          name='panel_organizations'),
     path('panel/organizations/<int:pk>/parol/', admin_views.reset_organization_password,

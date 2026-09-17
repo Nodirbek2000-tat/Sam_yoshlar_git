@@ -127,13 +127,13 @@ class PasswordLoginTests(TestCase):
         # Sozlama almashgach eski hisoblagichni tozalaymiz
         cache.clear()
         self.org = User.objects.create_user(
-            email='tashkilot@mentadbirkor.uz', password='Parol2026!',
+            email='tashkilot@samarqandyoshlari.uz', password='Parol2026!',
             full_name="Tashkilot", role='organization', is_verified=True,
         )
 
     def test_login_with_password(self):
         r = self.client.post('/api/v1/auth/login/',
-                             {'email': 'tashkilot@mentadbirkor.uz',
+                             {'email': 'tashkilot@samarqandyoshlari.uz',
                               'password': 'Parol2026!'})
         self.assertEqual(r.status_code, 200, r.content)
         body = r.json()
@@ -143,37 +143,37 @@ class PasswordLoginTests(TestCase):
 
     def test_email_is_case_insensitive(self):
         r = self.client.post('/api/v1/auth/login/',
-                             {'email': 'Tashkilot@Mentadbirkor.UZ',
+                             {'email': 'Tashkilot@Samarqandyoshlari.UZ',
                               'password': 'Parol2026!'})
         self.assertEqual(r.status_code, 200)
 
     def test_wrong_password(self):
         r = self.client.post('/api/v1/auth/login/',
-                             {'email': 'tashkilot@mentadbirkor.uz',
+                             {'email': 'tashkilot@samarqandyoshlari.uz',
                               'password': 'xato'})
         self.assertEqual(r.status_code, 401)
 
     def test_unknown_user_same_message(self):
         """Hisob bor-yo'qligini oshkor qilmaymiz."""
         unknown = self.client.post('/api/v1/auth/login/',
-                                   {'email': 'yoq@mentadbirkor.uz', 'password': 'x'})
+                                   {'email': 'yoq@samarqandyoshlari.uz', 'password': 'x'})
         wrong = self.client.post('/api/v1/auth/login/',
-                                 {'email': 'tashkilot@mentadbirkor.uz', 'password': 'x'})
+                                 {'email': 'tashkilot@samarqandyoshlari.uz', 'password': 'x'})
         self.assertEqual(unknown.status_code, 401)
         self.assertEqual(unknown.json()['detail'], wrong.json()['detail'])
 
     def test_telegram_user_cannot_use_password_login(self):
         """Telegram orqali kelgan hisobda parol yo'q — bu yo'l yopiq."""
-        tg = User.objects.create_user(email='tg@mentadbirkor.uz', full_name="TG")
+        tg = User.objects.create_user(email='tg@samarqandyoshlari.uz', full_name="TG")
         tg.set_unusable_password()
         tg.save()
 
         r = self.client.post('/api/v1/auth/login/',
-                             {'email': 'tg@mentadbirkor.uz', 'password': ''})
+                             {'email': 'tg@samarqandyoshlari.uz', 'password': ''})
         self.assertEqual(r.status_code, 400)
 
         r2 = self.client.post('/api/v1/auth/login/',
-                              {'email': 'tg@mentadbirkor.uz', 'password': 'nimadir'})
+                              {'email': 'tg@samarqandyoshlari.uz', 'password': 'nimadir'})
         self.assertEqual(r2.status_code, 401)
 
     def test_empty_fields(self):
@@ -182,12 +182,12 @@ class PasswordLoginTests(TestCase):
 
     def test_token_works_after_password_login(self):
         body = self.client.post('/api/v1/auth/login/',
-                                {'email': 'tashkilot@mentadbirkor.uz',
+                                {'email': 'tashkilot@samarqandyoshlari.uz',
                                  'password': 'Parol2026!'}).json()
         me = self.client.get('/api/v1/auth/me/',
                              HTTP_AUTHORIZATION='Bearer ' + body['access'])
         self.assertEqual(me.status_code, 200)
-        self.assertEqual(me.json()['email'], 'tashkilot@mentadbirkor.uz')
+        self.assertEqual(me.json()['email'], 'tashkilot@samarqandyoshlari.uz')
 
 
 class PanelApiTests(TestCase):
@@ -195,9 +195,9 @@ class PanelApiTests(TestCase):
 
     def setUp(self):
         self.admin = User.objects.create_superuser(
-            email='bosh@mentadbirkor.uz', password='Parol2026!', full_name="Bosh Admin")
+            email='bosh@samarqandyoshlari.uz', password='Parol2026!', full_name="Bosh Admin")
         self.plain = User.objects.create_user(
-            email='oddiy@mentadbirkor.uz', password='Parol2026!', full_name="Oddiy")
+            email='oddiy@samarqandyoshlari.uz', password='Parol2026!', full_name="Oddiy")
         self.idea = Initiative.objects.create(
             direction='eco', kind='idea', title="G'oya", description="X",
             author_name="A", vote_count=10)
@@ -263,7 +263,7 @@ class PanelApiTests(TestCase):
         self.client.post(f'/api/v1/panel/initiatives/{self.idea.pk}/votes/',
                          {'exact': 100}, **auth)
 
-        voter = User.objects.create_user(email='ovoz@mentadbirkor.uz',
+        voter = User.objects.create_user(email='ovoz@samarqandyoshlari.uz',
                                          password='Parol2026!', full_name="Ovoz")
         vote_auth = self._auth(voter)
         result = self.client.post(f'/api/v1/initiatives/{self.idea.pk}/vote/', **vote_auth)
@@ -294,7 +294,7 @@ class PanelOrganizationTests(TestCase):
     def setUp(self):
         cache.clear()
         self.admin = User.objects.create_superuser(
-            email='panel@mentadbirkor.uz', password='Parol2026!', full_name="Admin")
+            email='panel@samarqandyoshlari.uz', password='Parol2026!', full_name="Admin")
 
     def _auth(self):
         from apps.api.auth_views import tokens_for
@@ -306,7 +306,7 @@ class PanelOrganizationTests(TestCase):
     def test_create_organization_returns_credentials(self):
         response = self.client.post('/api/v1/panel/organizations/', {
             'name': "Samarqand hokimligi",
-            'email': 'hokimlik@mentadbirkor.uz',
+            'email': 'hokimlik@samarqandyoshlari.uz',
             'contact_person': "Aziz Rahimov",
             'phone': '+998901112233',
             'sphere': 'davlat',
@@ -318,7 +318,7 @@ class PanelOrganizationTests(TestCase):
         self.assertEqual(body['name'], "Samarqand hokimligi")
 
         creds = body['credentials']
-        self.assertEqual(creds['email'], 'hokimlik@mentadbirkor.uz')
+        self.assertEqual(creds['email'], 'hokimlik@samarqandyoshlari.uz')
         self.assertGreaterEqual(len(creds['password']), 10)
 
         # Berilgan parol bilan haqiqatan kira olishi kerak
@@ -329,7 +329,7 @@ class PanelOrganizationTests(TestCase):
         self.assertEqual(login.json()['user']['role'], 'organization')
 
     def test_duplicate_email_rejected(self):
-        payload = {'name': "Bir", 'email': 'takror@mentadbirkor.uz'}
+        payload = {'name': "Bir", 'email': 'takror@samarqandyoshlari.uz'}
         self.assertEqual(
             self.client.post('/api/v1/panel/organizations/', payload,
                              **self._auth()).status_code, 201)
@@ -348,7 +348,7 @@ class PanelOrganizationTests(TestCase):
 
     def test_password_reset_replaces_old_one(self):
         created = self.client.post('/api/v1/panel/organizations/', {
-            'name': "Korxona", 'email': 'korxona@mentadbirkor.uz',
+            'name': "Korxona", 'email': 'korxona@samarqandyoshlari.uz',
         }, **self._auth()).json()
 
         old_password = created['credentials']['password']
@@ -361,20 +361,20 @@ class PanelOrganizationTests(TestCase):
 
         # Eskisi endi ishlamaydi, yangisi ishlaydi
         self.assertEqual(self.client.post('/api/v1/auth/login/', {
-            'email': 'korxona@mentadbirkor.uz', 'password': old_password}).status_code, 401)
+            'email': 'korxona@samarqandyoshlari.uz', 'password': old_password}).status_code, 401)
         self.assertEqual(self.client.post('/api/v1/auth/login/', {
-            'email': 'korxona@mentadbirkor.uz', 'password': new_password}).status_code, 200)
+            'email': 'korxona@samarqandyoshlari.uz', 'password': new_password}).status_code, 200)
 
     def test_organization_appears_in_list(self):
         self.client.post('/api/v1/panel/organizations/', {
-            'name': "Ro'yxatdagi", 'email': 'royxat@mentadbirkor.uz',
+            'name': "Ro'yxatdagi", 'email': 'royxat@samarqandyoshlari.uz',
         }, **self._auth())
 
         listing = self.client.get('/api/v1/panel/organizations/', **self._auth()).json()
         self.assertEqual(listing['count'], 1)
         row = listing['results'][0]
         self.assertEqual(row['name'], "Ro'yxatdagi")
-        self.assertEqual(row['account_email'], 'royxat@mentadbirkor.uz')
+        self.assertEqual(row['account_email'], 'royxat@samarqandyoshlari.uz')
         # Parol ro'yxatda hech qachon qaytmaydi
         self.assertNotIn('password', row)
 
@@ -384,7 +384,7 @@ class SolutionLikeTests(TestCase):
     ko'p layk yig'gani ro'yxat boshiga chiqadi."""
 
     def setUp(self):
-        self.user = User.objects.create_user(email='yosh@mentadbirkor.uz',
+        self.user = User.objects.create_user(email='yosh@samarqandyoshlari.uz',
                                              password='Parol12345', full_name="Yosh")
         organization = Organization.objects.create(
             name="Korxona", sphere='it', contact_person="Ali", phone='+998901112233')
@@ -449,7 +449,7 @@ class SolutionLikeTests(TestCase):
         self.assertFalse(liked["Ikkinchi yechim"])
 
     def test_like_notifies_solution_author(self):
-        author = User.objects.create_user(email='muallif@mentadbirkor.uz',
+        author = User.objects.create_user(email='muallif@samarqandyoshlari.uz',
                                           password='Parol12345', full_name="Muallif")
         self.first.author = author
         self.first.save(update_fields=['author'])
@@ -467,7 +467,7 @@ class SolutionLikeTests(TestCase):
         self.assertEqual(author.notifications.count(), 1)
 
     def test_solution_create_notifies_organization_owner(self):
-        owner = User.objects.create_user(email='korxona@mentadbirkor.uz',
+        owner = User.objects.create_user(email='korxona@samarqandyoshlari.uz',
                                          password='Parol12345', full_name="Korxona")
         self.problem.organization.user = owner
         self.problem.organization.save(update_fields=['user'])
@@ -489,7 +489,7 @@ class RoleChoiceTests(TestCase):
         self.assertEqual(values, {'yosh', 'entrepreneur', 'startupper'})
 
     def test_user_can_pick_youth_role(self):
-        user = User.objects.create_user(email='tanlov@mentadbirkor.uz',
+        user = User.objects.create_user(email='tanlov@samarqandyoshlari.uz',
                                         password='Parol12345', full_name="Tanlov")
         auth = {'HTTP_AUTHORIZATION': f"Bearer {tokens_for(user)['access']}"}
 
@@ -511,10 +511,10 @@ class PanelNewsTests(TestCase):
     def setUp(self):
         cache.clear()
         self.admin = User.objects.create_superuser(
-            email='admin@mentadbirkor.uz', password='Parol12345',
+            email='admin@samarqandyoshlari.uz', password='Parol12345',
             full_name="Panel Admin")
         self.outsider = User.objects.create_user(
-            email='oddiy@mentadbirkor.uz', password='Parol12345', full_name="Oddiy")
+            email='oddiy@samarqandyoshlari.uz', password='Parol12345', full_name="Oddiy")
 
     def _auth(self, user=None):
         token = tokens_for(user or self.admin)['access']
@@ -604,7 +604,7 @@ class PanelImportTests(TestCase):
     def setUp(self):
         cache.clear()
         self.admin = User.objects.create_superuser(
-            email='import@mentadbirkor.uz', password='Parol12345', full_name="Import Admin")
+            email='import@samarqandyoshlari.uz', password='Parol12345', full_name="Import Admin")
 
     def _auth(self, user=None):
         token = tokens_for(user or self.admin)['access']
@@ -634,7 +634,7 @@ class PanelImportTests(TestCase):
         ]}
 
     def test_only_admin_can_import(self):
-        plain = User.objects.create_user(email='oddiy2@mentadbirkor.uz',
+        plain = User.objects.create_user(email='oddiy2@samarqandyoshlari.uz',
                                          password='Parol12345', full_name="Oddiy")
         self.assertEqual(
             self.client.post('/api/v1/panel/import/initiatives/', self._payload(),
@@ -710,7 +710,7 @@ class PanelOrganizationImportTests(TestCase):
     def setUp(self):
         cache.clear()
         self.admin = User.objects.create_superuser(
-            email='orgimport@mentadbirkor.uz', password='Parol12345',
+            email='orgimport@samarqandyoshlari.uz', password='Parol12345',
             full_name="Import Admin")
 
     def _auth(self, user=None):
@@ -742,7 +742,7 @@ class PanelOrganizationImportTests(TestCase):
         }]}
 
     def test_only_admin_can_import(self):
-        plain = User.objects.create_user(email='oddiy3@mentadbirkor.uz',
+        plain = User.objects.create_user(email='oddiy3@samarqandyoshlari.uz',
                                          password='Parol12345', full_name="Oddiy")
         self.assertEqual(
             self.client.post('/api/v1/panel/import/organizations/', self._payload(),
@@ -837,17 +837,17 @@ class ProblemAuthoringTests(TestCase):
 
     def setUp(self):
         self.org_user = User.objects.create_user(
-            email='korxona@mentadbirkor.uz', password='Parol12345',
+            email='korxona@samarqandyoshlari.uz', password='Parol12345',
             full_name="Korxona Egasi", role='organization')
         self.organization = Organization.objects.create(
             name="AgroTech", sphere='it', contact_person="Ali",
             phone='+998901112233', user=self.org_user)
 
         self.youth = User.objects.create_user(
-            email='yosh2@mentadbirkor.uz', password='Parol12345',
+            email='yosh2@samarqandyoshlari.uz', password='Parol12345',
             full_name="Yosh Tadbirkor", role='yosh')
         self.entrepreneur = User.objects.create_user(
-            email='tadbirkor@mentadbirkor.uz', password='Parol12345',
+            email='tadbirkor@samarqandyoshlari.uz', password='Parol12345',
             full_name="Tadbirkor", role='entrepreneur')
 
     def _auth(self, user):
@@ -961,10 +961,10 @@ class ProfileSetupTests(TestCase):
 
     def setUp(self):
         self.startupper = User.objects.create_user(
-            email='startupper@mentadbirkor.uz', password='Parol12345',
+            email='startupper@samarqandyoshlari.uz', password='Parol12345',
             full_name="Startap Egasi", role='startupper', region='samarqand')
         self.entrepreneur = User.objects.create_user(
-            email='biznes@mentadbirkor.uz', password='Parol12345',
+            email='biznes@samarqandyoshlari.uz', password='Parol12345',
             full_name="Biznes Egasi", role='entrepreneur', region='buxoro')
 
     def _auth(self, user):
@@ -1065,7 +1065,7 @@ class OnboardingTests(TestCase):
     """Yangi foydalanuvchi: rol → biznes yoki startap anketasi → tayyor."""
 
     def _user(self, **extra):
-        data = {'email': 'yangi@mentadbirkor.uz', 'password': None, 'full_name': "Yangi User"}
+        data = {'email': 'yangi@samarqandyoshlari.uz', 'password': None, 'full_name': "Yangi User"}
         data.update(extra)
         return User.objects.create_user(**data)
 
@@ -1145,7 +1145,7 @@ class OnboardingTests(TestCase):
         self.assertEqual(response.status_code, 400)
         self.assertIn('logo', response.json())
 
-        startupper = self._user(email='s2@mentadbirkor.uz', is_verified=True, role='startupper')
+        startupper = self._user(email='s2@samarqandyoshlari.uz', is_verified=True, role='startupper')
         response = self.client.post('/api/v1/me/startup/', {
             'name': "Tilchi AI", 'sphere': 'it', 'stage': 'mvp',
             'about': "O'zbek tilida nutqni matnga aylantiradigan ochiq model.",
@@ -1218,7 +1218,7 @@ class OnboardingTests(TestCase):
         photo = self.client.post('/api/v1/me/business/gallery/', {'images': [_png()]},
                                  **self._auth(owner)).json()[0]
 
-        stranger = self._user(email='begona@mentadbirkor.uz', is_verified=True)
+        stranger = self._user(email='begona@samarqandyoshlari.uz', is_verified=True)
         response = self.client.delete(f"/api/v1/me/business/gallery/{photo['id']}/",
                                       **self._auth(stranger))
         self.assertEqual(response.status_code, 404)
@@ -1272,9 +1272,9 @@ class PanelUserManagementTests(TestCase):
 
     def setUp(self):
         self.admin = User.objects.create_superuser(
-            email='boss@mentadbirkor.uz', password='Parol12345', full_name="Bosh")
+            email='boss@samarqandyoshlari.uz', password='Parol12345', full_name="Bosh")
         self.user = User.objects.create_user(
-            email='tadbirkor2@mentadbirkor.uz', password=None, full_name="Tadbirkor",
+            email='tadbirkor2@samarqandyoshlari.uz', password=None, full_name="Tadbirkor",
             role='entrepreneur', is_verified=True)
         self.business = BusinessProfile.objects.create(
             user=self.user, name="Buxoro Tekstil", sphere='ishlab_chiqarish',
@@ -1295,7 +1295,7 @@ class PanelUserManagementTests(TestCase):
         self.assertEqual(row['profile_status'], 'pending')
 
     def test_pending_filter(self):
-        User.objects.create_user(email='oddiy5@mentadbirkor.uz', password=None, full_name="O")
+        User.objects.create_user(email='oddiy5@samarqandyoshlari.uz', password=None, full_name="O")
         data = self.client.get('/api/v1/panel/users/?tekshiruv=1', **self._auth()).json()
         self.assertEqual([row['id'] for row in data['results']], [self.user.pk])
         self.assertEqual(data['pending_profiles'], 1)
@@ -1335,13 +1335,13 @@ class PanelUserManagementTests(TestCase):
                                **self._auth()).status_code, 400)
 
         other_admin = User.objects.create_superuser(
-            email='boss2@mentadbirkor.uz', password='Parol12345', full_name="Boshqa")
+            email='boss2@samarqandyoshlari.uz', password='Parol12345', full_name="Boshqa")
         self.assertEqual(
             self.client.delete(f'/api/v1/panel/users/{other_admin.pk}/',
                                **self._auth()).status_code, 400)
 
     def test_plain_user_cannot_delete(self):
-        victim = User.objects.create_user(email='v@mentadbirkor.uz', password=None,
+        victim = User.objects.create_user(email='v@samarqandyoshlari.uz', password=None,
                                           full_name="V")
         response = self.client.delete(f'/api/v1/panel/users/{victim.pk}/',
                                       **self._auth(self.user))
@@ -1354,7 +1354,7 @@ class PublicDirectoryTests(TestCase):
     """Ochiq ro'yxatlar: faqat tasdiqlangan va yashirilmagan anketalar."""
 
     def setUp(self):
-        owner = User.objects.create_user(email='egasi@mentadbirkor.uz', password=None,
+        owner = User.objects.create_user(email='egasi@samarqandyoshlari.uz', password=None,
                                          full_name="Dilshod Karimov", role='entrepreneur')
         self.approved = BusinessProfile.objects.create(
             user=owner, name="Buxoro Tekstil", sphere='ishlab_chiqarish', region='buxoro',
@@ -1362,7 +1362,7 @@ class PublicDirectoryTests(TestCase):
             logo=_png('logo.png'))
         GalleryImage.objects.create(business=self.approved, image=_png('ish.png'))
 
-        other = User.objects.create_user(email='kutuvchi@mentadbirkor.uz', password=None,
+        other = User.objects.create_user(email='kutuvchi@samarqandyoshlari.uz', password=None,
                                          full_name="Kutuvchi", role='entrepreneur')
         self.pending = BusinessProfile.objects.create(
             user=other, name="Tekshiruvdagi", sphere='savdo', description="X", status='pending')
@@ -1507,10 +1507,10 @@ class MediaUrlTests(TestCase):
     def _photo(self, **headers):
         return self.client.get(f'/api/v1/peers/{self.peer.pk}/', **headers).json()['photo']
 
-    @override_settings(SITE_URL='https://mentadbirkor.uz', ALLOWED_HOSTS=['*'])
+    @override_settings(SITE_URL='https://samarqandyoshlari.uz', ALLOWED_HOSTS=['*'])
     def test_site_url_is_used_for_internal_requests(self):
         photo = self._photo(HTTP_HOST='web:8000')
-        self.assertTrue(photo.startswith('https://mentadbirkor.uz/media/peers/'), photo)
+        self.assertTrue(photo.startswith('https://samarqandyoshlari.uz/media/peers/'), photo)
 
     @override_settings(SITE_URL='', ALLOWED_HOSTS=['*'])
     def test_internal_host_without_site_url_gives_relative(self):

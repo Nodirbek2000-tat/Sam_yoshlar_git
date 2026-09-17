@@ -79,7 +79,7 @@ class SolutionTests(TestCase):
 
     def test_submit_solution(self):
         User = get_user_model()
-        user = User.objects.create_user(email='yosh@mentadbirkor.uz', password='Parol2026!',
+        user = User.objects.create_user(email='yosh@samarqandyoshlari.uz', password='Parol2026!',
                                         full_name="Yosh Dasturchi")
         self.client.force_login(user)
 
@@ -96,7 +96,7 @@ class SolutionTests(TestCase):
 
     def test_selected_problem_page(self):
         User = get_user_model()
-        user = User.objects.create_user(email='yosh2@mentadbirkor.uz', password='Parol2026!')
+        user = User.objects.create_user(email='yosh2@samarqandyoshlari.uz', password='Parol2026!')
         self.client.force_login(user)
         response = self.client.get(self._detail_url())
         self.assertContains(response, "Yechimingizni taklif qiling")

@@ -1,5 +1,5 @@
 """
-sam-yosh tadbirkor.uz — Django settings.
+samarqandyoshlari.uz — Django settings.
 """
 
 import os
@@ -150,7 +150,7 @@ AUTH_PASSWORD_VALIDATORS = [
 TELEGRAM_BOT_USERNAME = env('TELEGRAM_BOT_USERNAME', 'yoshtadbirkorlarbot')
 TELEGRAM_API_SECRET = env('TELEGRAM_API_SECRET', '')
 
-# Tashqi manzil (https://mentadbirkor.uz). API rasm havolalarini shu bilan
+# Tashqi manzil (https://samarqandyoshlari.uz). API rasm havolalarini shu bilan
 # yasaydi — sayt Django'ga ichki `web:8000` orqali murojaat qilsa ham
 # brauzerga to'g'ri manzil boradi. Lokalda bo'sh qoladi.
 SITE_URL = env('SITE_URL', '').rstrip('/')
@@ -191,7 +191,7 @@ MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 # Email (dev — konsolga chiqadi)
 
 EMAIL_BACKEND = env('EMAIL_BACKEND', 'django.core.mail.backends.console.EmailBackend')
-DEFAULT_FROM_EMAIL = env('DEFAULT_FROM_EMAIL', 'sam-yosh tadbirkor <info@mentadbirkor.uz>')
+DEFAULT_FROM_EMAIL = env('DEFAULT_FROM_EMAIL', 'Samarqand yoshlari <info@samarqandyoshlari.uz>')
 
 
 # Xavfsizlik (production)

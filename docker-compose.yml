@@ -1,4 +1,4 @@
-# mentadbirkor.uz — to'liq tizim
+# samarqandyoshlari.uz — to'liq tizim
 #
 #   db     PostgreSQL   — ma'lumotlar nomli volume'da, konteyner o'chsa ham qoladi
 #   web    Django       — REST API va admin
@@ -74,11 +74,11 @@ services:
       args:
         # `NEXT_PUBLIC_*` qurish paytida kodga yoziladi — shuning uchun `args`.
         # Brauzer API ga shu manzil orqali murojaat qiladi.
-        NEXT_PUBLIC_API_URL: ${PUBLIC_API_URL:-https://mentadbirkor.uz/api/v1}
+        NEXT_PUBLIC_API_URL: ${PUBLIC_API_URL:-https://samarqandyoshlari.uz/api/v1}
     container_name: samyosh_front
     restart: unless-stopped
     environment:
-      NEXT_PUBLIC_API_URL: ${PUBLIC_API_URL:-https://mentadbirkor.uz/api/v1}
+      NEXT_PUBLIC_API_URL: ${PUBLIC_API_URL:-https://samarqandyoshlari.uz/api/v1}
       # Server tomondagi so'rovlar ichki tarmoq orqali — tashqariga chiqmaydi
       INTERNAL_API_URL: http://web:8000/api/v1
       NODE_ENV: production
@@ -126,7 +126,7 @@ services:
     restart: unless-stopped
     env_file: ${BOT_PATH:-../Sma_yoshlar_bot/sam_yoshlar_bot}/.env
     environment:
-      SITE_URL: ${SITE_URL:-https://mentadbirkor.uz}
+      SITE_URL: ${SITE_URL:-https://samarqandyoshlari.uz}
     depends_on:
       - web
     profiles: ["bot"]

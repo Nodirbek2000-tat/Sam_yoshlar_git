@@ -31,7 +31,7 @@ DEFINED = re.compile(r'<symbol id="(ic-[\w-]+)"')
 class IconSpriteTests(TestCase):
     def setUp(self):
         self.admin = User.objects.create_superuser(
-            email='admin@mentadbirkor.uz', password='Parol2026!', full_name="Admin")
+            email='admin@samarqandyoshlari.uz', password='Parol2026!', full_name="Admin")
 
     def assertIconsResolve(self, url, name):
         response = self.client.get(url)

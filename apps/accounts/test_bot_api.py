@@ -6,7 +6,7 @@ from django.urls import reverse
 
 from apps.initiatives.models import Initiative
 
-from .models import Broadcast, ChannelJoin, RequiredChannel
+from .models import BotPost, BotSetting, Broadcast, ChannelJoin, RequiredChannel
 
 User = get_user_model()
 
@@ -107,7 +107,7 @@ class BotApiTests(TestCase):
             'text': "Yangi grant e'lon qilindi",
             'kind': 'photo',
             'file_id': 'AgACAgIAAx',
-            'buttons': [{'label': "Batafsil", 'url': 'https://mentadbirkor.uz'}],
+            'buttons': [{'label': "Batafsil", 'url': 'https://samarqandyoshlari.uz'}],
             'total': 2,
             'created_by': 111,
         }, content_type='application/json', **self.secret)
@@ -120,6 +120,89 @@ class BotApiTests(TestCase):
 
         self.assertEqual(result.json()['sent'], 1)
         item = Broadcast.objects.get(pk=broadcast_id)
-        self.assertEqual(item.buttons[0]['url'], 'https://mentadbirkor.uz')
+        self.assertEqual(item.buttons[0]['url'], 'https://samarqandyoshlari.uz')
         self.assertEqual(item.blocked, 1)
         self.assertIsNotNone(item.finished_at)
+
+
+@override_settings(TELEGRAM_API_SECRET=SECRET, SITE_URL='https://samarqandyoshlari.uz')
+class BotFeedTests(TestCase):
+    """Saytga yangi narsa qo'shilsa — botga yuborish navbatiga tushadi."""
+
+    def setUp(self):
+        self.secret = {'HTTP_X_BOT_SECRET': SECRET}
+        BotSetting.objects.all().delete()
+
+    def _news(self, title="Yangi grant e'lon qilindi"):
+        from apps.content.models import News, NewsCategory
+        return News.objects.create(
+            title=title, excerpt="Yoshlar uchun yangi imkoniyat ochildi.",
+            body="Batafsil ma'lumot.", category=NewsCategory.values[0], is_published=True)
+
+    def test_nothing_is_queued_while_disabled(self):
+        self._news()
+        self.assertEqual(BotPost.objects.count(), 0)
+
+    def test_news_is_queued_when_enabled(self):
+        setting = BotSetting.load()
+        setting.auto_post = True
+        setting.save()
+
+        news = self._news()
+        post = BotPost.objects.get()
+        self.assertEqual(post.kind, BotPost.Kind.NEWS)
+        self.assertEqual(post.object_id, news.pk)
+        self.assertEqual(post.link, f"https://samarqandyoshlari.uz/yangiliklar/{news.slug}")
+        self.assertEqual(post.status, BotPost.Status.PENDING)
+
+        # Tahrirlansa ham ikkinchi marta navbatga tushmaydi
+        news.title = "Sarlavha o'zgardi"
+        news.save()
+        self.assertEqual(BotPost.objects.count(), 1)
+
+    def test_bot_takes_pending_and_reports_result(self):
+        setting = BotSetting.load()
+        setting.auto_post = True
+        setting.save()
+        self._news()
+
+        rows = self.client.get(reverse('accounts:bot_posts'), **self.secret).json()['results']
+        self.assertEqual(len(rows), 1)
+        self.assertTrue(rows[0]['link'].endswith('/yangiliklar/yangi-grant-elon-qilindi'))
+
+        result = self.client.post(
+            reverse('accounts:bot_post_result', args=[rows[0]['id']]),
+            {'total': 10, 'sent': 9, 'failed': 1},
+            content_type='application/json', **self.secret)
+        self.assertEqual(result.json()['sent'], 9)
+
+        post = BotPost.objects.get()
+        self.assertEqual(post.status, BotPost.Status.SENT)
+        # Yuborilgani ikkinchi marta navbatda chiqmaydi
+        self.assertEqual(
+            self.client.get(reverse('accounts:bot_posts'), **self.secret).json()['results'], [])
+
+
+class PanelBotTests(TestCase):
+    """Paneldagi yoqish/o'chirish tugmasi."""
+
+    def setUp(self):
+        from apps.api.auth_views import tokens_for
+        self.admin = User.objects.create_superuser(email='panelbot@test.uz', password='x',
+                                                   full_name="Admin")
+        self.auth = {'HTTP_AUTHORIZATION': f"Bearer {tokens_for(self.admin)['access']}"}
+
+    def test_toggle_and_list(self):
+        data = self.client.get('/api/v1/panel/bot/', **self.auth).json()
+        self.assertFalse(data['auto_post'])
+
+        response = self.client.post('/api/v1/panel/bot/', {'auto_post': True},
+                                    content_type='application/json', **self.auth)
+        self.assertTrue(response.json()['auto_post'])
+        self.assertTrue(BotSetting.load().auto_post)
+
+    def test_regular_user_cannot_open(self):
+        from apps.api.auth_views import tokens_for
+        user = User.objects.create_user(email='oddiy2@test.uz', full_name="Oddiy")
+        auth = {'HTTP_AUTHORIZATION': f"Bearer {tokens_for(user)['access']}"}
+        self.assertEqual(self.client.get('/api/v1/panel/bot/', **auth).status_code, 404)

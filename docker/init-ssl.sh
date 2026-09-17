@@ -4,7 +4,7 @@
 # Ishlatish:  ./docker/init-ssl.sh sizning@email.uz
 set -e
 
-DOMAIN="${DOMAIN:-mentadbirkor.uz}"
+DOMAIN="${DOMAIN:-samarqandyoshlari.uz}"
 EMAIL="${1:-}"
 
 CONF_DIR="docker/nginx"

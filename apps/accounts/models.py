@@ -193,6 +193,73 @@ class Broadcast(models.Model):
         return f"{self.get_kind_display()} — {self.sent}/{self.total}"
 
 
+class BotSetting(models.Model):
+    """Bot sozlamalari — bazada bitta yozuv bo'ladi."""
+
+    auto_post = models.BooleanField("Yangiliklar botga yuborilsin", default=False)
+    updated_at = models.DateTimeField("O'zgartirilgan", auto_now=True)
+
+    class Meta:
+        verbose_name = "Bot sozlamasi"
+        verbose_name_plural = "Bot sozlamalari"
+
+    def __str__(self):
+        return "Yoqilgan" if self.auto_post else "O'chirilgan"
+
+    @classmethod
+    def load(cls):
+        setting, _ = cls.objects.get_or_create(pk=1)
+        return setting
+
+
+class BotPost(models.Model):
+    """Saytga qo'shilgan yangi narsa — bot obunachilarga yuborishi uchun navbat.
+
+    Yangilik, e'lon, startap, tadbirkor yoki tengdosh qo'shilsa shu yerga
+    tushadi. Bot uni olib, hamma foydalanuvchiga rasm va «Davomini o'qish»
+    tugmasi bilan yuboradi.
+    """
+
+    class Kind(models.TextChoices):
+        NEWS = 'news', "Yangilik"
+        ANNOUNCEMENT = 'announcement', "E'lon"
+        STARTUP = 'startup', "Startap"
+        BUSINESS = 'business', "Tadbirkor"
+        PEER = 'peer', "Chet eldagi tengdosh"
+
+    class Status(models.TextChoices):
+        PENDING = 'pending', "Navbatda"
+        SENT = 'sent', "Yuborilgan"
+        FAILED = 'failed', "Xato"
+
+    kind = models.CharField("Turi", max_length=20, choices=Kind.choices)
+    object_id = models.PositiveIntegerField("Yozuv raqami")
+
+    title = models.CharField("Sarlavha", max_length=250)
+    excerpt = models.TextField("Boshlanishi", blank=True)
+    image_url = models.CharField("Rasm", max_length=400, blank=True)
+    link = models.CharField("Havola", max_length=400)
+
+    status = models.CharField("Holat", max_length=20, choices=Status.choices,
+                              default=Status.PENDING)
+    total = models.PositiveIntegerField("Qabul qiluvchi", default=0)
+    sent = models.PositiveIntegerField("Yetkazildi", default=0)
+    failed = models.PositiveIntegerField("Yetmadi", default=0)
+
+    created_at = models.DateTimeField("Qo'shilgan", default=timezone.now)
+    sent_at = models.DateTimeField("Yuborilgan", null=True, blank=True)
+
+    class Meta:
+        verbose_name = "Botga yuboriladigan xabar"
+        verbose_name_plural = "Botga yuboriladigan xabarlar"
+        # Bitta yozuv ikki marta yuborilmasin
+        unique_together = [('kind', 'object_id')]
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"{self.get_kind_display()}: {self.title}"
+
+
 class TelegramAuthCode(models.Model):
     """Bot bergan bir martalik kod.
 

@@ -23,7 +23,7 @@ from apps.core.constants import Status
 from apps.initiatives.models import Initiative, Problem, Solution
 from apps.startups.models import Startup
 
-from .models import Broadcast, ChannelJoin, RequiredChannel, Role, User
+from .models import BotPost, Broadcast, ChannelJoin, RequiredChannel, Role, User
 
 
 def bot_only(view):
@@ -236,6 +236,48 @@ def bot_users(request):
                .exclude(telegram_id=None)
                .values_list('telegram_id', flat=True))
     return JsonResponse({'ok': True, 'count': len(ids), 'ids': ids})
+
+
+@csrf_exempt
+@require_http_methods(['GET'])
+@bot_only
+def bot_posts(request):
+    """Saytga qo'shilgan, hali yuborilmagan yangiliklar — bot shularni tarqatadi."""
+    posts = BotPost.objects.filter(status=BotPost.Status.PENDING).order_by('created_at')[:5]
+
+    return JsonResponse({
+        'ok': True,
+        'results': [
+            {
+                'id': post.pk,
+                'kind': post.kind,
+                'kind_display': post.get_kind_display(),
+                'title': post.title,
+                'excerpt': post.excerpt,
+                'image': post.image_url,
+                'link': post.link,
+            }
+            for post in posts
+        ],
+    })
+
+
+@csrf_exempt
+@require_http_methods(['POST'])
+@bot_only
+def bot_post_result(request, pk):
+    """Yuborilgach: nechtasiga yetkazildi."""
+    post = get_object_or_404(BotPost, pk=pk)
+    data = body(request)
+
+    post.total = max(int(data.get('total') or 0), 0)
+    post.sent = max(int(data.get('sent') or 0), 0)
+    post.failed = max(int(data.get('failed') or 0), 0)
+    post.status = BotPost.Status.SENT
+    post.sent_at = timezone.now()
+    post.save(update_fields=['total', 'sent', 'failed', 'status', 'sent_at'])
+
+    return JsonResponse({'ok': True, 'sent': post.sent})
 
 
 @csrf_exempt

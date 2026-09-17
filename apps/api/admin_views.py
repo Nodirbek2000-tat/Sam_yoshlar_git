@@ -1025,6 +1025,38 @@ def panel_delete_all(request, resource):
     return Response({'deleted': count, 'files': files})
 
 
+class PanelBot(APIView):
+    """Botga yangilik yuborishni yoqish/o'chirish va yuborilganlar ro'yxati.
+
+    Yoqilgan bo'lsa: saytga yangi yangilik, e'lon, startap, tadbirkor yoki
+    tengdosh qo'shilganda bot uni hamma foydalanuvchiga yuboradi.
+    """
+
+    permission_classes = [IsPanelAdmin]
+
+    def get(self, request):
+        from apps.accounts.models import BotPost, BotSetting
+
+        return Response({
+            'auto_post': BotSetting.load().auto_post,
+            'results': [
+                {'id': post.pk, 'kind': post.kind, 'kind_display': post.get_kind_display(),
+                 'title': post.title, 'link': post.link, 'status': post.status,
+                 'sent': post.sent, 'failed': post.failed, 'total': post.total,
+                 'created_at': post.created_at, 'sent_at': post.sent_at}
+                for post in BotPost.objects.all()[:30]
+            ],
+        })
+
+    def post(self, request):
+        from apps.accounts.models import BotSetting
+
+        setting = BotSetting.load()
+        setting.auto_post = bool(request.data.get('auto_post'))
+        setting.save(update_fields=['auto_post', 'updated_at'])
+        return Response({'auto_post': setting.auto_post})
+
+
 class PanelOrganizations(APIView):
     """Tashkilotlar ro'yxati va yangisini kiritish."""
 
