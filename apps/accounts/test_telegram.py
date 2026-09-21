@@ -28,6 +28,7 @@ class TelegramCodeTests(TestCase):
             'username': "nodirbek",
             'phone': "+998500056821",
             'age': 22,
+            'district': 'urgut',
         }
         data.update(overrides)
         return self.client.post(self.api_url, data, HTTP_X_BOT_SECRET=secret)
@@ -204,7 +205,7 @@ class PhoneMatchingTests(TestCase):
         response = self.client.post(
             self.api_url,
             {'telegram_id': 111000222, 'first_name': "Begona", 'phone': '998901112233',
-             'age': 19},
+             'age': 19, 'district': 'payariq'},
             HTTP_X_BOT_SECRET=SECRET,
         )
         self.assertTrue(response.json()['created'])
@@ -248,7 +249,7 @@ class BotAgeFlowTests(TestCase):
         self.assertEqual(first['error'], 'need_age')
         self.assertTrue(User.objects.filter(telegram_id=900100, phone='+998901112233').exists())
 
-        second = self._issue(age='24')
+        second = self._issue(age='24', district='urgut')
         self.assertTrue(second['ok'])
         self.assertEqual(User.objects.get(telegram_id=900100).age, 24)
 
@@ -265,7 +266,7 @@ class BotAgeFlowTests(TestCase):
 
         # Qayta /start — yana yosh so'raladi, 30 va undan kichik bo'lsa kod
         self.assertEqual(self._issue()['error'], 'age_limit')
-        self.assertTrue(self._issue(age='30')['ok'])
+        self.assertTrue(self._issue(age='30', district='urgut')['ok'])
 
     def test_bad_age_rejected(self):
         self._issue(phone='+998901112233')
@@ -274,7 +275,7 @@ class BotAgeFlowTests(TestCase):
 
     def test_over_limit_user_cannot_use_old_code(self):
         self._issue(phone='+998901112233')
-        code = self._issue(age='25')['code']
+        code = self._issue(age='25', district='urgut')['code']
         User.objects.filter(telegram_id=900100).update(age=40)
 
         response = self.client.post('/api/v1/auth/telegram/', {'code': code},
@@ -284,4 +285,62 @@ class BotAgeFlowTests(TestCase):
     def test_organization_is_not_asked_age(self):
         User.objects.create_user(email='org@test.uz', full_name="Tashkilot",
                                  role='organization', telegram_id=900100)
+        self.assertTrue(self._issue()['ok'])
+
+
+@override_settings(TELEGRAM_API_SECRET=SECRET)
+class BotDistrictFlowTests(TestCase):
+    """Yoshdan keyin — Samarqand viloyatining qaysi tumanidanligi so'raladi."""
+
+    def setUp(self):
+        self.api_url = reverse('accounts:telegram_issue_code')
+
+    def _issue(self, **data):
+        payload = {'telegram_id': 700200, 'first_name': "Sanjar"}
+        payload.update(data)
+        return self.client.post(self.api_url, payload, HTTP_X_BOT_SECRET=SECRET).json()
+
+    def test_district_is_asked_after_age(self):
+        self._issue(phone='+998901112233')
+        response = self._issue(age='20')
+
+        self.assertEqual(response['error'], 'need_district')
+        values = [item['value'] for item in response['districts']]
+        # 14 tuman + Samarqand va Kattaqo'rg'on shaharlari
+        self.assertEqual(len(values), 16)
+        self.assertIn('samarqand_shahri', values)
+        self.assertIn('urgut', values)
+        self.assertFalse(TelegramAuthCode.objects.exists())
+
+    def test_chosen_district_is_saved_and_asked_once(self):
+        self._issue(phone='+998901112233')
+        self._issue(age='20')
+
+        response = self._issue(district='toyloq')
+        self.assertTrue(response['ok'])
+
+        user = User.objects.get(telegram_id=700200)
+        self.assertEqual(user.district, "Toyloq tumani")
+        self.assertEqual(user.region, 'samarqand')
+
+        # Keyingi /start da boshqa savol yo'q
+        self.assertTrue(self._issue()['ok'])
+
+    def test_district_name_also_accepted(self):
+        self._issue(phone='+998901112233')
+        self._issue(age='20')
+        self.assertTrue(self._issue(district="Urgut tumani")['ok'])
+        self.assertEqual(User.objects.get(telegram_id=700200).district, "Urgut tumani")
+
+    def test_unknown_district_rejected(self):
+        self._issue(phone='+998901112233')
+        self._issue(age='20')
+
+        response = self._issue(district="Toshkent")
+        self.assertEqual(response['error'], 'bad_district')
+        self.assertEqual(User.objects.get(telegram_id=700200).district, '')
+
+    def test_organization_is_not_asked_district(self):
+        User.objects.create_user(email='org2@test.uz', full_name="Tashkilot",
+                                 role='organization', telegram_id=700200)
         self.assertTrue(self._issue()['ok'])

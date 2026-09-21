@@ -230,10 +230,13 @@ def bot_channel_joins(request):
 @require_http_methods(['GET'])
 @bot_only
 def bot_users(request):
-    """Reklama yuborish uchun Telegram ID'lar ro'yxati."""
+    """Reklama yuborish uchun Telegram ID'lar ro'yxati.
+
+    Faqat odamlar: guruh va kanal ID lari manfiy bo'ladi, ular chiqmaydi —
+    xabar kanalga emas, odamning o'ziga borishi kerak.
+    """
     ids = list(User.objects
-               .filter(is_active=True)
-               .exclude(telegram_id=None)
+               .filter(is_active=True, telegram_id__gt=0)
                .values_list('telegram_id', flat=True))
     return JsonResponse({'ok': True, 'count': len(ids), 'ids': ids})
 

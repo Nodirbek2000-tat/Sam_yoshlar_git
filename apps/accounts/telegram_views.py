@@ -22,6 +22,8 @@ from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 
+from apps.core.constants import Region, district_label, district_options
+
 from .models import AGE_LIMIT, Role, TelegramAuthCode
 
 User = get_user_model()
@@ -96,8 +98,11 @@ def telegram_issue_code(request):
     Kutiladi: telegram_id, first_name, last_name, username
     Ixtiyoriy: phone (birinchi marta majburiy), age, photo (fayl)
 
+    Kutiladi (ixtiyoriy): district — Samarqand viloyatining tumani/shahri.
+
     Kod berilmasa `ok: false` va bot nima so'rashi kerakligi qaytadi:
-    `need_phone`, `need_age`, `age_limit` (AGE_LIMIT dan katta), `bad_age`.
+    `need_phone`, `need_age`, `age_limit` (AGE_LIMIT dan katta), `bad_age`,
+    `need_district`, `bad_district`.
     """
     secret = _api_secret()
     provided = request.headers.get('X-Bot-Secret', '')
@@ -138,12 +143,28 @@ def telegram_issue_code(request):
         user.age = age
         user.save(update_fields=['age'])
 
+    raw_district = (data.get('district') or '').strip()
+    if raw_district:
+        district = district_label(raw_district)
+        if not district:
+            return JsonResponse({'ok': False, 'error': 'bad_district',
+                                 'districts': district_options()})
+        if user.district != district:
+            user.district = district
+            user.region = Region.SAMARQAND
+            user.save(update_fields=['district', 'region'])
+
     # Adminlar va tashkilotlarning hisobini biz ochamiz — ulardan yosh so'ralmaydi
     if not is_age_exempt(user):
         if user.age is None:
             return JsonResponse({'ok': False, 'error': 'need_age', 'created': created})
         if user.age > AGE_LIMIT:
             return JsonResponse({'ok': False, 'error': 'age_limit', 'limit': AGE_LIMIT})
+
+        # Qaysi tumandanligi — saytdagi hudud bo'yicha hisob uchun
+        if not user.district:
+            return JsonResponse({'ok': False, 'error': 'need_district',
+                                 'districts': district_options()})
 
     # Eski kodlarni bekor qilamiz — bir vaqtda bitta amaldagi kod bo'lsin
     TelegramAuthCode.objects.filter(user=user, used_at__isnull=True).update(
