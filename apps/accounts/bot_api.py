@@ -241,6 +241,10 @@ def bot_users(request):
 
     Faqat odamlar: guruh va kanal ID lari manfiy bo'ladi, ular chiqmaydi —
     xabar kanalga emas, odamning o'ziga borishi kerak.
+
+    Tashkilotlar ham shu ro'yxatda: ular botga aynan yangi startap, loyiha,
+    yangilik va reklamalarni hamma bilan teng olishi uchun ulanadi.
+    Statistikada esa foydalanuvchi sifatida sanalmaydi.
     """
     ids = list(User.objects
                .filter(is_active=True, telegram_id__gt=0)

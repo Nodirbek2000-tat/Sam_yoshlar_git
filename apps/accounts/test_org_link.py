@@ -260,6 +260,12 @@ class OrganizationCountingTests(TestCase):
         self.assertEqual(data['users']['total'], 1)
         self.assertEqual(data['organizations'], {'total': 1, 'telegram': 1})
 
+    def test_organizations_receive_bot_posts_and_ads(self):
+        """Tashkilot statistikada alohida, lekin xabar va reklamani hamma bilan teng oladi."""
+        ids = self.client.get(reverse('accounts:bot_users'),
+                              HTTP_X_BOT_SECRET=SECRET).json()['ids']
+        self.assertIn(4242, ids)
+
     def test_panel_shows_and_unlinks_telegram(self):
         org = Organization.objects.get(user=self.organization)
         rows = self.client.get('/api/v1/panel/organizations/', **self.auth).json()['results']
