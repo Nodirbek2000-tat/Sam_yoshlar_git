@@ -94,6 +94,8 @@ urlpatterns = [
     path('panel/users/<int:pk>/admin/', admin_views.toggle_admin, name='panel_toggle_admin'),
     path('panel/initiatives/<int:pk>/votes/', admin_views.adjust_votes, name='panel_votes'),
     path('panel/bot/', admin_views.PanelBot.as_view(), name='panel_bot'),
+    path('panel/eksport/', admin_views.PanelExports.as_view(), name='panel_exports'),
+    path('panel/eksport/<slug:key>/', admin_views.export_download, name='panel_export'),
     path('panel/xatolar/', admin_views.PanelErrors.as_view(), name='panel_errors'),
     path('panel/xatolar/<int:pk>/', admin_views.resolve_error, name='panel_error_resolve'),
     path('panel/organizations/', admin_views.PanelOrganizations.as_view(),

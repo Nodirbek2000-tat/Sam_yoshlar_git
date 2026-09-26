@@ -10,7 +10,7 @@ from datetime import datetime, time
 from django.contrib.auth import get_user_model
 from django.db.models import Count, F, Q, Sum, Value
 from django.db.models.functions import Greatest
-from django.http import Http404
+from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from django.utils.dateparse import parse_date, parse_datetime
@@ -37,6 +37,7 @@ from apps.panel.mixins import is_panel_admin
 from apps.startups.models import Startup
 
 from . import serializers as s
+from .exports import EXPORTS, Period, build_workbook, export_count
 from .onboarding import onboarding_step
 
 User = get_user_model()
@@ -1292,6 +1293,48 @@ def reset_organization_password(request, pk):
         'id': organization.pk,
         'credentials': {'email': organization.user.email, 'password': password},
     })
+
+
+# --------------------------------------------------------------------------
+# Excel'ga yuklab olish
+# --------------------------------------------------------------------------
+
+XLSX = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+
+
+class PanelExports(APIView):
+    """Yuklab olinadigan bo'limlar va tanlangan davrdagi yozuvlar soni."""
+
+    permission_classes = [IsPanelAdmin]
+
+    def get(self, request):
+        try:
+            period = Period.from_query(request.query_params)
+        except ValueError as error:
+            return Response({'detail': str(error)}, status=status.HTTP_400_BAD_REQUEST)
+
+        return Response({'results': [
+            {'key': key, 'title': item['title'], 'description': item['description'],
+             'icon': item['icon'], 'parts': item['parts'], 'count': export_count(key, period)}
+            for key, item in EXPORTS.items()
+        ]})
+
+
+@api_view(['GET'])
+@permission_classes([IsPanelAdmin])
+def export_download(request, key):
+    """Bitta bo'limning Excel fayli."""
+    if key not in EXPORTS:
+        raise Http404
+    try:
+        period = Period.from_query(request.query_params)
+    except ValueError as error:
+        return Response({'detail': str(error)}, status=status.HTTP_400_BAD_REQUEST)
+
+    response = HttpResponse(build_workbook(key, period), content_type=XLSX)
+    response['Content-Disposition'] = f'attachment; filename="{key}_{period.suffix}.xlsx"'
+    response['Cache-Control'] = 'no-store'
+    return response
 
 
 # --------------------------------------------------------------------------
