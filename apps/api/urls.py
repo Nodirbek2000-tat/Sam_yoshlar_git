@@ -45,6 +45,7 @@ urlpatterns = [
     # --- Yangiliklar ---
     path('news/', views.NewsList.as_view(), name='news_list'),
     path('news/<slug:slug>/', views.NewsDetail.as_view(), name='news_detail'),
+    path('news/<slug:slug>/korildi/', views.news_view, name='news_view'),
 
     # --- Tadbirlar ---
     path('events/', views.EventList.as_view(), name='event_list'),

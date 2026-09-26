@@ -87,16 +87,35 @@ class NewsList(generics.ListAPIView):
 
 
 class NewsDetail(generics.RetrieveAPIView):
+    """Yangilik. Ko'rishlar soni bu yerda oshmaydi — sahifa keshlanadi,
+    o'qilgani brauzerdan `news_view` orqali alohida yuboriladi."""
+
     serializer_class = s.NewsDetailSerializer
     permission_classes = [AllowAny]
     lookup_field = 'slug'
     queryset = News.objects.published()
 
-    def retrieve(self, request, *args, **kwargs):
-        item = self.get_object()
+
+#: Bir odamdan bir yangilik shu vaqt ichida bir marta sanaladi
+VIEW_WINDOW = 30 * 60
+
+
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def news_view(request, slug):
+    """Yangilik o'qildi — ko'rishlar soni bittaga oshadi.
+
+    Sahifani yangilab turib sonni sun'iy oshirib bo'lmasin: bir manzildan
+    bitta yangilik yarim soatda bir marta sanaladi.
+    """
+    from .auth_views import client_ip
+
+    item = get_object_or_404(News.objects.published().only('pk'), slug=slug)
+    if cache.add(f"news-view:{item.pk}:{client_ip(request)}", 1, VIEW_WINDOW):
         News.objects.filter(pk=item.pk).update(views=F('views') + 1)
-        item.refresh_from_db(fields=['views'])
-        return Response(self.get_serializer(item).data)
+
+    views = News.objects.filter(pk=item.pk).values_list('views', flat=True).first() or 0
+    return Response({'views': views})
 
 
 class EventList(generics.ListAPIView):
