@@ -1216,6 +1216,39 @@ class PanelOrganizations(APIView):
 
 @api_view(['DELETE'])
 @permission_classes([IsPanelAdmin])
+def delete_organization(request, pk):
+    """Tashkilotni butunlay o'chiradi.
+
+    Birga o'chadi: uning muammolari, ularga yozilgan takliflar (fayllari va
+    layklari bilan) va tashkilotning kirish hisobi — aks holda o'chirilgan
+    tashkilot login-parol yoki Telegram bilan hali ham kira olardi. Hisob
+    boshqa tashkilotga ham tegishli bo'lsa yoki admin bo'lsa — tegilmaydi.
+    """
+    organization = get_object_or_404(Organization.objects.select_related('user'), pk=pk)
+    name = organization.name
+    account = organization.user
+
+    problems = organization.problems.count()
+    solutions = Solution.objects.filter(problem__organization=organization).count()
+
+    delete_with_files(
+        Organization.objects.filter(pk=organization.pk),
+        Solution.objects.filter(problem__organization=organization),
+    )
+
+    account_deleted = False
+    if (account is not None and account.role == 'organization'
+            and not account.is_superuser and not account.is_staff
+            and not account.organizations.exists()):
+        delete_with_files(User.objects.filter(pk=account.pk))
+        account_deleted = True
+
+    return Response({'deleted': True, 'name': name, 'problems': problems,
+                     'solutions': solutions, 'account_deleted': account_deleted})
+
+
+@api_view(['DELETE'])
+@permission_classes([IsPanelAdmin])
 def unlink_organization_telegram(request, pk):
     """Tashkilotning Telegram hisobini uzadi (masalan, xodim almashganda).
 

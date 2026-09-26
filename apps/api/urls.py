@@ -100,6 +100,8 @@ urlpatterns = [
          name='panel_org_password'),
     path('panel/organizations/<int:pk>/telegram/', admin_views.unlink_organization_telegram,
          name='panel_org_telegram'),
+    path('panel/organizations/<int:pk>/', admin_views.delete_organization,
+         name='panel_org_delete'),
     path('panel/news/', admin_views.PanelNews.as_view(), name='panel_news'),
     path('panel/news/<int:pk>/tahrir/', admin_views.PanelNewsDetail.as_view(),
          name='panel_news_detail'),
