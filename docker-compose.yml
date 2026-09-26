@@ -82,6 +82,10 @@ services:
       # Server tomondagi so'rovlar ichki tarmoq orqali — tashqariga chiqmaydi
       INTERNAL_API_URL: http://web:8000/api/v1
       NODE_ENV: production
+    volumes:
+      # Kichraytirilgan rasmlar (WebP) — qayta qurishda o'chib ketmasin,
+      # aks holda har deploy'dan keyin hammasi qaytadan tayyorlanadi
+      - front_images:/app/.next/cache/images
     depends_on:
       - web
     expose:
@@ -137,3 +141,4 @@ volumes:
   media_files:
   certbot_conf:       # SSL sertifikatlar
   certbot_www:        # ACME tekshiruvi uchun
+  front_images:       # front: tayyorlangan rasm o'lchamlari (kesh)
