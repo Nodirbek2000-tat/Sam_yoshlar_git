@@ -230,7 +230,7 @@ class PhoneMatchingTests(TestCase):
 
 @override_settings(TELEGRAM_API_SECRET=SECRET)
 class BotAgeFlowTests(TestCase):
-    """Raqam bir marta, keyin yosh; 30 dan kattaga kod berilmaydi."""
+    """Raqam bir marta, keyin yosh; 34 dan kattaga kod berilmaydi."""
 
     def setUp(self):
         self.api_url = reverse('accounts:telegram_issue_code')
@@ -260,13 +260,13 @@ class BotAgeFlowTests(TestCase):
 
     def test_over_limit_gets_no_code_and_is_asked_again(self):
         self._issue(phone='+998901112233')
-        response = self._issue(age='31')
-        self.assertEqual(response, {'ok': False, 'error': 'age_limit', 'limit': 30})
+        response = self._issue(age='35')
+        self.assertEqual(response, {'ok': False, 'error': 'age_limit', 'limit': 34})
         self.assertFalse(TelegramAuthCode.objects.exists())
 
-        # Qayta /start — yana yosh so'raladi, 30 va undan kichik bo'lsa kod
+        # Qayta /start — yana yosh so'raladi, 34 va undan kichik bo'lsa kod
         self.assertEqual(self._issue()['error'], 'age_limit')
-        self.assertTrue(self._issue(age='30', district='urgut')['ok'])
+        self.assertTrue(self._issue(age='34', district='urgut')['ok'])
 
     def test_bad_age_rejected(self):
         self._issue(phone='+998901112233')

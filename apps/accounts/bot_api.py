@@ -24,6 +24,7 @@ from apps.initiatives.models import Initiative, Problem, Solution
 from apps.startups.models import Startup
 
 from .models import BotPost, Broadcast, ChannelJoin, RequiredChannel, Role, User
+from .org_link import complete_link, open_link
 
 
 def bot_only(view):
@@ -106,6 +107,8 @@ def bot_stats(request):
 
     users = User.objects.exclude(role=Role.ORGANIZATION).filter(is_superuser=False)
     bot_users = users.exclude(telegram_id=None)
+    # Tashkilotlar foydalanuvchi sifatida sanalmaydi — alohida ko'rsatiladi
+    organizations = User.objects.filter(role=Role.ORGANIZATION, is_active=True)
 
     return JsonResponse({
         'ok': True,
@@ -117,6 +120,10 @@ def bot_stats(request):
             'youth': users.filter(role=Role.YOUTH).count(),
             'entrepreneurs': users.filter(role=Role.ENTREPRENEUR).count(),
             'startuppers': users.filter(role=Role.STARTUPPER).count(),
+        },
+        'organizations': {
+            'total': organizations.count(),
+            'telegram': organizations.exclude(telegram_id=None).count(),
         },
         'site': {
             'initiatives': Initiative.objects.filter(is_published=True).count(),
@@ -316,3 +323,33 @@ def bot_broadcast_result(request, pk):
 
     return JsonResponse({'ok': True, 'sent': item.sent, 'failed': item.failed,
                          'blocked': item.blocked, 'total': item.total})
+
+
+@csrf_exempt
+@require_http_methods(['POST'])
+@bot_only
+def bot_org_link(request):
+    """Tashkilot Telegram'ini ulash.
+
+    Bot ``/start org_<token>`` olganda raqamsiz chaqiradi — tashkilot
+    tanilib, raqam so'raladi (``need_phone``). Raqam kelgach yana chaqiradi —
+    Telegram tashkilot hisobiga ulanadi.
+    """
+    data = body(request)
+    token = str(data.get('token') or '').strip()
+
+    try:
+        telegram_id = int(data.get('telegram_id'))
+    except (TypeError, ValueError):
+        return JsonResponse({'ok': False, 'error': 'bad_payload'}, status=400)
+
+    if not token:
+        return JsonResponse({'ok': False, 'error': 'bad_link'})
+
+    phone = str(data.get('phone') or '').strip()
+    if phone:
+        result = complete_link(token, telegram_id, phone,
+                               username=str(data.get('username') or ''))
+    else:
+        result = open_link(token, telegram_id)
+    return JsonResponse(result)

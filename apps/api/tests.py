@@ -126,9 +126,12 @@ class PasswordLoginTests(TestCase):
     def setUp(self):
         # Sozlama almashgach eski hisoblagichni tozalaymiz
         cache.clear()
+        # Telegram'i ulangan tashkilot — parol bilan to'g'ridan-to'g'ri kiradi.
+        # Ulanmagan tashkilotning birinchi kirishi test_org_link.py da
         self.org = User.objects.create_user(
             email='tashkilot@samarqandyoshlari.uz', password='Parol2026!',
             full_name="Tashkilot", role='organization', is_verified=True,
+            telegram_id=880011,
         )
 
     def test_login_with_password(self):
@@ -321,12 +324,13 @@ class PanelOrganizationTests(TestCase):
         self.assertEqual(creds['email'], 'hokimlik@samarqandyoshlari.uz')
         self.assertGreaterEqual(len(creds['password']), 10)
 
-        # Berilgan parol bilan haqiqatan kira olishi kerak
+        # Berilgan parol to'g'ri: birinchi kirishda Telegram'ni ulash so'raladi
         login = self.client.post('/api/v1/auth/login/', {
             'email': creds['email'], 'password': creds['password'],
         })
         self.assertEqual(login.status_code, 200, login.content)
-        self.assertEqual(login.json()['user']['role'], 'organization')
+        self.assertTrue(login.json()['telegram_required'])
+        self.assertEqual(login.json()['organization'], "Samarqand hokimligi")
 
     def test_duplicate_email_rejected(self):
         payload = {'name': "Bir", 'email': 'takror@samarqandyoshlari.uz'}

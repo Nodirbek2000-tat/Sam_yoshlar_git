@@ -164,7 +164,12 @@ class Announcement(TimeStampedModel):
     slug = models.SlugField("Havola", max_length=270, unique=True, blank=True)
     type = models.CharField("Turi", max_length=20, choices=AnnouncementType.choices)
     body = models.TextField("Matn")
+    # Kartada ikonka o'rniga shu rasm chiqadi
+    image = models.ImageField("Rasm", upload_to='announcements/images/%Y/%m/', blank=True)
     file = models.FileField("Fayl", upload_to='announcements/%Y/%m/', blank=True)
+    # «Murojaat qilish» tugmasi shu yerga olib boradi: tashkilot sayti,
+    # ariza shakli yoki boshqa havola
+    apply_url = models.URLField("Murojaat havolasi", max_length=500, blank=True)
     posted_at = models.DateField("Joylangan sana", default=timezone.localdate)
     deadline = models.DateField("Muddat", null=True, blank=True)
     is_active = models.BooleanField("Faol", default=True)

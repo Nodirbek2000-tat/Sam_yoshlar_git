@@ -62,11 +62,24 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ['id', 'full_name', 'email', 'phone', 'role', 'role_display',
                   'region', 'region_display', 'district', 'bio', 'avatar',
-                  'initials', 'telegram_username', 'is_verified', 'is_panel_admin',
-                  'onboarding', 'age', 'study_location', 'capabilities']
+                  'initials', 'telegram_username', 'telegram_linked', 'is_verified',
+                  'is_panel_admin', 'onboarding', 'age', 'study_location', 'capabilities',
+                  'organization_name']
         read_only_fields = ['id', 'email', 'phone', 'telegram_username', 'is_verified', 'age']
 
     capabilities = serializers.SerializerMethodField()
+    telegram_linked = serializers.SerializerMethodField()
+    organization_name = serializers.SerializerMethodField()
+
+    def get_telegram_linked(self, obj):
+        return obj.telegram_id is not None
+
+    def get_organization_name(self, obj):
+        """Tashkilot hisobi bo'lsa — tashkilotning nomi (aks holda bo'sh)."""
+        from apps.accounts.models import Role
+        from apps.accounts.org_link import organization_name
+
+        return organization_name(obj) if obj.role == Role.ORGANIZATION else ''
 
     def get_capabilities(self, obj):
         """Bir odam bir nechta rolda bo'la oladi: nimasi borligi."""
@@ -100,10 +113,35 @@ class ProfileUpdateSerializer(serializers.ModelSerializer):
 
     def validate_role(self, value):
         from apps.accounts.models import Role
-        # Adminlikni o'zi tanlab ololmaydi
-        if value == Role.ADMIN:
+
+        current = self.instance.role if self.instance else None
+
+        # Tashkilot hisobini biz ochamiz — u boshqa rolga o'tmaydi
+        if current == Role.ORGANIZATION and value != Role.ORGANIZATION:
+            raise serializers.ValidationError("Tashkilot hisobining rolini o'zgartirib bo'lmaydi.")
+        # Adminlik va tashkilotni o'zi tanlab ololmaydi
+        if value in (Role.ADMIN, Role.ORGANIZATION) and value != current:
             raise serializers.ValidationError("Bu rolni tanlab bo'lmaydi.")
         return value
+
+    def validate_district(self, value):
+        """Faqat Samarqand viloyatining tuman va shaharlari."""
+        from apps.core.constants import district_label
+
+        if not value:
+            return ''
+        label = district_label(value)
+        if not label:
+            raise serializers.ValidationError("Bunday tuman yoki shahar yo'q.")
+        return label
+
+    def update(self, instance, validated_data):
+        from apps.core.constants import Region
+
+        # Tuman tanlangan bo'lsa viloyat ham aniq
+        if validated_data.get('district'):
+            validated_data['region'] = Region.SAMARQAND
+        return super().update(instance, validated_data)
 
 
 # --------------------------------------------------------------------------
@@ -185,6 +223,10 @@ class PanelAnnouncementSerializer(serializers.ModelSerializer):
 
     file = serializers.FileField(required=False, allow_null=True)
     file_url = serializers.SerializerMethodField()
+    image = serializers.ImageField(required=False, allow_null=True)
+    image_url = serializers.SerializerMethodField()
+    # Tahrirlashda rasmni olib tashlash uchun belgi
+    remove_image = serializers.BooleanField(required=False, write_only=True)
     type_display = serializers.CharField(source='get_type_display', read_only=True)
     icon = serializers.CharField(read_only=True)
     is_expired = serializers.BooleanField(read_only=True)
@@ -192,12 +234,34 @@ class PanelAnnouncementSerializer(serializers.ModelSerializer):
     class Meta:
         model = Announcement
         fields = ['id', 'slug', 'title', 'type', 'type_display', 'icon', 'body',
-                  'file', 'file_url', 'posted_at', 'deadline', 'is_active',
-                  'is_expired', 'created_at']
+                  'image', 'image_url', 'remove_image', 'file', 'file_url', 'apply_url',
+                  'posted_at', 'deadline', 'is_active', 'is_expired', 'created_at']
         read_only_fields = ['id', 'slug', 'created_at']
 
     def get_file_url(self, obj):
         return absolute(self.context.get('request'), obj.file)
+
+    def get_image_url(self, obj):
+        return absolute(self.context.get('request'), obj.image)
+
+    def _drop_image(self, instance, validated_data):
+        if validated_data.pop('remove_image', False) and 'image' not in validated_data:
+            if instance is not None and instance.image:
+                instance.image.delete(save=False)
+            validated_data['image'] = ''
+
+    def create(self, validated_data):
+        validated_data.pop('remove_image', None)
+        return super().create(validated_data)
+
+    def update(self, instance, validated_data):
+        old_image = instance.image.name if instance.image else ''
+        self._drop_image(instance, validated_data)
+        item = super().update(instance, validated_data)
+        # Yangi rasm yuklansa — eskisi diskda qolib ketmasin
+        if old_image and item.image.name != old_image:
+            item.image.storage.delete(old_image)
+        return item
 
     def validate(self, attrs):
         posted = attrs.get('posted_at') or getattr(self.instance, 'posted_at', None)
@@ -248,14 +312,18 @@ class AnnouncementSerializer(serializers.ModelSerializer):
     icon = serializers.CharField(read_only=True)
     is_expired = serializers.BooleanField(read_only=True)
     file = serializers.SerializerMethodField()
+    image = serializers.SerializerMethodField()
 
     class Meta:
         model = Announcement
-        fields = ['id', 'slug', 'title', 'type', 'type_display', 'icon', 'body',
-                  'posted_at', 'deadline', 'is_active', 'is_expired', 'file']
+        fields = ['id', 'slug', 'title', 'type', 'type_display', 'icon', 'body', 'image',
+                  'apply_url', 'posted_at', 'deadline', 'is_active', 'is_expired', 'file']
 
     def get_file(self, obj):
         return absolute(self.context.get('request'), obj.file)
+
+    def get_image(self, obj):
+        return absolute(self.context.get('request'), obj.image)
 
 
 # --------------------------------------------------------------------------

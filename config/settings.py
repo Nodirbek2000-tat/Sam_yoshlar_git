@@ -247,6 +247,10 @@ REST_FRAMEWORK = {
     'DEFAULT_THROTTLE_CLASSES': [],
     # Parol tanlashga urinishni cheklaymiz
     'DEFAULT_THROTTLE_RATES': {'login': '10/min'},
+    # Oldimizda bitta proksi (nginx) — foydalanuvchi manzili X-Forwarded-For
+    # ning oxirgisi. Busiz hamma so'rov front konteyneridan kelgandek
+    # ko'rinadi va cheklov butun sayt uchun bitta bo'lib qoladi.
+    'NUM_PROXIES': 1,
 }
 
 # Brauzerda API'ni ko'rib chiqish faqat dev rejimida

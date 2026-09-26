@@ -8,6 +8,8 @@ Navbatni botning o'zi olib, hamma foydalanuvchiga yuboradi: rasm, matn
 boshlanishi va «Davomini o'qish» tugmasi.
 """
 
+import re
+
 from django.conf import settings
 from django.db.models.signals import post_save
 from django.dispatch import receiver
@@ -31,8 +33,20 @@ def file_url(field):
     return site_link(field.url)
 
 
+#: E'lon matnidagi bezash belgilari: # sarlavha, **qalin**, [havola](url), >> ...
+_LINK = re.compile(r'\[([^\]]+)\]\([^)]+\)')
+_MARKS = re.compile(r'(^|\n)\s*(#{1,3}\s+|>>\s*|-\s+|---+\s*$)', re.MULTILINE)
+
+
+def plain_text(text):
+    """Bezash belgilarisiz oddiy matn — botda «**» ko'rinib qolmasin."""
+    text = _LINK.sub(r'\1', text or '')
+    text = _MARKS.sub(r'\1', text)
+    return text.replace('**', '').replace('*', '')
+
+
 def shorten(text, limit=EXCERPT_LIMIT):
-    text = ' '.join((text or '').split())
+    text = ' '.join(plain_text(text).split())
     if len(text) <= limit:
         return text
     return text[:limit].rsplit(' ', 1)[0] + '…'
@@ -73,7 +87,7 @@ def announcement_created(sender, instance, **kwargs):
     if sender.__name__ != 'Announcement' or not instance.is_active:
         return
     enqueue(BotPost.Kind.ANNOUNCEMENT, instance, instance.title, instance.body,
-            site_link(f'/elonlar/{instance.slug}'))
+            site_link(f'/elonlar/{instance.slug}'), file_url(instance.image))
 
 
 @receiver(post_save, dispatch_uid='bot_feed_startup')

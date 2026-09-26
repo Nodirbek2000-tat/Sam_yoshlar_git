@@ -8,9 +8,15 @@
 **Login va parol** — faqat biz qo'lda ochib beradigan hisoblar uchun
 (tashkilotlar va adminlar). Telegram orqali kelgan foydalanuvchida parol
 o'rnatilmagan, shuning uchun bu yo'l ular uchun yopiq.
+
+Tashkilot birinchi marta parol bilan kirganda token darhol berilmaydi:
+avval Telegram hisobini maxsus bot havolasi orqali ulaydi, brauzer esa
+`/auth/telegram-link/` dan holatni so'rab turadi va ulanishi bilan kiradi.
 """
 from django.conf import settings
 from django.contrib.auth import authenticate
+from django.contrib.auth.models import update_last_login
+from django.core.cache import cache
 from django.utils import timezone
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes, throttle_classes
@@ -21,6 +27,7 @@ from rest_framework.throttling import AnonRateThrottle
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from apps.accounts.models import TelegramAuthCode
+from apps.accounts.org_link import link_payload, link_status, needs_telegram, start_link
 
 from .onboarding import onboarding_step
 from .serializers import ProfileUpdateSerializer, UserSerializer
@@ -35,6 +42,53 @@ class LoginThrottle(AnonRateThrottle):
 def tokens_for(user):
     refresh = RefreshToken.for_user(user)
     return {'refresh': str(refresh), 'access': str(refresh.access_token)}
+
+
+def signed_in(request, user):
+    """Kirish muvaffaqiyatli: token, foydalanuvchi va qolgan qadam."""
+    update_last_login(None, user)
+    step = onboarding_step(user)
+    return Response({
+        **tokens_for(user),
+        'user': UserSerializer(user, context={'request': request}).data,
+        'needs_profile': step is not None,
+        'onboarding': step,
+    })
+
+
+def client_ip(request):
+    """Haqiqiy manzil. nginx uni X-Forwarded-For oxiriga qo'shadi.
+
+    Next server tomonda so'rov yuborganda shu sarlavhani uzatadi —
+    aks holda hamma bitta (front konteyneri) manzildan kelgandek ko'rinardi.
+    """
+    forwarded = request.META.get('HTTP_X_FORWARDED_FOR', '')
+    if forwarded:
+        return forwarded.split(',')[-1].strip()
+    return request.META.get('REMOTE_ADDR', '')
+
+
+#: Kodni topishga urinish: bitta manzildan shuncha noto'g'ri kod — keyin tanaffus
+CODE_FAILURE_LIMIT = 30
+CODE_FAILURE_WINDOW = 10 * 60
+
+
+def _code_failures_key(request):
+    return f"code-fail:{client_ip(request)}"
+
+
+def _code_blocked(request):
+    return (cache.get(_code_failures_key(request)) or 0) >= CODE_FAILURE_LIMIT
+
+
+def _code_failed(request):
+    key = _code_failures_key(request)
+    if cache.add(key, 1, CODE_FAILURE_WINDOW):
+        return
+    try:
+        cache.incr(key)
+    except ValueError:
+        cache.set(key, 1, CODE_FAILURE_WINDOW)
 
 
 @api_view(['GET'])
@@ -71,16 +125,32 @@ def password_login(request):
         return Response({'detail': "Login yoki parol noto'g'ri."},
                         status=status.HTTP_401_UNAUTHORIZED)
 
-    # Tashkilot va admin uchun odatda `None`; boshqa rol parol bilan kirsa
-    # ham qolgan qadamga yuboriladi
-    step = onboarding_step(user)
+    # Tashkilotning Telegram'i hali ulanmagan — token yo'q, avval bot havolasi
+    if needs_telegram(user):
+        return Response(link_payload(start_link(user)))
 
-    return Response({
-        **tokens_for(user),
-        'user': UserSerializer(user, context={'request': request}).data,
-        'needs_profile': step is not None,
-        'onboarding': step,
-    })
+    return signed_in(request, user)
+
+
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def telegram_link(request):
+    """Tashkilot Telegram'ni ulaganmi — brauzer har 1–2 soniyada so'raydi.
+
+    Ulangan bo'lsa shu javobning o'zida kirish tokeni qaytadi (bir marta).
+    """
+    state, user = link_status(str(request.data.get('ticket', '')).strip())
+
+    if state == 'linked':
+        if not user.is_active:
+            return Response({'status': 'invalid'}, status=status.HTTP_403_FORBIDDEN)
+        response = signed_in(request, user)
+        response.data['status'] = 'linked'
+        return response
+
+    if state == 'invalid':
+        return Response({'status': state}, status=status.HTTP_404_NOT_FOUND)
+    return Response({'status': state})
 
 
 @api_view(['POST'])
@@ -96,15 +166,24 @@ def telegram_login(request):
         return Response({'detail': "Kod faqat raqamlardan iborat bo'ladi."},
                         status=status.HTTP_400_BAD_REQUEST)
 
+    # Kodni tanlab topishning oldini olamiz: noto'g'ri urinishlar sanaladi
+    if _code_blocked(request):
+        return Response({'detail': "Juda ko'p noto'g'ri urinish. "
+                                   "10 daqiqadan keyin qayta urinib ko'ring."},
+                        status=status.HTTP_429_TOO_MANY_REQUESTS)
+
     entry = TelegramAuthCode.objects.select_related('user').filter(code=code).first()
 
     if entry is None:
+        _code_failed(request)
         return Response({'detail': "Bunday kod topilmadi. Botdan yangi kod oling."},
                         status=status.HTTP_400_BAD_REQUEST)
     if entry.used_at is not None:
+        _code_failed(request)
         return Response({'detail': "Bu kod allaqachon ishlatilgan. Yangi kod oling."},
                         status=status.HTTP_400_BAD_REQUEST)
     if entry.is_expired:
+        _code_failed(request)
         return Response({'detail': "Kod eskirgan. Botdan yangi kod oling."},
                         status=status.HTTP_400_BAD_REQUEST)
 
@@ -116,20 +195,19 @@ def telegram_login(request):
         return Response({'detail': f"Bu saytga faqat {AGE_LIMIT} yoshgacha bo'lgan yoshlar kira oladi."},
                         status=status.HTTP_403_FORBIDDEN)
 
-    entry.used_at = timezone.now()
-    entry.save(update_fields=['used_at'])
+    if not entry.user.is_active:
+        return Response({'detail': "Hisob faol emas."}, status=status.HTTP_403_FORBIDDEN)
 
-    user = entry.user
+    # Bir kod bilan ikki oynadan bir vaqtda kirib bo'lmasin — faqat bittasi o'tadi
+    consumed = (TelegramAuthCode.objects.filter(pk=entry.pk, used_at__isnull=True)
+                .update(used_at=timezone.now()))
+    if not consumed:
+        return Response({'detail': "Bu kod allaqachon ishlatilgan. Yangi kod oling."},
+                        status=status.HTTP_400_BAD_REQUEST)
+
     # Rol tanlanmagan yoki biznes/startap ma'lumoti berilmagan bo'lsa —
     # front foydalanuvchini o'sha qadamga yuboradi
-    step = onboarding_step(user)
-
-    return Response({
-        **tokens_for(user),
-        'user': UserSerializer(user, context={'request': request}).data,
-        'needs_profile': step is not None,
-        'onboarding': step,
-    })
+    return signed_in(request, entry.user)
 
 
 class Me(RetrieveUpdateAPIView):
@@ -153,8 +231,8 @@ class Me(RetrieveUpdateAPIView):
             from apps.abroad.models import Peer
             Peer.objects.filter(user=user, is_published=True).update(is_published=False)
 
-        # Rol tanlangach hisob to'liq hisoblanadi
-        if not user.is_verified:
+        # Rol tanlangach hisob to'liq hisoblanadi (faqat tuman o'zgartirilsa — yo'q)
+        if not user.is_verified and 'role' in request.data:
             user.is_verified = True
             user.save(update_fields=['is_verified'])
 

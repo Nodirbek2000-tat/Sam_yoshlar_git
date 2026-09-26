@@ -18,6 +18,8 @@ urlpatterns = [
 
     # Bot chaqiradigan API
     path('api/telegram/kod/', telegram_views.telegram_issue_code, name='telegram_issue_code'),
+    # Tashkilot birinchi kirishda Telegram'ini maxsus havola orqali ulaydi
+    path('api/telegram/tashkilot/', bot_api.bot_org_link, name='bot_org_link'),
 
     # Botning admin menyusi: statistika, majburiy kanallar, reklama
     path('api/telegram/admin/', bot_api.bot_admin_check, name='bot_admin_check'),

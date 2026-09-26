@@ -19,7 +19,7 @@ from apps.accounts.models import Role
 from apps.cabinet.models import Notification
 from apps.content.models import (Announcement, AnnouncementType, Event,
                                  EventRegistration, News, NewsCategory)
-from apps.core.constants import Region, Status
+from apps.core.constants import Region, Status, district_options
 from apps.initiatives.directions import DIRECTIONS, MILESTONES, get_direction, random_cheer
 from apps.initiatives.models import (PROBLEM_QUESTIONS, Initiative, InitiativeComment,
                                      InitiativeVote, Problem, ProblemCategory,
@@ -760,7 +760,7 @@ class ReferenceData(APIView):
     permission_classes = [AllowAny]
 
     def get(self, request):
-        cached = cache.get('reference:v1')
+        cached = cache.get('reference:v2')
         if cached is not None:
             return Response(cached)
 
@@ -796,10 +796,12 @@ class ReferenceData(APIView):
             'organization_spheres': choices(OrganizationSphere.choices),
             'appeal_categories': choices(AppealCategory.choices),
             'peer_purposes': choices(PeerPurpose.choices),
+            # Samarqand viloyatining tuman va shaharlari — kabinet va panel filtri
+            'districts': district_options(),
             'countries': [{'value': code, 'label': name, 'short': short, 'color': color}
                           for code, name, short, color in COUNTRIES],
         }
 
         # Ro'yxatlar kodda yozilgan — bir soat keshda tursa bo'ladi
-        cache.set('reference:v1', data, 3600)
+        cache.set('reference:v2', data, 3600)
         return Response(data)

@@ -15,8 +15,8 @@ class Role(models.TextChoices):
     ADMIN = 'admin', "Administrator"
 
 
-#: Saytga faqat shu yoshgacha bo'lganlar kiradi (30 yosh ham mumkin)
-AGE_LIMIT = 30
+#: Saytga faqat shu yoshgacha bo'lganlar kiradi (34 yosh ham mumkin)
+AGE_LIMIT = 34
 
 
 class StudyLocation(models.TextChoices):
@@ -291,3 +291,56 @@ class TelegramAuthCode(models.Model):
     @property
     def is_valid(self):
         return self.used_at is None and not self.is_expired
+
+
+class TelegramLink(models.Model):
+    """Tashkilot hisobini Telegram bilan bog'lash — birinchi kirishda.
+
+    Tashkilotga login va parolni biz beramiz. U birinchi marta kirganda sayt
+    kirish tokenini darhol bermaydi — avval Telegram hisobini ulashni so'raydi:
+
+      1. Sayt maxsus havola beradi: ``t.me/<bot>?start=org_<token>``
+      2. Bot havoladan tashkilotni taniydi va faqat raqamni so'raydi
+      3. Raqam kelgach Telegram tashkilotga ulanadi
+      4. Brauzer ``ticket`` bilan holatni so'rab turadi va ulanishi bilan
+         o'zi tizimga kiradi — kod yozish shart emas
+
+    ``token`` — havolada (Telegram'da ko'rinadi), ``ticket`` — faqat
+    brauzerda. Kim havolani ko'rgan bo'lsa ham, saytga faqat login-parolni
+    kiritgan brauzer kiradi.
+    """
+
+    #: Havola shuncha vaqt amal qiladi
+    LIFETIME = timedelta(minutes=15)
+    #: Ulangandan keyin brauzer shuncha vaqt ichida kirib olishi kerak
+    CLAIM_WINDOW = timedelta(hours=1)
+
+    user = models.ForeignKey('accounts.User', verbose_name="Hisob", on_delete=models.CASCADE,
+                             related_name='telegram_links')
+    token = models.CharField("Havola kaliti", max_length=40, unique=True)
+    ticket = models.CharField("Brauzer kaliti", max_length=64, unique=True)
+
+    # Botda havolani ochgan odam (raqami hali kelmagan bo'lishi mumkin)
+    telegram_id = models.BigIntegerField("Telegram ID", null=True, blank=True)
+    created_at = models.DateTimeField("Yaratilgan", default=timezone.now)
+    opened_at = models.DateTimeField("Botda ochilgan", null=True, blank=True)
+    linked_at = models.DateTimeField("Ulangan", null=True, blank=True)
+    claimed_at = models.DateTimeField("Saytga kirilgan", null=True, blank=True)
+
+    class Meta:
+        verbose_name = "Telegram ulash"
+        verbose_name_plural = "Telegram ulashlar"
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"{self.user.full_name} — {'ulangan' if self.linked_at else 'kutilmoqda'}"
+
+    @property
+    def is_expired(self):
+        return timezone.now() - self.created_at > self.LIFETIME
+
+    @property
+    def can_claim(self):
+        """Ulangan va hali saytga kirilmagan — brauzer token olishi mumkin."""
+        return (self.linked_at is not None and self.claimed_at is None
+                and timezone.now() - self.linked_at <= self.CLAIM_WINDOW)

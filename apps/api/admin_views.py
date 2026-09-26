@@ -22,11 +22,12 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from apps.abroad.models import Peer
+from apps.accounts.models import Role
 from apps.business.models import BusinessProfile
-from apps.cabinet.models import Appeal, Notification, Suggestion
+from apps.cabinet.models import Notification
 from apps.content.models import Announcement, AnnouncementType, Event, News
 from apps.core.cleanup import delete_with_files
-from apps.core.constants import Region, Status
+from apps.core.constants import Region, SamarqandDistrict, Status
 from apps.initiatives.directions import DIRECTIONS
 from apps.initiatives.models import (Initiative, InitiativeComment, Organization,
                                      OrganizationSphere, Problem, ProblemCategory,
@@ -57,8 +58,9 @@ class PanelOverview(APIView):
 
         return Response({
             'stats': [
+                # Tashkilot va bosh adminlar foydalanuvchi sifatida sanalmaydi
                 {'key': 'users', 'label': "Foydalanuvchilar", 'icon': 'users',
-                 'value': User.objects.count()},
+                 'value': site_users().count()},
                 {'key': 'initiatives', 'label': "Tashabbuslar", 'icon': 'spark',
                  'value': Initiative.objects.count()},
                 {'key': 'votes', 'label': "Berilgan ovozlar", 'icon': 'vote',
@@ -75,18 +77,15 @@ class PanelOverview(APIView):
                  'value': Peer.objects.count()},
             ],
             # E'tibor talab qiladigan narsalar — panelning asosiy ishi shu
+            # Murojaatlar va takliflar bo'limi olib tashlangan — ular panelda
+            # yo'q sahifaga (404) olib borardi
             'pending': [
-                {'key': 'appeals', 'label': "Javob kutayotgan murojaatlar",
-                 'icon': 'mail', 'href': '/nazorat/murojaatlar',
-                 'value': Appeal.objects.filter(status=Status.PENDING).count()},
-                {'key': 'suggestions', 'label': "Ko'rilmagan takliflar",
-                 'icon': 'bulb', 'href': '/nazorat/takliflar',
-                 'value': Suggestion.objects.filter(status=Status.PENDING).count()},
                 {'key': 'startups', 'label': "Tasdiq kutayotgan startaplar",
                  'icon': 'rocket', 'href': '/nazorat/startaplar',
                  'value': Startup.objects.filter(status=Status.PENDING).count()},
+                # Yechimlar tashkilot muammolari ichida ko'rinadi
                 {'key': 'solutions', 'label': "Yangi yechimlar",
-                 'icon': 'check', 'href': '/nazorat/yechimlar',
+                 'icon': 'check', 'href': '/nazorat/muammolar',
                  'value': Solution.objects.filter(status=Status.PENDING).count()},
                 {'key': 'peers', 'label': "Tasdiq kutayotgan tengdoshlar",
                  'icon': 'globe', 'href': '/nazorat/tengdoshlar',
@@ -97,7 +96,7 @@ class PanelOverview(APIView):
                  'role': user.role, 'role_display': user.get_role_display(),
                  'initials': user.initials, 'is_verified': user.is_verified,
                  'created_at': user.date_joined}
-                for user in User.objects.order_by('-date_joined')[:6]
+                for user in site_users().order_by('-date_joined')[:6]
             ],
             'top_initiatives': s.InitiativeListSerializer(
                 Initiative.objects.annotate(comment_total=Count('comments', distinct=True))
@@ -109,19 +108,63 @@ class PanelOverview(APIView):
         })
 
 
+def site_users():
+    """Saytning foydalanuvchilari: tashkilot va bosh adminlarsiz.
+
+    Tashkilot hisobini biz beramiz — u «Korxonalar» bo'limida alohida turadi.
+    """
+    return User.objects.exclude(role=Role.ORGANIZATION).filter(is_superuser=False)
+
+
+#: Panel filtrida «tumani ko'rsatilmagan»
+NO_DISTRICT = 'yoq'
+
+
+def district_counts(queryset):
+    """Har bir tuman/shaharda nechta foydalanuvchi — bitta so'rovda.
+
+    Ro'yxatda yo'q (bo'sh yoki eskidan qo'lda yozilgan) tumanlar
+    «ko'rsatilmagan» ga qo'shiladi — hech kim sanoqdan tushib qolmasin.
+    """
+    # order_by() — tartiblash maydoni GROUP BY ga qo'shilib, sonlarni bo'lib yubormasin
+    rows = dict(queryset.order_by().values('district').annotate(total=Count('id'))
+                .values_list('district', 'total'))
+    official = set(SamarqandDistrict.labels)
+    return [
+        {'value': value, 'label': label, 'count': rows.get(label, 0)}
+        for value, label in SamarqandDistrict.choices
+    ], sum(total for name, total in rows.items() if name not in official)
+
+
 class PanelUsers(APIView):
+    """Foydalanuvchilar: rol, tuman va tekshiruv bo'yicha saralash."""
+
     permission_classes = [IsPanelAdmin]
 
     def get(self, request):
-        queryset = User.objects.order_by('-date_joined')
+        role = request.query_params.get('rol')
+
+        # Tashkilotlar alohida — faqat aniq so'ralganda ko'rinadi
+        queryset = (User.objects.filter(role=Role.ORGANIZATION) if role == Role.ORGANIZATION
+                    else User.objects.exclude(role=Role.ORGANIZATION))
+        queryset = queryset.order_by('-date_joined')
 
         search = request.query_params.get('q')
         if search:
             queryset = queryset.filter(full_name__icontains=search)
 
-        role = request.query_params.get('rol')
-        if role:
+        if role and role != Role.ORGANIZATION:
             queryset = queryset.filter(role=role)
+
+        # Tuman sonlari rol filtridan keyin, tuman filtridan oldin hisoblanadi —
+        # «Urgut tumani · 12» degani shu roldagi 12 kishi
+        districts, without_district = district_counts(queryset)
+
+        district = request.query_params.get('tuman')
+        if district == NO_DISTRICT:
+            queryset = queryset.exclude(district__in=SamarqandDistrict.labels)
+        elif district in SamarqandDistrict.values:
+            queryset = queryset.filter(district=SamarqandDistrict(district).label)
 
         # Tadbirkor/startupper anketasi kengash tekshiruvini kutayotganlar
         if request.query_params.get('tekshiruv'):
@@ -145,11 +188,14 @@ class PanelUsers(APIView):
             ).distinct().count(),
             'page': page,
             'pages': (total + page_size - 1) // page_size,
+            'districts': districts,
+            'without_district': without_district,
             'results': [
                 {'id': user.pk, 'full_name': user.full_name, 'email': user.email,
                  'phone': user.phone, 'role': user.role, 'age': user.age,
                  'role_display': user.get_role_display(),
                  'region_display': user.get_region_display(),
+                 'district': user.district,
                  'initials': user.initials, 'is_verified': user.is_verified,
                  'is_admin': is_panel_admin(user),
                  'telegram_username': user.telegram_username,
@@ -621,6 +667,17 @@ class PanelImport(APIView):
         return request.data if isinstance(request.data, (dict, list)) else None
 
 
+def is_http_url(value):
+    from django.core.exceptions import ValidationError
+    from django.core.validators import URLValidator
+
+    try:
+        URLValidator(schemes=['http', 'https'])(value)
+    except ValidationError:
+        return False
+    return True
+
+
 class PanelImportAnnouncements(APIView):
     """E'lonlarni JSON'dan yuklash.
 
@@ -628,8 +685,11 @@ class PanelImportAnnouncements(APIView):
 
         {"announcements": [
             {"title": "...", "type": "grant", "body": "# Sarlavha\\n**qalin**",
-             "posted_at": "2026-09-01", "deadline": "2026-10-01", "is_active": true}
+             "posted_at": "2026-09-01", "deadline": "2026-10-01", "is_active": true,
+             "apply_url": "https://tashkilot.uz/ariza"}
         ]}
+
+    `apply_url` — ixtiyoriy: «Murojaat qilish» tugmasi shu havolaga olib boradi.
 
     `body` oddiy matn bo'lishi ham mumkin. Belgilar bilan yozilsa sayt uni
     chiroyli qilib chiqaradi: `#` sarlavha, `**qalin**`, `[matn](havola)`,
@@ -678,10 +738,16 @@ class PanelImportAnnouncements(APIView):
             posted = parse_datetime_loose(row.get('posted_at'))
             deadline = parse_datetime_loose(row.get('deadline'))
 
+            apply_url = str(row.get('apply_url') or '').strip()
+            if apply_url and not is_http_url(apply_url):
+                problems.append(f"«{title}»: murojaat havolasi noto'g'ri — qo'shilmadi")
+                apply_url = ''
+
             Announcement.objects.create(
                 title=title[:250],
                 type=kind,
                 body=body,
+                apply_url=apply_url[:500],
                 posted_at=posted.date() if posted else timezone.localdate(),
                 deadline=deadline.date() if deadline else None,
                 is_active=bool(row.get('is_active', True)),
@@ -983,7 +1049,8 @@ def panel_delete(request, resource, pk):
     model, _ = MODELS[resource]
     obj = get_object_or_404(model, pk=pk)
     label = str(obj)
-    obj.delete()
+    # Rasm va hujjatlari ham o'chadi — diskda egasiz fayl qolib ketmasin
+    delete_with_files(model.objects.filter(pk=obj.pk))
 
     return Response({'deleted': True, 'label': label})
 
@@ -1085,6 +1152,12 @@ class PanelOrganizations(APIView):
                     'problem_count': org.problems.count(),
                     # Hisob ochilganmi — parol qayta yaratish uchun kerak
                     'account_email': org.user.email if org.user else None,
+                    # Birinchi kirishda ulanadigan Telegram hisobi
+                    'telegram_linked': bool(org.user and org.user.telegram_id),
+                    'telegram_username': org.user.telegram_username if org.user else '',
+                    'telegram_phone': (org.user.phone
+                                       if org.user and org.user.telegram_id else ''),
+                    'last_login': org.user.last_login if org.user else None,
                     'created_at': org.created_at,
                 }
                 for org in queryset[:100]
@@ -1139,6 +1212,28 @@ class PanelOrganizations(APIView):
             'name': organization.name,
             'credentials': {'email': email, 'password': password},
         }, status=status.HTTP_201_CREATED)
+
+
+@api_view(['DELETE'])
+@permission_classes([IsPanelAdmin])
+def unlink_organization_telegram(request, pk):
+    """Tashkilotning Telegram hisobini uzadi (masalan, xodim almashganda).
+
+    Keyingi login-parol bilan kirishda tashkilot yangi Telegram'ni ulaydi.
+    """
+    organization = get_object_or_404(Organization.objects.select_related('user'), pk=pk)
+    account = organization.user
+
+    if account is None:
+        return Response({'detail': "Bu tashkilotda kirish hisobi yo'q."},
+                        status=status.HTTP_400_BAD_REQUEST)
+
+    account.telegram_id = None
+    account.telegram_username = ''
+    account.save(update_fields=['telegram_id', 'telegram_username'])
+    account.telegram_links.all().delete()
+
+    return Response({'id': organization.pk, 'telegram_linked': False})
 
 
 @api_view(['POST'])
