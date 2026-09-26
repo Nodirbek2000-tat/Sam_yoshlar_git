@@ -9,6 +9,7 @@ import hmac
 import json
 
 from django.conf import settings
+from django.db import models
 from django.db.models import Q, Sum
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
@@ -357,3 +358,40 @@ def bot_org_link(request):
     else:
         result = open_link(token, telegram_id)
     return JsonResponse(result)
+
+
+#: Bir xil xato qayta chiqsa, adminlarga eng ko'pi bilan shu oraliqda bir marta eslatiladi
+ERROR_REMIND_AFTER = timezone.timedelta(hours=6)
+
+
+@csrf_exempt
+@require_http_methods(['GET'])
+@bot_only
+def bot_errors(request):
+    """Adminlarga yuborilmagan server xatolari — bot har daqiqada so'raydi.
+
+    Yangi xato — darhol; eskisi qayta chiqsa — 6 soatda bir martadan ko'p emas.
+    Qaytarilganlari «yuborildi» deb belgilanadi.
+    """
+    from apps.core.models import ServerError
+
+    now = timezone.now()
+    due = (ServerError.objects
+           .filter(Q(notified_at__isnull=True)
+                   | Q(last_seen__gt=models.F('notified_at'), notified_at__lt=now - ERROR_REMIND_AFTER))
+           .order_by('last_seen')[:5])
+
+    rows = [{
+        'id': item.pk,
+        'title': item.title,
+        'location': item.location,
+        'method': item.method,
+        'path': item.path,
+        'count': item.count,
+        'repeat': item.notified_at is not None,
+        'last_seen': item.last_seen.isoformat(),
+    } for item in due]
+
+    ServerError.objects.filter(pk__in=[row['id'] for row in rows]).update(notified_at=now)
+    return JsonResponse({'ok': True, 'results': rows,
+                         'panel': f"{(getattr(settings, 'SITE_URL', '') or '').rstrip('/')}/nazorat/xatolar"})

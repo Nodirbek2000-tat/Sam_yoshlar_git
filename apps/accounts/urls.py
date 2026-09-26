@@ -33,6 +33,8 @@ urlpatterns = [
     path('api/telegram/postlar/<int:pk>/natija/', bot_api.bot_post_result,
          name='bot_post_result'),
     path('api/telegram/reklama/', bot_api.bot_broadcast, name='bot_broadcast'),
+    # Server xatolari — bot adminlarga Telegram'da yuboradi
+    path('api/telegram/xatolar/', bot_api.bot_errors, name='bot_errors'),
     path('api/telegram/reklama/<int:pk>/natija/', bot_api.bot_broadcast_result,
          name='bot_broadcast_result'),
 ]

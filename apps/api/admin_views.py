@@ -27,6 +27,7 @@ from apps.business.models import BusinessProfile
 from apps.cabinet.models import Notification
 from apps.content.models import Announcement, AnnouncementType, Event, News
 from apps.core.cleanup import delete_with_files
+from apps.core.models import ServerError
 from apps.core.constants import Region, SamarqandDistrict, Status
 from apps.initiatives.directions import DIRECTIONS
 from apps.initiatives.models import (Initiative, InitiativeComment, Organization,
@@ -80,6 +81,10 @@ class PanelOverview(APIView):
             # Murojaatlar va takliflar bo'limi olib tashlangan — ular panelda
             # yo'q sahifaga (404) olib borardi
             'pending': [
+                {'key': 'errors', 'label': "Server xatolari (24 soat)",
+                 'icon': 'alert', 'href': '/nazorat/xatolar',
+                 'value': ServerError.objects.filter(
+                     last_seen__gte=now - timezone.timedelta(hours=24)).count()},
                 {'key': 'startups', 'label': "Tasdiq kutayotgan startaplar",
                  'icon': 'rocket', 'href': '/nazorat/startaplar',
                  'value': Startup.objects.filter(status=Status.PENDING).count()},
@@ -1287,3 +1292,50 @@ def reset_organization_password(request, pk):
         'id': organization.pk,
         'credentials': {'email': organization.user.email, 'password': password},
     })
+
+
+# --------------------------------------------------------------------------
+# Server xatolari
+# --------------------------------------------------------------------------
+
+class PanelErrors(APIView):
+    """Server xatolari: ro'yxat (GET) va hammasini tozalash (DELETE)."""
+
+    permission_classes = [IsPanelAdmin]
+
+    def get(self, request):
+        from apps.core.models import ServerError
+
+        day_ago = timezone.now() - timezone.timedelta(hours=24)
+        rows = ServerError.objects.all()[:100]
+        return Response({
+            'count': ServerError.objects.count(),
+            'last_day': ServerError.objects.filter(last_seen__gte=day_ago).count(),
+            'results': [{
+                'id': item.pk,
+                'title': item.title,
+                'location': item.location,
+                'method': item.method,
+                'path': item.path,
+                'traceback': item.traceback,
+                'count': item.count,
+                'first_seen': item.first_seen,
+                'last_seen': item.last_seen,
+            } for item in rows],
+        })
+
+    def delete(self, request):
+        from apps.core.models import ServerError
+
+        deleted, _ = ServerError.objects.all().delete()
+        return Response({'deleted': deleted})
+
+
+@api_view(['DELETE'])
+@permission_classes([IsPanelAdmin])
+def resolve_error(request, pk):
+    """Xato hal qilindi — ro'yxatdan olinadi. Yana chiqsa, yangidan paydo bo'ladi."""
+    from apps.core.models import ServerError
+
+    get_object_or_404(ServerError, pk=pk).delete()
+    return Response({'deleted': True})

@@ -104,3 +104,30 @@ class Leader(TimeStampedModel):
     def initials(self):
         parts = self.full_name.split()
         return ''.join(p[0].upper() for p in parts[:2])
+
+
+class ServerError(models.Model):
+    """Serverda yuz bergan xato (500). Bir xillari birlashtiriladi.
+
+    `logging` orqali yoziladi (`apps/core/error_log.py`): xato chiqsa bu yerga
+    tushadi, panelda ko'rinadi va bot adminlarga Telegram'da xabar beradi.
+    """
+
+    signature = models.CharField("Belgi", max_length=40, unique=True)
+    title = models.CharField("Xato", max_length=300)
+    location = models.CharField("Joyi", max_length=300, blank=True)
+    method = models.CharField("Usul", max_length=10, blank=True)
+    path = models.CharField("Manzil", max_length=500, blank=True)
+    traceback = models.TextField("Traceback", blank=True)
+    count = models.PositiveIntegerField("Necha marta", default=1)
+    first_seen = models.DateTimeField("Birinchi marta", default=timezone.now)
+    last_seen = models.DateTimeField("Oxirgi marta", default=timezone.now, db_index=True)
+    notified_at = models.DateTimeField("Adminlarga yuborilgan", null=True, blank=True)
+
+    class Meta:
+        verbose_name = "Server xatosi"
+        verbose_name_plural = "Server xatolari"
+        ordering = ['-last_seen']
+
+    def __str__(self):
+        return f"{self.title} ({self.count})"

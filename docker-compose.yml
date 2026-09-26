@@ -7,12 +7,20 @@
 #   certbot SSL sertifikatni oladi va o'zi yangilab turadi
 #   bot    Telegram bot (ixtiyoriy profil)
 
+# Har bir konteyner logi 3 × 20 MB dan oshmaydi — disk to'lib qolmasin
+x-logging: &logging
+  driver: json-file
+  options:
+    max-size: "20m"
+    max-file: "3"
+
 services:
 
   db:
     image: postgres:16-alpine
     container_name: samyosh_db
     restart: unless-stopped
+    logging: *logging
     # Kattaroq server uchun: keshga ko'proq joy va ulanishlar zaxirasi
     command: >
       postgres
@@ -38,6 +46,7 @@ services:
     build: .
     container_name: samyosh_web
     restart: unless-stopped
+    logging: *logging
     env_file: .env
     environment:
       DB_HOST: db
@@ -63,6 +72,7 @@ services:
     image: redis:7-alpine
     container_name: samyosh_redis
     restart: unless-stopped
+    logging: *logging
     # Kesh — ma'lumot emas: joy tugasa eng eski yozuvlar o'chadi
     command: redis-server --maxmemory 512mb --maxmemory-policy allkeys-lru --save ""
     expose:
@@ -77,6 +87,7 @@ services:
         NEXT_PUBLIC_API_URL: ${PUBLIC_API_URL:-https://samarqandyoshlari.uz/api/v1}
     container_name: samyosh_front
     restart: unless-stopped
+    logging: *logging
     environment:
       NEXT_PUBLIC_API_URL: ${PUBLIC_API_URL:-https://samarqandyoshlari.uz/api/v1}
       # Server tomondagi so'rovlar ichki tarmoq orqali — tashqariga chiqmaydi
@@ -95,6 +106,7 @@ services:
     image: nginx:1.27-alpine
     container_name: samyosh_nginx
     restart: unless-stopped
+    logging: *logging
     ports:
       - "80:80"
       - "443:443"
@@ -116,6 +128,7 @@ services:
     image: certbot/certbot:latest
     container_name: samyosh_certbot
     restart: unless-stopped
+    logging: *logging
     volumes:
       - certbot_conf:/etc/letsencrypt
       - certbot_www:/var/www/certbot
@@ -128,6 +141,7 @@ services:
     build: ${BOT_PATH:-../Sma_yoshlar_bot/sam_yoshlar_bot}
     container_name: samyosh_bot
     restart: unless-stopped
+    logging: *logging
     env_file: ${BOT_PATH:-../Sma_yoshlar_bot/sam_yoshlar_bot}/.env
     environment:
       SITE_URL: ${SITE_URL:-https://samarqandyoshlari.uz}

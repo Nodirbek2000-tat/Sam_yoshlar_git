@@ -253,6 +253,40 @@ REST_FRAMEWORK = {
     'NUM_PROXIES': 1,
 }
 
+# ---------------------------------------------------------------------------
+# Loglar
+# ---------------------------------------------------------------------------
+#
+# Hammasi konsolga (Docker logi: `docker compose logs web`). Foydalanuvchi
+# 500 xatoga duch kelsa — to'liq traceback konsolga ham, bazaga ham yoziladi
+# (panel → «Server xatolari», bot adminlarga Telegram'da xabar beradi).
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'oddiy': {'format': '{asctime} {levelname} {name}: {message}', 'style': '{'},
+    },
+    'handlers': {
+        'konsol': {'class': 'logging.StreamHandler', 'formatter': 'oddiy'},
+        'baza': {'class': 'apps.core.error_log.DatabaseErrorHandler', 'level': 'ERROR'},
+    },
+    'root': {'handlers': ['konsol'], 'level': 'WARNING'},
+    'loggers': {
+        'django': {'handlers': ['konsol'], 'level': 'INFO', 'propagate': False},
+        # 500 xatolar: konsol + baza
+        'django.request': {'handlers': ['konsol', 'baza'], 'level': 'ERROR', 'propagate': False},
+        # Serverning IP manzili bilan kirgan botlar — shovqin, bazaga yozilmaydi
+        'django.security.DisallowedHost': {'handlers': ['konsol'], 'level': 'WARNING',
+                                           'propagate': False},
+        'apps': {'handlers': ['konsol'], 'level': 'INFO', 'propagate': False},
+    },
+}
+
+# Testlarda xato ataylab chaqiriladi — konsolni to'ldirmasin
+if RUNNING_TESTS:
+    LOGGING['handlers']['konsol']['level'] = 'CRITICAL'
+
 # Brauzerda API'ni ko'rib chiqish faqat dev rejimida
 if DEBUG:
     REST_FRAMEWORK['DEFAULT_RENDERER_CLASSES'].append(
