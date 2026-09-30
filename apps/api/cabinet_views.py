@@ -20,6 +20,7 @@ from apps.cabinet.models import Appeal, Notification, Suggestion
 from apps.content.models import EventRegistration
 from apps.core.constants import Status
 from apps.initiatives.models import Initiative, InitiativeComment, Solution
+from apps.startups.models import InvestmentOffer, OfferStatus
 
 from . import serializers as s
 
@@ -76,6 +77,9 @@ class CabinetOverview(APIView):
                 'appeals': Appeal.objects.filter(user=user).count(),
                 'suggestions': Suggestion.objects.filter(user=user).count(),
                 'unread': Notification.objects.filter(user=user, is_read=False).count(),
+                # Startaplariga kelgan, hali javob berilmagan investitsiya takliflari
+                'offers': InvestmentOffer.objects.filter(
+                    startup__user=user, status=OfferStatus.NEW).count(),
             },
             # Foydalanuvchi tashabbuslari qancha ovoz to'plagan — eng yoqimli raqam
             'total_votes': sum(

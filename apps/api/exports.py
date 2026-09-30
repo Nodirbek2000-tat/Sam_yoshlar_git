@@ -31,7 +31,7 @@ from apps.business.models import BusinessProfile, Product
 from apps.content.models import Event, EventRegistration
 from apps.initiatives.models import (Initiative, InitiativeComment, InitiativeVote,
                                      Organization, Problem, Solution)
-from apps.startups.models import Startup
+from apps.startups.models import InvestmentOffer, Startup
 
 User = get_user_model()
 
@@ -312,6 +312,29 @@ def startups_sheets(period):
     ]
 
 
+def offers_sheets(period):
+    offers = (period.apply(InvestmentOffer.objects.select_related('startup'))
+              .order_by('-created_at'))
+
+    def rows():
+        for number, offer in enumerate(offers.iterator(chunk_size=1000), 1):
+            startup = offer.startup
+            yield (number, startup.name, startup.full_name, startup.phone, offer.full_name,
+                   offer.phone, f"@{offer.telegram}" if offer.telegram else '',
+                   offer.get_status_display(), offer.created_at, offer.responded_at,
+                   offer.get_outcome_display(), offer.feedback, offer.feedback_at,
+                   _link(f'/startaplar/{startup.pk}'))
+
+    return [
+        ("Investitsiya takliflari", [
+            ("№", 6), ("Startap", 30), ("Asoschi", 26), ("Asoschi telefoni", 16),
+            ("Investor", 26), ("Investor telefoni", 16), ("Telegram", 18), ("Holat", 16),
+            ("Yuborilgan", 17), ("Javob berilgan", 17), ("Suhbat natijasi", 22),
+            ("Asoschining fikri", 60), ("Fikr sanasi", 17), ("Havola", 40),
+        ], rows()),
+    ]
+
+
 def peers_sheets(period):
     peers = period.apply(Peer.objects.all()).order_by('country', 'full_name')
 
@@ -452,6 +475,14 @@ EXPORTS = {
         'sheets': startups_sheets,
         'parts': ["Startaplar"],
         'count': lambda: (Startup.objects, 'created_at'),
+    },
+    'investitsiya': {
+        'title': "Investitsiya takliflari",
+        'description': "Kim qaysi startapga taklif yubordi, qabul qilindimi, suhbat natijasi",
+        'icon': 'bank',
+        'sheets': offers_sheets,
+        'parts': ["Investitsiya takliflari"],
+        'count': lambda: (InvestmentOffer.objects, 'created_at'),
     },
     'tengdoshlar': {
         'title': "Chet eldagi tengdoshlar",

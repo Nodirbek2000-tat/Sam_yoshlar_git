@@ -82,3 +82,58 @@ class Startup(TimeStampedModel):
     @property
     def sphere_icon(self):
         return STARTUP_SPHERE_ICONS.get(self.sphere, 'ic-rocket')
+
+
+class OfferStatus(models.TextChoices):
+    NEW = 'new', "Yangi"
+    ACCEPTED = 'accepted', "Qabul qilingan"
+    DECLINED = 'declined', "Rad etilgan"
+
+
+class OfferOutcome(models.TextChoices):
+    DEAL = 'deal', "Kelishdik"
+    TALKING = 'talking', "Muzokara davom etmoqda"
+    NO_DEAL = 'no_deal', "Kelishmadik"
+
+
+class InvestmentOffer(TimeStampedModel):
+    """Startap sahifasidagi «Investitsiya kiritaman» — investorning so'rovi.
+
+    Investor ismi va aloqa ma'lumotini qoldiradi, startap egasi uni ko'rib
+    bog'lanadi va qabul qiladi. Keyin sayt egadan suhbat natijasini so'raydi —
+    javoblar panelda «Investitsiya takliflari» bo'limida ko'rinadi.
+    """
+
+    startup = models.ForeignKey(Startup, verbose_name="Startap", on_delete=models.CASCADE,
+                                related_name='offers')
+    # Hisob o'chirilsa ham taklif tarixi qoladi (ism va raqam shu yerda saqlanadi)
+    investor = models.ForeignKey('accounts.User', verbose_name="Investor",
+                                 on_delete=models.SET_NULL, null=True, blank=True,
+                                 related_name='investment_offers')
+    full_name = models.CharField("F.I.O.", max_length=150)
+    phone = models.CharField("Telefon", max_length=25)
+    telegram = models.CharField("Telegram", max_length=64, blank=True)
+
+    status = models.CharField("Holat", max_length=20, choices=OfferStatus.choices,
+                              default=OfferStatus.NEW)
+    responded_at = models.DateTimeField("Javob berilgan", null=True, blank=True)
+
+    # Startap egasining fikri: suhbat qanday o'tdi
+    outcome = models.CharField("Natija", max_length=20, choices=OfferOutcome.choices, blank=True)
+    feedback = models.TextField("Fikr", blank=True)
+    feedback_at = models.DateTimeField("Fikr bildirilgan", null=True, blank=True)
+    #: Shu vaqtdan keyin sayt egadan fikr so'raydi (bo'sh — so'ramaydi)
+    feedback_ask_after = models.DateTimeField("Fikr so'rash vaqti", null=True, blank=True)
+
+    class Meta:
+        verbose_name = "Investitsiya taklifi"
+        verbose_name_plural = "Investitsiya takliflari"
+        ordering = ['-created_at']
+        constraints = [
+            models.UniqueConstraint(fields=['startup', 'investor'],
+                                    name='bir_startapga_bitta_taklif'),
+        ]
+        indexes = [models.Index(fields=['status', '-created_at'])]
+
+    def __str__(self):
+        return f"{self.full_name} → {self.startup.name}"

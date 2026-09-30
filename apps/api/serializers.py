@@ -64,12 +64,24 @@ class UserSerializer(serializers.ModelSerializer):
                   'region', 'region_display', 'district', 'bio', 'avatar',
                   'initials', 'telegram_username', 'telegram_linked', 'is_verified',
                   'is_panel_admin', 'onboarding', 'age', 'study_location', 'capabilities',
-                  'organization_name']
+                  'organization_name', 'unread_notifications', 'pending_feedback']
         read_only_fields = ['id', 'email', 'phone', 'telegram_username', 'is_verified', 'age']
 
     capabilities = serializers.SerializerMethodField()
     telegram_linked = serializers.SerializerMethodField()
     organization_name = serializers.SerializerMethodField()
+    unread_notifications = serializers.SerializerMethodField()
+    pending_feedback = serializers.SerializerMethodField()
+
+    def get_unread_notifications(self, obj):
+        """Sarlavhadagi qo'ng'iroqcha uchun — o'qilmagan bildirishnomalar soni."""
+        return obj.notifications.filter(is_read=False).count()
+
+    def get_pending_feedback(self, obj):
+        """Startap egasidan investor bilan suhbat natijasi so'ralishi kerakmi."""
+        from .offer_views import pending_feedback
+
+        return pending_feedback(obj)
 
     def get_telegram_linked(self, obj):
         return obj.telegram_id is not None

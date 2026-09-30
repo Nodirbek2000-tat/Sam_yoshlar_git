@@ -2,7 +2,7 @@
 from django.urls import path
 from rest_framework_simplejwt.views import TokenRefreshView, TokenVerifyView
 
-from . import admin_views, auth_views, cabinet_views, views
+from . import admin_views, auth_views, cabinet_views, offer_views, views
 
 app_name = 'api'
 
@@ -32,6 +32,9 @@ urlpatterns = [
     path('me/startups/', cabinet_views.MyStartups.as_view(), name='me_startups'),
     path('me/startups/<int:pk>/', cabinet_views.MyStartupDetail.as_view(),
          name='me_startup_detail'),
+    path('me/offers/', offer_views.MyOffers.as_view(), name='me_offers'),
+    path('me/offers/<int:pk>/', offer_views.respond_offer, name='me_offer_respond'),
+    path('me/offers/<int:pk>/fikr/', offer_views.offer_feedback, name='me_offer_feedback'),
     path('me/business/', cabinet_views.MyBusiness.as_view(), name='me_business'),
     path('me/business/gallery/', cabinet_views.MyBusinessGallery.as_view(),
          name='me_business_gallery'),
@@ -81,6 +84,7 @@ urlpatterns = [
     # --- Startaplar ---
     path('startups/', views.StartupList.as_view(), name='startup_list'),
     path('startups/<int:pk>/', views.StartupDetail.as_view(), name='startup_detail'),
+    path('startups/<int:pk>/invest/', offer_views.StartupInvest.as_view(), name='startup_invest'),
     path('businesses/', views.BusinessList.as_view(), name='business_list'),
     path('businesses/<int:pk>/', views.BusinessDetail.as_view(), name='business_detail'),
 
@@ -96,6 +100,9 @@ urlpatterns = [
     path('panel/bot/', admin_views.PanelBot.as_view(), name='panel_bot'),
     path('panel/eksport/', admin_views.PanelExports.as_view(), name='panel_exports'),
     path('panel/eksport/<slug:key>/', admin_views.export_download, name='panel_export'),
+    path('panel/investitsiya/', offer_views.PanelOffers.as_view(), name='panel_offers'),
+    path('panel/investitsiya/<int:pk>/', offer_views.panel_offer_delete,
+         name='panel_offer_delete'),
     path('panel/xatolar/', admin_views.PanelErrors.as_view(), name='panel_errors'),
     path('panel/xatolar/<int:pk>/', admin_views.resolve_error, name='panel_error_resolve'),
     path('panel/organizations/', admin_views.PanelOrganizations.as_view(),

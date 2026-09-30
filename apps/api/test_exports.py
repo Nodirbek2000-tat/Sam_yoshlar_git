@@ -80,6 +80,7 @@ class ExportTests(TestCase):
         self.assertEqual(set(counts), set(EXPORTS))
         self.assertEqual(counts, {
             'tashabbuslar': 1, 'muammolar': 1, 'tadbirkorlar': 1, 'startaplar': 1,
+            'investitsiya': 0,
             'tengdoshlar': 1, 'tadbirlar': 1,
             # Tashkilot va bosh admin foydalanuvchi sifatida sanalmaydi
             'foydalanuvchilar': 3,

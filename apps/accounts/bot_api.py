@@ -24,7 +24,8 @@ from apps.core.constants import Status
 from apps.initiatives.models import Initiative, Problem, Solution
 from apps.startups.models import Startup
 
-from .models import BotPost, Broadcast, ChannelJoin, RequiredChannel, Role, User
+from .models import (BotMessage, BotPost, Broadcast, ChannelJoin, RequiredChannel, Role,
+                     User)
 from .org_link import complete_link, open_link
 
 
@@ -395,3 +396,38 @@ def bot_errors(request):
     ServerError.objects.filter(pk__in=[row['id'] for row in rows]).update(notified_at=now)
     return JsonResponse({'ok': True, 'results': rows,
                          'panel': f"{(getattr(settings, 'SITE_URL', '') or '').rstrip('/')}/nazorat/xatolar"})
+
+
+@csrf_exempt
+@require_http_methods(['GET'])
+@bot_only
+def bot_messages(request):
+    """Shaxsiy xabarlar navbati — bot bir necha soniyada bir marta so'raydi.
+
+    Berilgan xabar darhol «olingan» deb belgilanadi: bot qayta so'raganda
+    bir xabar ikki marta yuborilmaydi.
+    """
+    pending = list(BotMessage.objects.filter(taken_at__isnull=True).order_by('id')[:30])
+    BotMessage.objects.filter(pk__in=[item.pk for item in pending]).update(
+        taken_at=timezone.now())
+
+    return JsonResponse({
+        'ok': True,
+        'results': [
+            {'id': item.pk, 'telegram_id': item.telegram_id, 'text': item.text,
+             'buttons': item.buttons}
+            for item in pending
+        ],
+    })
+
+
+@csrf_exempt
+@require_http_methods(['POST'])
+@bot_only
+def bot_messages_result(request):
+    """Bot hisoboti: qaysi xabar yetkazildi, qaysi biri yetmadi."""
+    saved = 0
+    for row in body(request).get('results') or []:
+        saved += BotMessage.objects.filter(pk=row.get('id')).update(
+            delivered=bool(row.get('ok')), error=str(row.get('error') or '')[:200])
+    return JsonResponse({'ok': True, 'saved': saved})

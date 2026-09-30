@@ -260,6 +260,32 @@ class BotPost(models.Model):
         return f"{self.get_kind_display()}: {self.title}"
 
 
+class BotMessage(models.Model):
+    """Bitta odamga boradigan shaxsiy Telegram xabari.
+
+    Sayt xabarni shu navbatga qo'yadi, bot bir necha soniyada olib yuboradi:
+    masalan, startapga investor qiziqish bildirganda egasiga.
+    """
+
+    telegram_id = models.BigIntegerField("Telegram ID")
+    text = models.TextField("Matn (HTML)")
+    #: [{"text": "Ko'rish", "url": "https://…"}] — xabar ostidagi tugmalar
+    buttons = models.JSONField("Tugmalar", default=list, blank=True)
+
+    created_at = models.DateTimeField("Qo'shilgan", default=timezone.now)
+    taken_at = models.DateTimeField("Bot olgan", null=True, blank=True, db_index=True)
+    delivered = models.BooleanField("Yetkazildi", null=True, blank=True)
+    error = models.CharField("Xato", max_length=200, blank=True)
+
+    class Meta:
+        verbose_name = "Shaxsiy bot xabari"
+        verbose_name_plural = "Shaxsiy bot xabarlari"
+        ordering = ['id']
+
+    def __str__(self):
+        return f"{self.telegram_id}: {self.text[:40]}"
+
+
 class TelegramAuthCode(models.Model):
     """Bot bergan bir martalik kod.
 
