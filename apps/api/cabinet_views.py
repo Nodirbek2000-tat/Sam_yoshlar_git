@@ -282,15 +282,27 @@ class MyPeer(APIView):
                                            context={'request': request})
         serializer.is_valid(raise_exception=True)
 
+        # Saqlashdan oldingi holat — `save` shu obyektning o'zini o'zgartiradi
+        was = peer.status if peer else None
         extra = {'full_name': user.full_name, 'home_region': user.region}
         if peer is None:
+            # Yangi anketa avval admin tekshiruvidan o'tadi — keyin saytga va botga chiqadi
             extra.update(user=user, purpose=PeerPurpose.STUDY,
-                         status=Status.APPROVED, is_published=True)
-        elif user.study_location != StudyLocation.ABROAD:
-            # «O'zbekistonda» tanlanganda yashirilgan edi — chet elga qaytdi
-            extra['is_published'] = True
+                         status=Status.PENDING, is_published=True)
+        else:
+            if user.study_location != StudyLocation.ABROAD:
+                # «O'zbekistonda» tanlanganda yashirilgan edi — chet elga qaytdi
+                extra['is_published'] = True
+            if peer.status == Status.REJECTED:
+                # Qaytarilgan anketa tuzatildi — yana tekshiruvga
+                extra['status'] = Status.PENDING
 
         saved = serializer.save(**extra)
+
+        if saved.status == Status.PENDING and was != Status.PENDING:
+            from apps.abroad.review import notify_admins
+
+            notify_admins(saved)
 
         if user.study_location != StudyLocation.ABROAD:
             user.study_location = StudyLocation.ABROAD

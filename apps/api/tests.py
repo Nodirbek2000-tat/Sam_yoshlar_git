@@ -1450,7 +1450,7 @@ class PeerOnboardingTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIsNone(response.json()['onboarding'])
 
-    def test_abroad_profile_is_published_immediately(self):
+    def test_abroad_profile_is_published_after_approval(self):
         self.client.patch('/api/v1/auth/me/', {'study_location': 'abroad'},
                           content_type='application/json', **self.auth)
         me = self.client.get('/api/v1/auth/me/', **self.auth).json()
@@ -1463,6 +1463,12 @@ class PeerOnboardingTests(TestCase):
         me = self.client.get('/api/v1/auth/me/', **self.auth).json()
         self.assertIsNone(me['onboarding'])
         self.assertEqual(me['age'], 21)
+
+        # Anketa avval admin tekshiruvida — saytda hali yo'q
+        self.assertEqual(response.json()['status'], 'pending')
+        self.assertEqual(self.client.get('/api/v1/peers/').json()['results'], [])
+        from apps.abroad.models import Peer
+        Peer.objects.update(status='approved')
 
         rows = self.client.get('/api/v1/peers/').json()['results']
         self.assertEqual(len(rows), 1)
@@ -1582,6 +1588,7 @@ class MultiRoleTests(TestCase):
         form = {'country': 'korea', 'institution': "SNU", 'course': '2', 'field': "IT",
                 'phone': '+821012345678', 'photo': _png('men.png')}
         self.client.post('/api/v1/me/peer/', form, **self.auth)
+        Peer.objects.update(status='approved')          # admin tasdiqladi
         self.assertEqual(self.client.get('/api/v1/peers/').json()['count'], 1)
 
         self.client.patch('/api/v1/auth/me/', {'study_location': 'uz'},

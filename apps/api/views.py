@@ -739,7 +739,7 @@ class Overview(APIView):
                 'votes': Initiative.objects.aggregate(t=Sum('vote_count'))['t'] or 0,
                 'problems': Problem.objects.filter(is_published=True).count(),
                 'solutions': Solution.objects.count(),
-                'peers': Peer.objects.filter(is_published=True).count(),
+                'peers': Peer.objects.filter(is_published=True, status=Status.APPROVED).count(),
                 'users': public_user_count(),
                 'events': Event.objects.published().filter(starts_at__gte=now).count(),
                 'businesses': public_businesses().count(),

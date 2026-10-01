@@ -999,6 +999,13 @@ def panel_moderate(request, resource, pk):
                         status=status.HTTP_400_BAD_REQUEST)
 
     item.save(update_fields=changed + ['updated_at'])
+
+    # Tengdosh anketasi: qaror egasiga saytda va botda yetadi
+    if resource == 'peers' and 'status' in changed:
+        from apps.abroad.review import notify_owner
+
+        notify_owner(item)
+
     return Response(serializer(item, context={'request': request}).data)
 
 
