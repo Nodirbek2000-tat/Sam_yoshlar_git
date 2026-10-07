@@ -3,7 +3,7 @@ from django.urls import reverse
 from django.utils import timezone
 from django.utils.text import slugify
 
-from apps.core.constants import Region
+from apps.core.constants import Region, SamarqandDistrict
 from apps.core.models import TimeStampedModel
 
 
@@ -211,3 +211,96 @@ def _unique_slug(model, title, pk, fallback):
         slug = f"{base}-{counter}"
         counter += 1
     return slug
+
+
+# --------------------------------------------------------------------------
+# So'rovnomalar — masalan, «Viloyatning eng yaxshi mahalla yetakchisi»
+# --------------------------------------------------------------------------
+
+class Poll(TimeStampedModel):
+    """Ochiq ovoz berish: bir nechta nomzod, har kim bir marta ovoz beradi.
+
+    Ovozlar soni alohida hisoblagichda saqlanmaydi — har safar `PollVote`
+    yozuvlaridan sanaladi. Shunda bir vaqtda kelgan ovozlar yoki nomzod
+    o'chirilganda son hech qachon «adashmaydi».
+    """
+
+    title = models.CharField("Sarlavha", max_length=250)
+    slug = models.SlugField("Havola", max_length=270, unique=True, blank=True)
+    description = models.TextField("Tavsif", blank=True)
+    image = models.ImageField("Muqova", upload_to='polls/%Y/%m/', blank=True)
+    ends_at = models.DateTimeField("Ovoz berish tugashi", null=True, blank=True)
+    is_active = models.BooleanField("Saytda ko'rinadi", default=True)
+    show_results = models.BooleanField("Natijalar ochiq", default=True,
+                                       help_text="O'chiq bo'lsa ovozlar soni faqat panelda ko'rinadi")
+    # Kam ovoz bilan «1-o'rin» bo'lib ko'rinib qolmasin: shuncha ovozga yetmagan
+    # nomzod ro'yxatda turadi, lekin 1-2-3 o'rin zinapoyasiga chiqmaydi
+    podium_min_votes = models.PositiveIntegerField("Peshqadamlik uchun eng kam ovoz", default=1000)
+
+    class Meta:
+        verbose_name = "So'rovnoma"
+        verbose_name_plural = "So'rovnomalar"
+        ordering = ['-created_at']
+        indexes = [models.Index(fields=['is_active', '-created_at'])]
+
+    def __str__(self):
+        return self.title
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = _unique_slug(Poll, self.title, self.pk, 'sorovnoma')
+        super().save(*args, **kwargs)
+
+    @property
+    def is_closed(self):
+        return bool(self.ends_at and self.ends_at <= timezone.now())
+
+    @property
+    def is_open(self):
+        """Ovoz berish mumkinmi: saytda ko'rinadi va muddati o'tmagan."""
+        return self.is_active and not self.is_closed
+
+
+class PollOption(TimeStampedModel):
+    """So'rovnomadagi bitta nomzod — mahalla yetakchisi yoki boshqa variant."""
+
+    poll = models.ForeignKey(Poll, verbose_name="So'rovnoma", on_delete=models.CASCADE,
+                             related_name='options')
+    name = models.CharField("F.I.O. / nomi", max_length=150)
+    mahalla = models.CharField("Mahalla", max_length=150, blank=True)
+    district = models.CharField("Tuman / shahar", max_length=30, blank=True,
+                                choices=SamarqandDistrict.choices)
+    note = models.CharField("Qisqa ma'lumot", max_length=300, blank=True)
+    photo = models.ImageField("Rasm", upload_to='polls/options/%Y/%m/', blank=True)
+    order = models.PositiveSmallIntegerField("Tartib", default=0)
+
+    class Meta:
+        verbose_name = "Nomzod"
+        verbose_name_plural = "Nomzodlar"
+        ordering = ['order', 'pk']
+
+    def __str__(self):
+        return self.name
+
+
+class PollVote(TimeStampedModel):
+    """Bitta ovoz. Bir kishi bitta so'rovnomada faqat bir marta ovoz beradi —
+    buni baza o'zi kafolatlaydi (bir vaqtda ikki marta bosilsa ham)."""
+
+    poll = models.ForeignKey(Poll, verbose_name="So'rovnoma", on_delete=models.CASCADE,
+                             related_name='votes')
+    option = models.ForeignKey(PollOption, verbose_name="Nomzod", on_delete=models.CASCADE,
+                               related_name='votes')
+    user = models.ForeignKey('accounts.User', verbose_name="Foydalanuvchi",
+                             on_delete=models.CASCADE, related_name='poll_votes')
+
+    class Meta:
+        verbose_name = "So'rovnoma ovozi"
+        verbose_name_plural = "So'rovnoma ovozlari"
+        ordering = ['-created_at']
+        constraints = [
+            models.UniqueConstraint(fields=['poll', 'user'], name='uniq_poll_vote_per_user'),
+        ]
+
+    def __str__(self):
+        return f"{self.user} → {self.option}"

@@ -226,6 +226,7 @@ class BotPost(models.Model):
         STARTUP = 'startup', "Startap"
         BUSINESS = 'business', "Tadbirkor"
         PEER = 'peer', "Chet eldagi tengdosh"
+        POLL = 'poll', "So'rovnoma"
 
     class Status(models.TextChoices):
         PENDING = 'pending', "Navbatda"

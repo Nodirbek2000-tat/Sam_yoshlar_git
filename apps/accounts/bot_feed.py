@@ -120,3 +120,31 @@ def peer_published(sender, instance, **kwargs):
             f"{instance.full_name} — {instance.get_country_display()}",
             instance.achievements or instance.about,
             site_link(f'/tengdoshlar/{instance.pk}'), file_url(instance.photo))
+
+
+def _poll_ready(poll):
+    """So'rovnoma botga faqat ovoz berish ochiq va kamida 2 nomzod bo'lganda chiqadi —
+    aks holda odam havolani ochib, bo'sh sahifa ko'radi."""
+    return poll.is_open and poll.options.count() >= 2
+
+
+def enqueue_poll(poll):
+    """Tayyor bo'lsa navbatga qo'shadi (bir so'rovnoma — bir marta).
+
+    Panel nomzodlarni saqlab bo'lgach shuni bir marta chaqiradi; har bir
+    nomzod saqlanganda emas — aks holda 300 nomzodli so'rovnoma yuzlab
+    ortiqcha so'rov bilan saqlanardi.
+    """
+    if not _poll_ready(poll):
+        return None
+    return enqueue(BotPost.Kind.POLL, poll, poll.title,
+                   poll.description or "Ovoz bering — reyting har bir ovoz bilan yangilanadi.",
+                   site_link(f'/sorovnomalar/{poll.slug}'), file_url(poll.image))
+
+
+@receiver(post_save, dispatch_uid='bot_feed_poll')
+def poll_published(sender, instance, **kwargs):
+    """Ko'rinishi yoqilgan yoki tahrirlangan so'rovnoma (nomzodlari allaqachon bor)."""
+    if sender.__name__ != 'Poll':
+        return
+    enqueue_poll(instance)

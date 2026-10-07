@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Announcement, Event, EventRegistration, News
+from .models import Announcement, Event, EventRegistration, News, Poll, PollOption, PollVote
 
 
 @admin.register(News)
@@ -48,3 +48,32 @@ class AnnouncementAdmin(admin.ModelAdmin):
     search_fields = ['title', 'body']
     prepopulated_fields = {'slug': ('title',)}
     list_editable = ['is_active']
+
+
+class PollOptionInline(admin.TabularInline):
+    model = PollOption
+    extra = 0
+    fields = ['order', 'name', 'mahalla', 'district', 'photo']
+
+
+@admin.register(Poll)
+class PollAdmin(admin.ModelAdmin):
+    list_display = ['title', 'ends_at', 'is_active', 'show_results', 'created_at']
+    list_filter = ['is_active', 'show_results']
+    search_fields = ['title', 'options__name']
+    readonly_fields = ['slug']
+    inlines = [PollOptionInline]
+
+    def save_related(self, request, form, formsets, change):
+        super().save_related(request, form, formsets, change)
+        # Nomzodlar so'rovnomadan keyin saqlanadi — botga e'lon shundan so'ng
+        from apps.accounts.bot_feed import enqueue_poll
+        enqueue_poll(form.instance)
+
+
+@admin.register(PollVote)
+class PollVoteAdmin(admin.ModelAdmin):
+    list_display = ['poll', 'option', 'user', 'created_at']
+    list_filter = ['poll']
+    search_fields = ['user__full_name', 'user__phone', 'option__name']
+    raw_id_fields = ['user']

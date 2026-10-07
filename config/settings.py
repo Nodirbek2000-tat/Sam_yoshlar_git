@@ -182,6 +182,8 @@ STORAGES = {
 }
 
 FILE_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024  # 10 MB
+# So'rovnomaga bir martada 300 tagacha nomzod rasmi yuklanadi (standart — 100)
+DATA_UPLOAD_MAX_NUMBER_FILES = 320
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 

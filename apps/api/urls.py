@@ -2,7 +2,7 @@
 from django.urls import path
 from rest_framework_simplejwt.views import TokenRefreshView, TokenVerifyView
 
-from . import admin_views, auth_views, cabinet_views, offer_views, views
+from . import admin_views, auth_views, cabinet_views, offer_views, poll_views, views
 
 app_name = 'api'
 
@@ -59,6 +59,9 @@ urlpatterns = [
     path('announcements/', views.AnnouncementList.as_view(), name='announcement_list'),
     path('announcements/<slug:slug>/', views.AnnouncementDetail.as_view(),
          name='announcement_detail'),
+    path('polls/', poll_views.poll_list, name='poll_list'),
+    path('polls/<slug:slug>/', poll_views.poll_detail, name='poll_detail'),
+    path('polls/<slug:slug>/vote/', poll_views.poll_vote, name='poll_vote'),
 
     # --- Tashabbuslar ---
     path('directions/', views.DirectionList.as_view(), name='directions'),
@@ -129,6 +132,11 @@ urlpatterns = [
          name='panel_announcements'),
     path('panel/announcements/<int:pk>/tahrir/',
          admin_views.PanelAnnouncementDetail.as_view(), name='panel_announcement_detail'),
+    path('panel/polls/', poll_views.PanelPolls.as_view(), name='panel_polls'),
+    path('panel/polls/<int:pk>/', poll_views.PanelPollDetail.as_view(),
+         name='panel_poll_detail'),
+    path('panel/polls/<int:pk>/natijalar/', poll_views.panel_poll_results,
+         name='panel_poll_results'),
     path('panel/<slug:resource>/<int:pk>/holat/', admin_views.panel_moderate,
          name='panel_moderate'),
     path('panel/<slug:resource>/hammasi/', admin_views.panel_delete_all,
