@@ -966,7 +966,8 @@ class ProfileSetupTests(TestCase):
     def setUp(self):
         self.startupper = User.objects.create_user(
             email='startupper@samarqandyoshlari.uz', password='Parol12345',
-            full_name="Startap Egasi", role='startupper', region='samarqand')
+            full_name="Startap Egasi", role='startupper', region='samarqand',
+            social_status='employed')
         self.entrepreneur = User.objects.create_user(
             email='biznes@samarqandyoshlari.uz', password='Parol12345',
             full_name="Biznes Egasi", role='entrepreneur', region='buxoro')
@@ -1234,7 +1235,8 @@ class OnboardingTests(TestCase):
         self.assertEqual(response.status_code, 400)
 
     def test_startup_completes_onboarding(self):
-        user = self._user(is_verified=True, role='startupper', region='samarqand')
+        user = self._user(is_verified=True, role='startupper', region='samarqand',
+                          social_status='employed')
 
         response = self.client.post('/api/v1/me/startup/', {
             'name': "Tilchi AI",
@@ -1538,7 +1540,8 @@ class MultiRoleTests(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(
             email='kop@test.uz', full_name="Ko'p Rolli", role='yosh', is_verified=True,
-            study_location='uz', phone='+998901112233', age=22)
+            study_location='uz', phone='+998901112233', age=22,
+            social_status='student', education_place="SamDU")
         self.auth = {'HTTP_AUTHORIZATION': f"Bearer {tokens_for(self.user)['access']}"}
 
     def _startup(self, name, **extra):

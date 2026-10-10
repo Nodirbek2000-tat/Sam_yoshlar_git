@@ -22,7 +22,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from apps.abroad.models import Peer
-from apps.accounts.models import Role
+from apps.accounts.models import Role, SocialStatus
 from apps.business.models import BusinessProfile
 from apps.cabinet.models import Notification
 from apps.content.models import Announcement, AnnouncementType, Event, News, NewsPhoto
@@ -142,6 +142,30 @@ def district_counts(queryset):
     ], sum(total for name, total in rows.items() if name not in official)
 
 
+#: Ijtimoiy holat filtri: «ko'rsatilmagan» uchun maxsus qiymat
+NO_SOCIAL = 'yoq'
+
+
+def social_counts(queryset, field='social_status'):
+    """Har bir ijtimoiy holatda nechta — filtr tugmalaridagi sonlar uchun."""
+    rows = dict(queryset.order_by().values(field).annotate(total=Count('id', distinct=True))
+                .values_list(field, 'total'))
+    counts = [{'value': value, 'label': label, 'count': rows.get(value, 0)}
+              for value, label in SocialStatus.choices]
+    counts.append({'value': NO_SOCIAL, 'label': "Ko'rsatilmagan",
+                   'count': sum(total for value, total in rows.items()
+                                if value not in SocialStatus.values)})
+    return counts
+
+
+def filter_social(queryset, value, field='social_status'):
+    if value == NO_SOCIAL:
+        return queryset.exclude(**{f'{field}__in': SocialStatus.values})
+    if value in SocialStatus.values:
+        return queryset.filter(**{field: value})
+    return queryset
+
+
 class PanelUsers(APIView):
     """Foydalanuvchilar: rol, tuman va tekshiruv bo'yicha saralash."""
 
@@ -165,6 +189,9 @@ class PanelUsers(APIView):
         # Tuman sonlari rol filtridan keyin, tuman filtridan oldin hisoblanadi —
         # «Urgut tumani · 12» degani shu roldagi 12 kishi
         districts, without_district = district_counts(queryset)
+
+        socials = social_counts(queryset)
+        queryset = filter_social(queryset, request.query_params.get('holat'))
 
         district = request.query_params.get('tuman')
         if district == NO_DISTRICT:
@@ -196,12 +223,16 @@ class PanelUsers(APIView):
             'pages': (total + page_size - 1) // page_size,
             'districts': districts,
             'without_district': without_district,
+            'social_statuses': socials,
             'results': [
                 {'id': user.pk, 'full_name': user.full_name, 'email': user.email,
                  'phone': user.phone, 'role': user.role, 'age': user.age,
                  'role_display': user.get_role_display(),
                  'region_display': user.get_region_display(),
                  'district': user.district,
+                 'social_status': user.social_status,
+                 'social_status_display': user.get_social_status_display(),
+                 'education_place': user.education_place,
                  'initials': user.initials, 'is_verified': user.is_verified,
                  'is_admin': is_panel_admin(user),
                  'telegram_username': user.telegram_username,
@@ -255,6 +286,9 @@ class PanelUserDetail(APIView):
                 'onboarding': onboarding_step(user),
                 'age': user.age, 'study_location': user.study_location,
                 'study_location_display': user.get_study_location_display(),
+                'social_status': user.social_status,
+                'social_status_display': user.get_social_status_display(),
+                'education_place': user.education_place,
                 'created_at': user.date_joined, 'last_login': user.last_login,
             },
             'peer': (s.PeerSerializer(user.peer_profiles.first(), context={'request': request}).data
@@ -1032,6 +1066,13 @@ class PanelList(APIView):
         model, serializer = MODELS[resource]
         queryset = model.objects.all()
 
+        socials = None
+        if resource == 'startups':
+            queryset = queryset.select_related('user')
+            socials = social_counts(queryset, 'user__social_status')
+            queryset = filter_social(queryset, request.query_params.get('holat'),
+                                     'user__social_status')
+
         search = request.query_params.get('q')
         if search:
             field = 'name' if resource in ('peers', 'startups') else 'title'
@@ -1050,8 +1091,19 @@ class PanelList(APIView):
         for row, obj in zip(data, rows):
             row['status'] = getattr(obj, 'status', None)
             row['visible'] = bool(getattr(obj, field, True)) if field else True
+            if resource == 'startups':
+                owner = obj.user
+                row['owner'] = {
+                    'id': owner.pk, 'full_name': owner.full_name,
+                    'social_status': owner.social_status,
+                    'social_status_display': owner.get_social_status_display(),
+                    'education_place': owner.education_place,
+                } if owner else None
 
-        return Response({'count': queryset.count(), 'results': data})
+        payload = {'count': queryset.count(), 'results': data}
+        if socials is not None:
+            payload['social_statuses'] = socials
+        return Response(payload)
 
 
 @api_view(['DELETE'])

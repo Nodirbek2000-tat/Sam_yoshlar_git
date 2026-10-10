@@ -24,6 +24,35 @@ from apps.startups.models import OfficeStartup, Startup
 User = get_user_model()
 
 
+def check_social(status, place, required=False):
+    """Ijtimoiy holat va ta'lim muassasasi: xatolar lug'ati (bo'sh bo'lsa — hammasi joyida).
+
+    Talaba yoki maktab o'quvchisi bo'lsa — o'qish joyining nomi majburiy.
+    """
+    from apps.accounts.models import SocialStatus
+
+    errors = {}
+    if required and not status:
+        errors['social_status'] = "Ijtimoiy holatingizni tanlang."
+    if status == SocialStatus.STUDENT and not place:
+        errors['education_place'] = "Universitetingiz nomini kiriting."
+    if status == SocialStatus.SCHOOL and not place:
+        errors['education_place'] = "Maktabingiz nomini kiriting."
+    return errors
+
+
+def save_social(user, status, place):
+    """Holat foydalanuvchida saqlanadi — keyingi startaplarda qayta so'ralmaydi."""
+    from apps.accounts.models import STUDYING_STATUSES
+
+    if not status:
+        return
+    user.social_status = status
+    # O'qimaydigan holatda eski o'qish joyi qolib ketmasin
+    user.education_place = place if status in STUDYING_STATUSES else ''
+    user.save(update_fields=['social_status', 'education_place'])
+
+
 def absolute(request, file_field):
     """Rasm uchun to'liq URL.
 
@@ -59,6 +88,8 @@ class UserSerializer(serializers.ModelSerializer):
     initials = serializers.CharField(read_only=True)
     is_panel_admin = serializers.SerializerMethodField()
     onboarding = serializers.SerializerMethodField()
+    social_status_display = serializers.CharField(source='get_social_status_display',
+                                                  read_only=True)
 
     class Meta:
         model = User
@@ -66,6 +97,7 @@ class UserSerializer(serializers.ModelSerializer):
                   'region', 'region_display', 'district', 'bio', 'avatar',
                   'initials', 'telegram_username', 'telegram_linked', 'is_verified',
                   'is_panel_admin', 'onboarding', 'age', 'study_location', 'capabilities',
+                  'social_status', 'social_status_display', 'education_place',
                   'organization_name', 'unread_notifications', 'pending_feedback']
         read_only_fields = ['id', 'email', 'phone', 'telegram_username', 'is_verified', 'age']
 
@@ -123,7 +155,25 @@ class ProfileUpdateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['full_name', 'role', 'region', 'district', 'bio', 'study_location']
+        fields = ['full_name', 'role', 'region', 'district', 'bio', 'study_location',
+                  'social_status', 'education_place']
+
+    def validate_education_place(self, value):
+        return value.strip()
+
+    def validate(self, attrs):
+        if 'social_status' in attrs or 'education_place' in attrs:
+            status = attrs.get('social_status', self.instance.social_status if self.instance else '')
+            place = attrs.get('education_place',
+                              self.instance.education_place if self.instance else '')
+            errors = check_social(status, place)
+            if errors:
+                raise serializers.ValidationError(errors)
+            from apps.accounts.models import STUDYING_STATUSES
+
+            if 'social_status' in attrs and status not in STUDYING_STATUSES:
+                attrs['education_place'] = ''
+        return attrs
 
     def validate_role(self, value):
         from apps.accounts.models import Role
@@ -597,6 +647,11 @@ class StartupSetupSerializer(serializers.ModelSerializer):
     logo = serializers.ImageField(required=False, allow_null=True, write_only=True)
     pitch_file = serializers.FileField(required=False, allow_null=True, write_only=True)
     website = serializers.CharField(required=False, allow_blank=True, max_length=200)
+    # Egasining ijtimoiy holati — foydalanuvchida saqlanadi, startapda emas
+    social_status = serializers.ChoiceField(choices=[], required=False, allow_blank=True,
+                                            write_only=True)
+    education_place = serializers.CharField(required=False, allow_blank=True, max_length=200,
+                                            write_only=True)
 
     logo_url = serializers.SerializerMethodField()
     pitch_url = serializers.SerializerMethodField()
@@ -609,8 +664,35 @@ class StartupSetupSerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'sphere', 'sphere_display', 'stage', 'stage_display',
                   'about', 'problem_solved', 'team_size', 'needed_investment',
                   'website', 'logo', 'logo_url', 'pitch_file', 'pitch_url',
-                  'status', 'status_display', 'admin_note', 'created_at']
+                  'status', 'status_display', 'admin_note', 'created_at',
+                  'social_status', 'education_place']
         read_only_fields = ['id', 'status', 'admin_note', 'created_at']
+
+    def __init__(self, *args, **kwargs):
+        from apps.accounts.models import SocialStatus
+
+        super().__init__(*args, **kwargs)
+        self.fields['social_status'].choices = SocialStatus.choices
+
+    def _owner(self):
+        request = self.context.get('request')
+        user = getattr(request, 'user', None)
+        return user if user is not None and user.is_authenticated else None
+
+    def _save_owner_social(self, validated_data):
+        status = validated_data.pop('social_status', '')
+        place = validated_data.pop('education_place', '').strip()
+        owner = self._owner()
+        if owner is not None:
+            save_social(owner, status, place)
+
+    def create(self, validated_data):
+        self._save_owner_social(validated_data)
+        return super().create(validated_data)
+
+    def update(self, instance, validated_data):
+        self._save_owner_social(validated_data)
+        return super().update(instance, validated_data)
 
     def get_logo_url(self, obj):
         return absolute(self.context.get('request'), obj.logo)
@@ -645,6 +727,14 @@ class StartupSetupSerializer(serializers.ModelSerializer):
         # Logotip majburiy: ro'yxatda startap shu bilan tanilinadi
         if not attrs.get('logo') and not (self.instance and self.instance.logo):
             raise serializers.ValidationError({'logo': "Logotipni yuklang."})
+
+        # Yangi startap qo'shilganda holat hali ma'lum bo'lmasa — so'raladi
+        owner = self._owner()
+        required = self.instance is None and owner is not None and not owner.social_status
+        errors = check_social(attrs.get('social_status', ''),
+                              attrs.get('education_place', '').strip(), required=required)
+        if errors:
+            raise serializers.ValidationError(errors)
         return attrs
 
 

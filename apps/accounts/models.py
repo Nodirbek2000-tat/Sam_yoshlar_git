@@ -24,6 +24,19 @@ class StudyLocation(models.TextChoices):
     ABROAD = 'abroad', "Chet elda"
 
 
+class SocialStatus(models.TextChoices):
+    """Startap qo'shayotganda bir marta so'raladi."""
+
+    STUDENT = 'student', "Talaba"
+    UNEMPLOYED = 'unemployed', "Ishsiz"
+    EMPLOYED = 'employed', "Ishlaydi"
+    SCHOOL = 'school', "Maktab o'quvchisi"
+
+
+#: Shu holatlarda ta'lim muassasasining nomi ham so'raladi
+STUDYING_STATUSES = (SocialStatus.STUDENT, SocialStatus.SCHOOL)
+
+
 class UserManager(BaseUserManager):
     use_in_migrations = True
 
@@ -69,6 +82,9 @@ class User(AbstractBaseUser, PermissionsMixin):
     age = models.PositiveSmallIntegerField("Yoshi", null=True, blank=True)
     study_location = models.CharField("Qayerda ta'lim oladi", max_length=10,
                                       choices=StudyLocation.choices, blank=True)
+    social_status = models.CharField("Ijtimoiy holati", max_length=12,
+                                     choices=SocialStatus.choices, blank=True, db_index=True)
+    education_place = models.CharField("Ta'lim muassasasi", max_length=200, blank=True)
     avatar = models.ImageField("Rasm", upload_to='avatars/%Y/%m/', blank=True)
     bio = models.TextField("O'zi haqida", blank=True)
 

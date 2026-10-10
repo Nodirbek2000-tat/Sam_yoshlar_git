@@ -384,7 +384,8 @@ def users_sheets(period):
             pk = user.pk
             yield (number, user.full_name, user.phone, _person_email(user.email),
                    user.get_role_display(), user.age, user.district, user.get_region_display(),
-                   user.get_study_location_display(),
+                   user.get_study_location_display(), user.get_social_status_display(),
+                   user.education_place,
                    f"@{user.telegram_username}" if user.telegram_username else '',
                    user.date_joined, user.last_login, initiatives[pk], votes[pk], comments[pk],
                    solutions[pk], startups[pk], business_status.get(businesses.get(pk), ''),
@@ -394,7 +395,7 @@ def users_sheets(period):
         ("Foydalanuvchilar", [
             ("№", 6), ("F.I.O.", 28), ("Telefon", 16), ("Email", 24), ("Rol", 14), ("Yoshi", 7),
             ("Tuman / shahar", 20), ("Viloyat", 18), ("Qayerda ta'lim oladi", 16),
-            ("Telegram", 18), ("Ro'yxatdan o'tgan", 17), ("Oxirgi kirish", 17),
+            ("Ijtimoiy holati", 16), ("Ta'lim muassasasi", 26), ("Telegram", 18), ("Ro'yxatdan o'tgan", 17), ("Oxirgi kirish", 17),
             ("Tashabbuslari", 11), ("Bergan ovozlari", 11), ("Yozgan takliflari", 11),
             ("Muammoga yechimlari", 11), ("Startaplari", 11), ("Tadbirkor anketasi", 16),
             ("Tadbirlarga yozilgan", 11),
