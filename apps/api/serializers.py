@@ -17,7 +17,7 @@ from apps.content.models import Announcement, Event, News
 from apps.initiatives.directions import DIRECTIONS, get_direction
 from apps.initiatives.models import (Initiative, InitiativeComment, Organization,
                                      Problem, Solution)
-from apps.startups.models import Startup
+from apps.startups.models import OfficeStartup, Startup
 
 User = get_user_model()
 
@@ -790,3 +790,115 @@ class StartupSerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'sphere', 'sphere_display', 'sphere_icon',
                   'stage', 'stage_display', 'about', 'problem_solved',
                   'team_size', 'created_at']
+
+
+# --------------------------------------------------------------------------
+# Samarqand startuplar ofisi
+# --------------------------------------------------------------------------
+
+def office_age(item, today=None):
+    """Yosh: tug'ilgan sanadan hisoblanadi, bo'lmasa — yozilgan yosh."""
+    if item.birth_date:
+        today = today or timezone.localdate()
+        born = item.birth_date
+        return today.year - born.year - ((today.month, today.day) < (born.month, born.day))
+    return item.age
+
+
+def office_contact(item):
+    """Telegram'da yozish havolasi: username bo'lsa — u orqali, bo'lmasa — raqam orqali."""
+    if item.telegram:
+        return f"https://t.me/{item.telegram}"
+    digits = re.sub(r'\D', '', item.phone or '')
+    if len(digits) == 12 and digits.startswith('998'):
+        return f"https://t.me/+{digits}"
+    return None
+
+
+class OfficeStartupSerializer(serializers.ModelSerializer):
+    """Ochiq sayt uchun. Telefon raqami alohida chiqmaydi — faqat Telegram havolasi."""
+
+    sphere_display = serializers.CharField(source='get_sphere_display', read_only=True)
+    stage_display = serializers.CharField(source='get_stage_display', read_only=True)
+    district_display = serializers.SerializerMethodField()
+    age = serializers.SerializerMethodField()
+    photo = serializers.SerializerMethodField()
+    project_image = serializers.SerializerMethodField()
+    contact_url = serializers.SerializerMethodField()
+
+    class Meta:
+        model = OfficeStartup
+        fields = ['id', 'name', 'about', 'sphere', 'sphere_display', 'stage', 'stage_display',
+                  'full_name', 'age', 'district', 'district_display', 'photo', 'project_image',
+                  'contact_url', 'created_at']
+
+    def get_district_display(self, obj):
+        from apps.core.constants import district_label
+
+        return district_label(obj.district) or obj.district
+
+    def get_age(self, obj):
+        return office_age(obj)
+
+    def get_photo(self, obj):
+        return absolute(self.context.get('request'), obj.photo)
+
+    def get_project_image(self, obj):
+        return absolute(self.context.get('request'), obj.project_image)
+
+    def get_contact_url(self, obj):
+        return office_contact(obj)
+
+
+class PanelOfficeStartupSerializer(OfficeStartupSerializer):
+    """Panel uchun: tahrirlash, rasmlarni almashtirish yoki olib tashlash."""
+
+    photo_file = serializers.ImageField(source='photo', required=False, allow_null=True, write_only=True)
+    project_image_file = serializers.ImageField(source='project_image', required=False,
+                                                allow_null=True, write_only=True)
+    remove_photo = serializers.BooleanField(required=False, write_only=True)
+    remove_project_image = serializers.BooleanField(required=False, write_only=True)
+    visible = serializers.BooleanField(source='is_published', read_only=True)
+
+    class Meta(OfficeStartupSerializer.Meta):
+        fields = OfficeStartupSerializer.Meta.fields + [
+            'phone', 'telegram', 'birth_date', 'is_published', 'visible',
+            'photo_file', 'project_image_file', 'remove_photo', 'remove_project_image',
+        ]
+
+    def validate_telegram(self, value):
+        from apps.startups.office_import import parse_telegram
+
+        value = (value or '').strip()
+        if value and not parse_telegram(value):
+            raise serializers.ValidationError("Telegram username noto'g'ri (masalan: @ali_startup).")
+        return parse_telegram(value)
+
+    def validate_phone(self, value):
+        from apps.startups.office_import import parse_phone
+
+        return parse_phone(value) if value else ''
+
+    def _apply(self, instance, validated_data):
+        old = {}
+        for field, flag in (('photo', 'remove_photo'), ('project_image', 'remove_project_image')):
+            current = getattr(instance, field) if instance else None
+            if current:
+                old[field] = current.name
+            if validated_data.pop(flag, False) and field not in validated_data:
+                validated_data[field] = ''
+        return old
+
+    def create(self, validated_data):
+        validated_data.pop('remove_photo', None)
+        validated_data.pop('remove_project_image', None)
+        return super().create(validated_data)
+
+    def update(self, instance, validated_data):
+        old = self._apply(instance, validated_data)
+        item = super().update(instance, validated_data)
+        # Almashtirilgan yoki olib tashlangan rasm diskda qolib ketmasin
+        for field, name in old.items():
+            if getattr(item, field).name != name:
+                getattr(item, field).storage.delete(name)
+        return item

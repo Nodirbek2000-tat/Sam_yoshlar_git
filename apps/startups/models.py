@@ -137,3 +137,69 @@ class InvestmentOffer(TimeStampedModel):
 
     def __str__(self):
         return f"{self.full_name} → {self.startup.name}"
+
+
+# --------------------------------------------------------------------------
+# Samarqand startuplar ofisi — viloyat reestridagi startaplar (Excel'dan)
+# --------------------------------------------------------------------------
+
+class OfficeSphere(models.TextChoices):
+    EDTECH = 'edtech', "EdTech — ta'lim texnologiyalari"
+    GREENTECH = 'greentech', "GreenTech — ekologiya va energiya tejash"
+    AI = 'ai', "AI & Data — sun'iy intellekt va tahlil"
+    HEALTHTECH = 'healthtech', "HealthTech — tibbiyot innovatsiyalari"
+    SOCIAL = 'social', "Social Impact — ijtimoiy muammolar yechimi"
+    FINTECH = 'fintech', "FinTech — raqamli moliyaviy xizmatlar"
+    AGRITECH = 'agritech', "AgriTech — aqlli qishloq xo'jaligi"
+    ECOMMERCE = 'ecommerce', "E-commerce — onlayn savdo"
+    LOGISTICS = 'logistics', "Logistics — transport va yetkazib berish"
+    SMARTCITY = 'smartcity', "Smart City — aqlli shahar"
+    TOURISM = 'tourism', "Turizm"
+    OTHER = 'other', "Boshqa"
+
+
+class OfficeStage(models.TextChoices):
+    IDEA = 'idea', "G'oya"
+    MVP = 'mvp', "MVP"
+    SALES = 'sales', "Sotuv"
+    SEED = 'seed', "Seed"
+
+
+class OfficeStartup(TimeStampedModel):
+    """Samarqand startuplar ofisi reestridagi loyiha va uning asoschisi.
+
+    Saytdagi oddiy startaplardan (foydalanuvchi o'zi qo'shadigan) alohida:
+    bular panelda Excel'dan yuklanadi. Aloqa — Telegram orqali.
+    """
+
+    # Asoschi
+    full_name = models.CharField("Asoschi F.I.Sh.", max_length=150)
+    district = models.CharField("Tuman / shahar", max_length=40, blank=True)
+    birth_date = models.DateField("Tug'ilgan sana", null=True, blank=True)
+    age = models.PositiveSmallIntegerField("Yoshi", null=True, blank=True,
+                                           help_text="Tug'ilgan sana noma'lum bo'lsa")
+    photo = models.ImageField("Asoschi rasmi", upload_to='ofis/asoschilar/%Y/%m/', blank=True)
+    phone = models.CharField("Telefon", max_length=25, blank=True)
+    telegram = models.CharField("Telegram username", max_length=64, blank=True)
+
+    # Loyiha
+    name = models.CharField("Loyiha nomi", max_length=200)
+    about = models.TextField("Loyiha haqida", blank=True)
+    sphere = models.CharField("Soha", max_length=20, choices=OfficeSphere.choices,
+                              default=OfficeSphere.OTHER, db_index=True)
+    stage = models.CharField("Bosqich", max_length=20, choices=OfficeStage.choices,
+                             default=OfficeStage.IDEA, db_index=True)
+    project_image = models.ImageField("Loyiha rasmi", upload_to='ofis/loyihalar/%Y/%m/', blank=True)
+
+    is_published = models.BooleanField("Saytda ko'rinadi", default=True)
+    #: Takror yuklanmasligi uchun: asoschi ismi + loyiha matni boshidan
+    import_key = models.CharField(max_length=64, blank=True, db_index=True, editable=False)
+
+    class Meta:
+        verbose_name = "Ofis startapi"
+        verbose_name_plural = "Samarqand startuplar ofisi"
+        ordering = ['-created_at', '-id']
+        indexes = [models.Index(fields=['is_published', '-created_at'])]
+
+    def __str__(self):
+        return f"{self.name} — {self.full_name}"

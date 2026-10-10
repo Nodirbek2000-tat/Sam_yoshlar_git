@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Startup
+from .models import Startup, OfficeStartup
 
 
 @admin.register(Startup)
@@ -18,3 +18,11 @@ class StartupAdmin(admin.ModelAdmin):
                                 'needed_investment', 'pitch_file', 'logo', 'website')}),
         ("Ko'rib chiqish", {'fields': ('status', 'admin_note', 'is_public')}),
     )
+
+
+@admin.register(OfficeStartup)
+class OfficeStartupAdmin(admin.ModelAdmin):
+    list_display = ['name', 'full_name', 'sphere', 'stage', 'district', 'is_published']
+    list_filter = ['sphere', 'stage', 'is_published']
+    search_fields = ['name', 'full_name', 'about']
+    list_editable = ['is_published']
