@@ -1,10 +1,17 @@
 from django.contrib import admin
 
-from .models import Announcement, Event, EventRegistration, News, Poll, PollOption, PollVote
+from .models import (Announcement, Event, EventRegistration, News, NewsPhoto, Poll, PollOption,
+                     PollVote)
+
+
+class NewsPhotoInline(admin.TabularInline):
+    model = NewsPhoto
+    extra = 0
 
 
 @admin.register(News)
 class NewsAdmin(admin.ModelAdmin):
+    inlines = [NewsPhotoInline]
     list_display = ['title', 'category', 'published_at', 'is_published', 'is_featured', 'views']
     list_filter = ['category', 'is_published', 'is_featured', 'published_at']
     search_fields = ['title', 'excerpt', 'body']

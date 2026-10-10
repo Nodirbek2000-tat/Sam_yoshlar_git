@@ -14,7 +14,8 @@ from rest_framework import serializers
 
 from apps.abroad.models import Peer
 from apps.business.models import BusinessProfile, GalleryImage
-from apps.content.models import Announcement, Event, News
+from apps.content.models import (NEWS_PHOTO_LIMIT, NEWS_VIDEO_EXTENSIONS, NEWS_VIDEO_MAX_MB,
+                                 Announcement, Event, News, NewsPhoto)
 from apps.initiatives.directions import DIRECTIONS, get_direction
 from apps.initiatives.models import (Initiative, InitiativeComment, Organization,
                                      Problem, Solution)
@@ -174,29 +175,110 @@ class NewsListSerializer(serializers.ModelSerializer):
         return absolute(self.context.get('request'), obj.image)
 
 
+def news_photos(request, news):
+    return [{'id': photo.pk, 'url': absolute(request, photo.image)} for photo in news.photos.all()]
+
+
 class PanelNewsSerializer(serializers.ModelSerializer):
-    """Panel uchun: ro'yxatda ham, qo'shish-tahrirlashda ham shu ishlatiladi."""
+    """Panel uchun: ro'yxatda ham, qo'shish-tahrirlashda ham shu ishlatiladi.
+
+    Qo'shimcha rasmlar `new_photos` (bir nechta fayl) bilan qo'shiladi,
+    `remove_photos` (id ro'yxati) bilan o'chadi. Video bitta, 25 MB gacha.
+    """
 
     image = serializers.ImageField(required=False, allow_null=True)
     image_url = serializers.SerializerMethodField()
+    video = serializers.FileField(required=False, allow_null=True, write_only=True)
+    video_url = serializers.SerializerMethodField()
+    remove_video = serializers.BooleanField(required=False, write_only=True)
+    photos = serializers.SerializerMethodField()
+    new_photos = serializers.ListField(child=serializers.ImageField(), required=False,
+                                       write_only=True)
+    remove_photos = serializers.ListField(child=serializers.IntegerField(), required=False,
+                                          write_only=True)
     category_display = serializers.CharField(source='get_category_display', read_only=True)
     author_display = serializers.CharField(source='display_author', read_only=True)
 
     class Meta:
         model = News
         fields = ['id', 'slug', 'title', 'category', 'category_display', 'excerpt', 'body',
-                  'image', 'image_url', 'author_name', 'author_display', 'published_at',
-                  'is_published', 'is_featured', 'views', 'created_at']
+                  'image', 'image_url', 'video', 'video_url', 'remove_video', 'photos',
+                  'new_photos', 'remove_photos', 'author_name', 'author_display',
+                  'published_at', 'is_published', 'is_featured', 'views', 'created_at']
         read_only_fields = ['id', 'slug', 'views', 'created_at']
 
     def get_image_url(self, obj):
         return absolute(self.context.get('request'), obj.image)
+
+    def get_video_url(self, obj):
+        return absolute(self.context.get('request'), obj.video)
+
+    def get_photos(self, obj):
+        return news_photos(self.context.get('request'), obj)
 
     def validate_title(self, value):
         value = value.strip()
         if len(value) < 5:
             raise serializers.ValidationError("Sarlavha juda qisqa.")
         return value
+
+    def validate_video(self, file):
+        if not file:
+            return file
+        extension = file.name.rsplit('.', 1)[-1].lower() if '.' in file.name else ''
+        if extension not in NEWS_VIDEO_EXTENSIONS:
+            raise serializers.ValidationError("Video MP4, WEBM yoki MOV formatida bo'lsin.")
+        if file.size > NEWS_VIDEO_MAX_MB * 1024 * 1024:
+            raise serializers.ValidationError(f"Video {NEWS_VIDEO_MAX_MB} MB dan oshmasin.")
+        return file
+
+    def validate_new_photos(self, files):
+        for file in files:
+            validate_image_size(file, limit_mb=10)
+        return files
+
+    def validate(self, attrs):
+        kept = 0
+        if self.instance is not None:
+            removing = set(attrs.get('remove_photos') or [])
+            kept = self.instance.photos.exclude(pk__in=removing).count()
+        added = len(attrs.get('new_photos') or [])
+        if kept + added > NEWS_PHOTO_LIMIT:
+            raise serializers.ValidationError(
+                {'new_photos': f"Ko'pi bilan {NEWS_PHOTO_LIMIT} ta qo'shimcha rasm. "
+                               f"Yana {max(NEWS_PHOTO_LIMIT - kept, 0)} ta qo'shish mumkin."})
+        return attrs
+
+    def _media(self, item, new_photos, remove_photos, old_video=''):
+        if remove_photos:
+            for photo in item.photos.filter(pk__in=remove_photos):
+                photo.image.delete(save=False)
+                photo.delete()
+        if new_photos:
+            start = (item.photos.order_by('-order').values_list('order', flat=True).first() or 0) + 1
+            for index, file in enumerate(new_photos):
+                NewsPhoto.objects.create(news=item, image=file, order=start + index)
+        # Almashtirilgan yoki olib tashlangan video diskda qolib ketmasin
+        if old_video and old_video != item.video.name:
+            item.video.storage.delete(old_video)
+
+    def create(self, validated_data):
+        new_photos = validated_data.pop('new_photos', [])
+        validated_data.pop('remove_photos', None)
+        validated_data.pop('remove_video', None)
+        item = super().create(validated_data)
+        self._media(item, new_photos, [])
+        return item
+
+    def update(self, instance, validated_data):
+        new_photos = validated_data.pop('new_photos', [])
+        remove_photos = validated_data.pop('remove_photos', [])
+        old_video = instance.video.name or ''
+        if validated_data.pop('remove_video', False) and 'video' not in validated_data:
+            validated_data['video'] = None
+        item = super().update(instance, validated_data)
+        self._media(item, new_photos, remove_photos, old_video)
+        return item
 
 
 class PanelEventSerializer(serializers.ModelSerializer):
@@ -286,8 +368,17 @@ class PanelAnnouncementSerializer(serializers.ModelSerializer):
 
 
 class NewsDetailSerializer(NewsListSerializer):
+    photos = serializers.SerializerMethodField()
+    video = serializers.SerializerMethodField()
+
     class Meta(NewsListSerializer.Meta):
-        fields = NewsListSerializer.Meta.fields + ['body', 'author_name']
+        fields = NewsListSerializer.Meta.fields + ['body', 'author_name', 'photos', 'video']
+
+    def get_photos(self, obj):
+        return [photo['url'] for photo in news_photos(self.context.get('request'), obj)]
+
+    def get_video(self, obj):
+        return absolute(self.context.get('request'), obj.video)
 
 
 class EventListSerializer(serializers.ModelSerializer):

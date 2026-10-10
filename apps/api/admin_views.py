@@ -25,7 +25,7 @@ from apps.abroad.models import Peer
 from apps.accounts.models import Role
 from apps.business.models import BusinessProfile
 from apps.cabinet.models import Notification
-from apps.content.models import Announcement, AnnouncementType, Event, News
+from apps.content.models import Announcement, AnnouncementType, Event, News, NewsPhoto
 from apps.core.cleanup import delete_with_files
 from apps.core.models import ServerError
 from apps.core.constants import Region, SamarqandDistrict, Status
@@ -430,7 +430,7 @@ class PanelNews(APIView):
     parser_classes = [JSONParser, MultiPartParser, FormParser]
 
     def get(self, request):
-        queryset = News.objects.all().order_by('-published_at')
+        queryset = News.objects.all().order_by('-published_at').prefetch_related('photos')
 
         search = request.query_params.get('q')
         if search:
@@ -1065,7 +1065,8 @@ def panel_delete(request, resource, pk):
     obj = get_object_or_404(model, pk=pk)
     label = str(obj)
     # Rasm va hujjatlari ham o'chadi — diskda egasiz fayl qolib ketmasin
-    delete_with_files(model.objects.filter(pk=obj.pk))
+    queryset = model.objects.filter(pk=obj.pk)
+    delete_with_files(queryset, *related_files(resource, queryset))
 
     return Response({'deleted': True, 'label': label})
 
@@ -1084,10 +1085,15 @@ def _generate_password(length=12):
     return ''.join(secrets.choice(alphabet) for _ in range(length))
 
 
-#: «Hammasini o'chirish»da CASCADE bilan birga ketadigan, fayli bor yozuvlar
+#: O'chirishda CASCADE bilan birga ketadigan, fayli bor yozuvlar (asosiy queryset bo'yicha)
 CASCADE_FILES = {
-    'problems': lambda: [Solution.objects.all()],
+    'problems': lambda queryset: [Solution.objects.filter(problem__in=queryset)],
+    'news': lambda queryset: [NewsPhoto.objects.filter(news__in=queryset)],
 }
+
+
+def related_files(resource, queryset):
+    return CASCADE_FILES[resource](queryset) if resource in CASCADE_FILES else []
 
 
 @api_view(['DELETE'])
@@ -1102,8 +1108,8 @@ def panel_delete_all(request, resource):
         raise Http404
 
     model, _serializer = MODELS[resource]
-    related = CASCADE_FILES.get(resource, lambda: [])()
-    count, files = delete_with_files(model.objects.all(), *related)
+    queryset = model.objects.all()
+    count, files = delete_with_files(queryset, *related_files(resource, queryset))
     return Response({'deleted': count, 'files': files})
 
 

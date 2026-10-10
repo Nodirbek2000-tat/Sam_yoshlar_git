@@ -1,3 +1,4 @@
+from django.core.validators import FileExtensionValidator
 from django.db import models
 from django.urls import reverse
 from django.utils import timezone
@@ -37,6 +38,12 @@ ANNOUNCEMENT_ICONS = {
 }
 
 
+#: Yangilik videosi: brauzerda to'g'ridan-to'g'ri o'ynaydigan formatlar
+NEWS_VIDEO_EXTENSIONS = ['mp4', 'webm', 'mov', 'm4v']
+NEWS_VIDEO_MAX_MB = 25
+NEWS_PHOTO_LIMIT = 20
+
+
 class PublishedQuerySet(models.QuerySet):
     def published(self):
         return self.filter(is_published=True)
@@ -49,6 +56,8 @@ class News(TimeStampedModel):
     excerpt = models.TextField("Qisqacha", max_length=500)
     body = models.TextField("Matn")
     image = models.ImageField("Rasm", upload_to='news/%Y/%m/', blank=True)
+    video = models.FileField("Video", upload_to='news/videos/%Y/%m/', blank=True,
+                             validators=[FileExtensionValidator(NEWS_VIDEO_EXTENSIONS)])
     author = models.ForeignKey('accounts.User', verbose_name="Muallif", on_delete=models.SET_NULL,
                                null=True, blank=True, related_name='news')
     author_name = models.CharField("Muallif ismi", max_length=150, blank=True)
@@ -79,6 +88,23 @@ class News(TimeStampedModel):
     @property
     def display_author(self):
         return self.author.full_name if self.author else self.author_name
+
+
+class NewsPhoto(TimeStampedModel):
+    """Yangilikning qo'shimcha rasmlari (galereya). Asosiy rasm — `News.image`."""
+
+    news = models.ForeignKey(News, verbose_name="Yangilik", on_delete=models.CASCADE,
+                             related_name='photos')
+    image = models.ImageField("Rasm", upload_to='news/gallery/%Y/%m/')
+    order = models.PositiveSmallIntegerField("Tartib", default=0)
+
+    class Meta:
+        verbose_name = "Yangilik rasmi"
+        verbose_name_plural = "Yangilik rasmlari"
+        ordering = ['order', 'id']
+
+    def __str__(self):
+        return f"{self.news} — rasm #{self.pk}"
 
 
 class Event(TimeStampedModel):

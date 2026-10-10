@@ -62,6 +62,8 @@ say "Xizmatlar ishga tushirilmoqda"
 # shellcheck disable=SC2086
 docker compose up -d --no-deps $SERVICES
 docker compose up -d nginx certbot
+# nginx sozlamasi papkadan ulanadi — o'zgargan bo'lsa qayta o'qisin
+docker compose exec -T nginx nginx -s reload >/dev/null 2>&1 || true
 
 # --- 5. Eski obrazlarni tozalaymiz ---
 

@@ -93,7 +93,7 @@ class NewsDetail(generics.RetrieveAPIView):
     serializer_class = s.NewsDetailSerializer
     permission_classes = [AllowAny]
     lookup_field = 'slug'
-    queryset = News.objects.published()
+    queryset = News.objects.published().prefetch_related('photos')
 
 
 #: Bir odamdan bir yangilik shu vaqt ichida bir marta sanaladi
