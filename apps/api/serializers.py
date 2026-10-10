@@ -5,6 +5,7 @@ Telefon, email kabi shaxsiy ma'lumotlar ochiq ro'yxatlarga tushmaydi.
 """
 import re
 
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError as DjangoValidationError
 from django.core.validators import URLValidator
@@ -806,13 +807,9 @@ def office_age(item, today=None):
 
 
 def office_contact(item):
-    """Telegram'da yozish havolasi: username bo'lsa — u orqali, bo'lmasa — raqam orqali."""
-    if item.telegram:
-        return f"https://t.me/{item.telegram}"
-    digits = re.sub(r'\D', '', item.phone or '')
-    if len(digits) == 12 and digits.startswith('998'):
-        return f"https://t.me/+{digits}"
-    return None
+    """Telegram'da yozish havolasi: startapning o'z username'i bo'lsa — u, bo'lmasa — ofisning umumiy akkaunti."""
+    username = item.telegram or settings.OFFICE_STARTUPS_TELEGRAM
+    return f"https://t.me/{username}" if username else None
 
 
 class OfficeStartupSerializer(serializers.ModelSerializer):

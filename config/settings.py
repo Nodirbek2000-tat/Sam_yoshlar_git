@@ -148,6 +148,8 @@ AUTH_PASSWORD_VALIDATORS = [
 # Telegram bot orqali kirish
 
 TELEGRAM_BOT_USERNAME = env('TELEGRAM_BOT_USERNAME', 'yoshtadbirkorlarbot')
+# Samarqand startuplar ofisi: username'i yo'q startaplar shu akkaunt orqali bog'lanadi
+OFFICE_STARTUPS_TELEGRAM = env('OFFICE_STARTUPS_TELEGRAM', 'sam_ecobench').lstrip('@')
 TELEGRAM_API_SECRET = env('TELEGRAM_API_SECRET', '')
 
 # Tashqi manzil (https://samarqandyoshlari.uz). API rasm havolalarini shu bilan

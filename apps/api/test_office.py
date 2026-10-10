@@ -129,7 +129,7 @@ class OfficeStartupTests(TestCase):
         self.assertEqual(data['count'], 1)
         self.assertEqual(data['total'], 1)
         row = data['results'][0]
-        self.assertEqual(row['contact_url'], 'https://t.me/+998915368117')
+        self.assertEqual(row['contact_url'], 'https://t.me/sam_ecobench')
         self.assertNotIn('phone', row)
         self.assertTrue(row['photo'].startswith('https://samarqandyoshlari.uz/media/'))
         self.assertEqual(data['facets']['spheres'][0]['value'], 'fintech')
