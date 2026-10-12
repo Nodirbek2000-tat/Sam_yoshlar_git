@@ -29,6 +29,7 @@ class TelegramCodeTests(TestCase):
             'phone': "+998500056821",
             'age': 22,
             'district': 'urgut',
+            'mahalla': "Bog'ishamol MFY",
         }
         data.update(overrides)
         return self.client.post(self.api_url, data, HTTP_X_BOT_SECRET=secret)
@@ -205,7 +206,7 @@ class PhoneMatchingTests(TestCase):
         response = self.client.post(
             self.api_url,
             {'telegram_id': 111000222, 'first_name': "Begona", 'phone': '998901112233',
-             'age': 19, 'district': 'payariq'},
+             'age': 19, 'district': 'payariq', 'mahalla': "Navbahor MFY"},
             HTTP_X_BOT_SECRET=SECRET,
         )
         self.assertTrue(response.json()['created'])
@@ -249,7 +250,7 @@ class BotAgeFlowTests(TestCase):
         self.assertEqual(first['error'], 'need_age')
         self.assertTrue(User.objects.filter(telegram_id=900100, phone='+998901112233').exists())
 
-        second = self._issue(age='24', district='urgut')
+        second = self._issue(age='24', district='urgut', mahalla="Bog'ishamol")
         self.assertTrue(second['ok'])
         self.assertEqual(User.objects.get(telegram_id=900100).age, 24)
 
@@ -266,7 +267,7 @@ class BotAgeFlowTests(TestCase):
 
         # Qayta /start — yana yosh so'raladi, 34 va undan kichik bo'lsa kod
         self.assertEqual(self._issue()['error'], 'age_limit')
-        self.assertTrue(self._issue(age='34', district='urgut')['ok'])
+        self.assertTrue(self._issue(age='34', district='urgut', mahalla="Bog'ishamol")['ok'])
 
     def test_bad_age_rejected(self):
         self._issue(phone='+998901112233')
@@ -275,7 +276,7 @@ class BotAgeFlowTests(TestCase):
 
     def test_over_limit_user_cannot_use_old_code(self):
         self._issue(phone='+998901112233')
-        code = self._issue(age='25', district='urgut')['code']
+        code = self._issue(age='25', district='urgut', mahalla="Bog'ishamol")['code']
         User.objects.filter(telegram_id=900100).update(age=40)
 
         response = self.client.post('/api/v1/auth/telegram/', {'code': code},
@@ -317,19 +318,21 @@ class BotDistrictFlowTests(TestCase):
         self._issue(age='20')
 
         response = self._issue(district='toyloq')
-        self.assertTrue(response['ok'])
+        # Tumandan keyin — mahalla
+        self.assertEqual(response['error'], 'need_mahalla')
 
         user = User.objects.get(telegram_id=700200)
         self.assertEqual(user.district, "Toyloq tumani")
         self.assertEqual(user.region, 'samarqand')
 
+        self.assertTrue(self._issue(mahalla="Navbahor MFY")['ok'])
         # Keyingi /start da boshqa savol yo'q
         self.assertTrue(self._issue()['ok'])
 
     def test_district_name_also_accepted(self):
         self._issue(phone='+998901112233')
         self._issue(age='20')
-        self.assertTrue(self._issue(district="Urgut tumani")['ok'])
+        self.assertTrue(self._issue(district="Urgut tumani", mahalla="Bog'ishamol")['ok'])
         self.assertEqual(User.objects.get(telegram_id=700200).district, "Urgut tumani")
 
     def test_unknown_district_rejected(self):
@@ -343,4 +346,35 @@ class BotDistrictFlowTests(TestCase):
     def test_organization_is_not_asked_district(self):
         User.objects.create_user(email='org2@test.uz', full_name="Tashkilot",
                                  role='organization', telegram_id=700200)
+        self.assertTrue(self._issue()['ok'])
+
+
+@override_settings(TELEGRAM_API_SECRET=SECRET)
+class BotMahallaFlowTests(TestCase):
+    """Tumandan keyin mahalla (MFY) — faqat ro'yxatdan o'tayotganda, o'zi yozadi."""
+
+    def setUp(self):
+        self.api_url = reverse('accounts:telegram_issue_code')
+
+    def _issue(self, **data):
+        payload = {'telegram_id': 700300, 'first_name': "Dilshod"}
+        payload.update(data)
+        return self.client.post(self.api_url, payload, HTTP_X_BOT_SECRET=SECRET).json()
+
+    def test_new_user_is_asked_mahalla_after_district(self):
+        self._issue(phone='+998901112244')
+        self._issue(age='21')
+        self.assertEqual(self._issue(district='urgut')['error'], 'need_mahalla')
+        self.assertEqual(self._issue(mahalla="ab")['error'], 'bad_mahalla')
+
+        self.assertTrue(self._issue(mahalla="  Bog'ishamol   MFY ")['ok'])
+        self.assertEqual(User.objects.get(telegram_id=700300).mahalla, "Bog'ishamol MFY")
+
+    def test_user_who_already_logged_in_is_not_asked(self):
+        from django.utils import timezone
+
+        User.objects.create_user(email='eski@test.uz', full_name="Eski", telegram_id=700300,
+                                 phone='+998901112244', age=25, district="Urgut tumani",
+                                 last_login=timezone.now())
+        # Saytga avval kirgan — mahalla birinchi tashabbusida so'raladi
         self.assertTrue(self._issue()['ok'])

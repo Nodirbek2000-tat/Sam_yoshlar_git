@@ -256,6 +256,9 @@ class Initiative(TimeStampedModel):
     author_phone = models.CharField("Telefon", max_length=25, blank=True)
     author_email = models.EmailField("Email", blank=True)
     region = models.CharField("Viloyat", max_length=30, choices=Region.choices, blank=True)
+    # Hudud statistikasi uchun: yozilgan paytdagi tuman va mahalla
+    district = models.CharField("Tuman / shahar", max_length=100, blank=True, db_index=True)
+    mahalla = models.CharField("Mahalla (MFY)", max_length=150, blank=True)
 
     vote_count = models.PositiveIntegerField("Ovozlar", default=0, db_index=True)
     status = models.CharField("Holat", max_length=20, choices=Status.choices,

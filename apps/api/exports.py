@@ -143,7 +143,9 @@ def initiatives_sheets(period):
             author = item.author
             yield (number, item.title, item.get_direction_display(), item.get_kind_display(),
                    item.author_name, item.author_phone or (author.phone if author else ''),
-                   _person_email(item.author_email), author.district if author else '',
+                   _person_email(item.author_email),
+                   item.district or (author.district if author else ''),
+                   item.mahalla or (author.mahalla if author else ''),
                    item.get_region_display(), item.vote_count, item.comment_total,
                    item.get_status_display(), item.is_published, item.summary,
                    item.description, item.expected_result, item.admin_note, item.created_at,
@@ -172,7 +174,8 @@ def initiatives_sheets(period):
     return [
         ("Tashabbuslar", [
             ("№", 6), ("Sarlavha", 40), ("Yo'nalish", 22), ("Turi", 14), ("Muallif", 26),
-            ("Telefon", 16), ("Email", 24), ("Tuman / shahar", 20), ("Viloyat", 18),
+            ("Telefon", 16), ("Email", 24), ("Tuman / shahar", 20), ("Mahalla (MFY)", 22),
+            ("Viloyat", 18),
             ("Ovozlar", 9), ("Takliflar", 10), ("Holat", 16), ("Saytda ko'rinadi", 10),
             ("Qisqa mazmun", 40), ("Batafsil", 60), ("Kutilayotgan natija", 40),
             ("Admin izohi", 30), ("Qo'shilgan", 17), ("Havola", 40),
@@ -383,7 +386,8 @@ def users_sheets(period):
         for number, user in enumerate(users.iterator(chunk_size=2000), 1):
             pk = user.pk
             yield (number, user.full_name, user.phone, _person_email(user.email),
-                   user.get_role_display(), user.age, user.district, user.get_region_display(),
+                   user.get_role_display(), user.age, user.district, user.mahalla,
+                   user.get_region_display(),
                    user.get_study_location_display(), user.get_social_status_display(),
                    user.education_place,
                    f"@{user.telegram_username}" if user.telegram_username else '',
@@ -394,7 +398,7 @@ def users_sheets(period):
     return [
         ("Foydalanuvchilar", [
             ("№", 6), ("F.I.O.", 28), ("Telefon", 16), ("Email", 24), ("Rol", 14), ("Yoshi", 7),
-            ("Tuman / shahar", 20), ("Viloyat", 18), ("Qayerda ta'lim oladi", 16),
+            ("Tuman / shahar", 20), ("Mahalla (MFY)", 22), ("Viloyat", 18), ("Qayerda ta'lim oladi", 16),
             ("Ijtimoiy holati", 16), ("Ta'lim muassasasi", 26), ("Telegram", 18), ("Ro'yxatdan o'tgan", 17), ("Oxirgi kirish", 17),
             ("Tashabbuslari", 11), ("Bergan ovozlari", 11), ("Yozgan takliflari", 11),
             ("Muammoga yechimlari", 11), ("Startaplari", 11), ("Tadbirkor anketasi", 16),

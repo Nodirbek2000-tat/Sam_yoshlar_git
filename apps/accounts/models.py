@@ -77,6 +77,8 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     region = models.CharField("Viloyat", max_length=30, choices=Region.choices, blank=True)
     district = models.CharField("Tuman / shahar", max_length=100, blank=True)
+    # Botda ro'yxatdan o'tishda yoki birinchi tashabbusda so'raladi — o'zi yozadi
+    mahalla = models.CharField("Mahalla (MFY)", max_length=150, blank=True)
     birth_date = models.DateField("Tug'ilgan sana", null=True, blank=True)
     # Botda so'raladi — AGE_LIMIT dan kattalarga kirish kodi berilmaydi
     age = models.PositiveSmallIntegerField("Yoshi", null=True, blank=True)

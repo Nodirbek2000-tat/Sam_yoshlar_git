@@ -23,6 +23,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 
 from apps.core.constants import Region, district_label, district_options
+from apps.core.mahalla import clean_mahalla
 
 from .models import AGE_LIMIT, Role, TelegramAuthCode
 
@@ -98,11 +99,12 @@ def telegram_issue_code(request):
     Kutiladi: telegram_id, first_name, last_name, username
     Ixtiyoriy: phone (birinchi marta majburiy), age, photo (fayl)
 
-    Kutiladi (ixtiyoriy): district — Samarqand viloyatining tumani/shahri.
+    Kutiladi (ixtiyoriy): district — Samarqand viloyatining tumani/shahri,
+    mahalla — MFY nomi (o'zi yozadi).
 
     Kod berilmasa `ok: false` va bot nima so'rashi kerakligi qaytadi:
     `need_phone`, `need_age`, `age_limit` (AGE_LIMIT dan katta), `bad_age`,
-    `need_district`, `bad_district`.
+    `need_district`, `bad_district`, `need_mahalla`, `bad_mahalla`.
     """
     secret = _api_secret()
     provided = request.headers.get('X-Bot-Secret', '')
@@ -154,6 +156,15 @@ def telegram_issue_code(request):
             user.region = Region.SAMARQAND
             user.save(update_fields=['district', 'region'])
 
+    raw_mahalla = (data.get('mahalla') or '').strip()
+    if raw_mahalla:
+        mahalla = clean_mahalla(raw_mahalla)
+        if not mahalla:
+            return JsonResponse({'ok': False, 'error': 'bad_mahalla'})
+        if user.mahalla != mahalla:
+            user.mahalla = mahalla
+            user.save(update_fields=['mahalla'])
+
     # Adminlar va tashkilotlarning hisobini biz ochamiz — ulardan yosh so'ralmaydi
     if not is_age_exempt(user):
         if user.age is None:
@@ -165,6 +176,11 @@ def telegram_issue_code(request):
         if not user.district:
             return JsonResponse({'ok': False, 'error': 'need_district',
                                  'districts': district_options()})
+
+        # Mahalla — faqat ro'yxatdan o'tayotganda (hali saytga kirmagan) so'raladi.
+        # Avval kirganlardan birinchi tashabbusida so'raladi.
+        if not user.mahalla and user.last_login is None:
+            return JsonResponse({'ok': False, 'error': 'need_mahalla', 'district': user.district})
 
     # Eski kodlarni bekor qilamiz — bir vaqtda bitta amaldagi kod bo'lsin
     TelegramAuthCode.objects.filter(user=user, used_at__isnull=True).update(

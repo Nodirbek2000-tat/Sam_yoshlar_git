@@ -2,7 +2,8 @@
 from django.urls import path
 from rest_framework_simplejwt.views import TokenRefreshView, TokenVerifyView
 
-from . import admin_views, auth_views, cabinet_views, offer_views, office_views, poll_views, views
+from . import (admin_views, auth_views, cabinet_views, offer_views, office_views, poll_views,
+               region_stats, views)
 
 app_name = 'api'
 
@@ -96,6 +97,7 @@ urlpatterns = [
 
     # --- Boshqaruv paneli (faqat adminlar; ruxsat yo'q bo'lsa 404) ---
     path('panel/overview/', admin_views.PanelOverview.as_view(), name='panel_overview'),
+    path('panel/hududlar/', region_stats.PanelRegionStats.as_view(), name='panel_region_stats'),
     path('panel/users/', admin_views.PanelUsers.as_view(), name='panel_users'),
     path('panel/users/<int:pk>/', admin_views.PanelUserDetail.as_view(),
          name='panel_user_detail'),

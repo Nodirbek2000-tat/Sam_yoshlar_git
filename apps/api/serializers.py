@@ -97,7 +97,7 @@ class UserSerializer(serializers.ModelSerializer):
                   'region', 'region_display', 'district', 'bio', 'avatar',
                   'initials', 'telegram_username', 'telegram_linked', 'is_verified',
                   'is_panel_admin', 'onboarding', 'age', 'study_location', 'capabilities',
-                  'social_status', 'social_status_display', 'education_place',
+                  'social_status', 'social_status_display', 'education_place', 'mahalla',
                   'organization_name', 'unread_notifications', 'pending_feedback']
         read_only_fields = ['id', 'email', 'phone', 'telegram_username', 'is_verified', 'age']
 
@@ -155,11 +155,21 @@ class ProfileUpdateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['full_name', 'role', 'region', 'district', 'bio', 'study_location',
+        fields = ['full_name', 'role', 'region', 'district', 'mahalla', 'bio', 'study_location',
                   'social_status', 'education_place']
 
     def validate_education_place(self, value):
         return value.strip()
+
+    def validate_mahalla(self, value):
+        from apps.core.mahalla import clean_mahalla
+
+        if not value.strip():
+            return ''
+        cleaned = clean_mahalla(value)
+        if cleaned is None:
+            raise serializers.ValidationError("Mahalla nomini to'g'ri yozing.")
+        return cleaned
 
     def validate(self, attrs):
         if 'social_status' in attrs or 'education_place' in attrs:
@@ -540,17 +550,64 @@ class InitiativeCommentSerializer(serializers.ModelSerializer):
 
 
 class InitiativeCreateSerializer(serializers.ModelSerializer):
+    """Tashabbus bildirish. Hudud doim Samarqand viloyati.
+
+    Tuman va mahalla birinchi tashabbusda so'raladi va hisobda saqlanadi —
+    keyingilarida yuborilmasa hisobdagisi olinadi.
+    """
+
+    district = serializers.CharField(required=False, allow_blank=True, max_length=100)
+    mahalla = serializers.CharField(required=False, allow_blank=True, max_length=200)
+
     class Meta:
         model = Initiative
         # `id` javobda qaytadi — front yangi tashabbusga havola bera olsin
         fields = ['id', 'direction', 'kind', 'title', 'summary', 'description',
-                  'expected_result', 'author_name', 'author_phone', 'region']
+                  'expected_result', 'author_name', 'author_phone', 'district', 'mahalla']
         read_only_fields = ['id']
 
     def validate_direction(self, value):
         if value not in {item['id'] for item in DIRECTIONS}:
             raise serializers.ValidationError("Bunday yo'nalish yo'q.")
         return value
+
+    def validate(self, attrs):
+        from apps.core.constants import Region, district_label
+        from apps.core.mahalla import clean_mahalla
+
+        request = self.context.get('request')
+        user = getattr(request, 'user', None)
+        errors = {}
+
+        raw_district = attrs.get('district', '').strip()
+        district = district_label(raw_district) if raw_district else (user.district if user else '')
+        if raw_district and not district:
+            errors['district'] = "Bunday tuman yoki shahar yo'q."
+        elif not district_label(district or ''):
+            errors['district'] = "Tumaningiz yoki shahringizni tanlang."
+
+        raw_mahalla = attrs.get('mahalla', '').strip()
+        mahalla = clean_mahalla(raw_mahalla) if raw_mahalla else (user.mahalla if user else '')
+        if not mahalla:
+            errors['mahalla'] = ("Mahalla nomini to'g'ri yozing." if raw_mahalla
+                                 else "Mahallangiz (MFY) nomini yozing.")
+
+        if errors:
+            raise serializers.ValidationError(errors)
+
+        attrs.update(district=district_label(district), mahalla=mahalla, region=Region.SAMARQAND)
+        return attrs
+
+    def create(self, validated_data):
+        from apps.core.constants import Region
+
+        item = super().create(validated_data)
+        # Hisobda saqlanadi — keyingi tashabbusda qayta so'ralmaydi
+        user = item.author
+        if user is not None and (user.district, user.mahalla) != (item.district, item.mahalla):
+            user.district, user.mahalla, user.region = item.district, item.mahalla, Region.SAMARQAND
+            user.save(update_fields=['district', 'mahalla', 'region'])
+        return item
 
 
 # --------------------------------------------------------------------------
