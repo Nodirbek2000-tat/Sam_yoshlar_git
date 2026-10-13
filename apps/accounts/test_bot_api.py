@@ -160,6 +160,33 @@ class BotFeedTests(TestCase):
         news.save()
         self.assertEqual(BotPost.objects.count(), 1)
 
+    def test_organization_problem_is_queued_but_youth_initiative_is_not(self):
+        from apps.core.constants import Status
+        from apps.initiatives.models import Initiative, Organization, Problem, ProblemCategory
+
+        setting = BotSetting.load()
+        setting.auto_post = True
+        setting.save()
+
+        organization = Organization.objects.create(name="SamEcoBench MChJ")
+        problem = Problem.objects.create(
+            organization=organization, category=ProblemCategory.values[0],
+            description="Ishlab chiqarishda chiqindini kamaytirish yo'lini qidiryapmiz.",
+            status=Status.APPROVED, is_published=True)
+        Initiative.objects.create(direction='edu', kind='idea', title="Yoshlar g'oyasi",
+                                  description="Matn", author_name="Yosh")
+
+        post = BotPost.objects.get()
+        self.assertEqual(post.kind, BotPost.Kind.PROBLEM)
+        self.assertTrue(post.title.startswith("SamEcoBench MChJ: "))
+        self.assertTrue(post.link.endswith(f'/tashabbuslar/muammolar/{problem.pk}'))
+
+        # Yashirilgan muammo navbatga tushmaydi
+        Problem.objects.create(organization=organization, category=ProblemCategory.values[0],
+                               description="Yashirin", status=Status.APPROVED,
+                               is_published=False)
+        self.assertEqual(BotPost.objects.count(), 1)
+
     def test_bot_takes_pending_and_reports_result(self):
         setting = BotSetting.load()
         setting.auto_post = True

@@ -1,6 +1,7 @@
 """Saytga yangi narsa qo'shilsa — botga yuborish navbatiga qo'shadi.
 
-Yangilik, e'lon, startap, tadbirkor yoki chet eldagi tengdosh chiqqanda
+Yangilik, e'lon, startap, tadbirkor, chet eldagi tengdosh yoki tashkilot
+muammosi chiqqanda
 shu yerdagi qabul qiluvchilar ishlaydi. Panelda «Botga yuborish» o'chiq
 bo'lsa — navbatga hech narsa tushmaydi.
 
@@ -120,6 +121,19 @@ def peer_published(sender, instance, **kwargs):
             f"{instance.full_name} — {instance.get_country_display()}",
             instance.achievements or instance.about,
             site_link(f'/tengdoshlar/{instance.pk}'), file_url(instance.photo))
+
+
+@receiver(post_save, dispatch_uid='bot_feed_problem')
+def problem_published(sender, instance, **kwargs):
+    """Faqat tashkilotlarning muammolari — yoshlarning tashabbuslari botga bormaydi."""
+    if sender.__name__ != 'Problem':
+        return
+    if instance.status != Status.APPROVED or not instance.is_published:
+        return
+    organization = instance.organization
+    title = f"{organization.name}: {instance.question or instance.get_category_display()}"
+    enqueue(BotPost.Kind.PROBLEM, instance, title, instance.description,
+            site_link(f'/tashabbuslar/muammolar/{instance.pk}'))
 
 
 def _poll_ready(poll):

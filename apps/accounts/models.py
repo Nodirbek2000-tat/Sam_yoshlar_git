@@ -245,6 +245,7 @@ class BotPost(models.Model):
         BUSINESS = 'business', "Tadbirkor"
         PEER = 'peer', "Chet eldagi tengdosh"
         POLL = 'poll', "So'rovnoma"
+        PROBLEM = 'problem', "Tashkilot muammosi"
 
     class Status(models.TextChoices):
         PENDING = 'pending', "Navbatda"
