@@ -9,6 +9,7 @@ from django.core.cache import cache
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from rest_framework import generics, status
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny, BasePermission, IsAuthenticated
 from rest_framework.response import Response
@@ -24,8 +25,8 @@ from apps.initiatives.directions import DIRECTIONS, MILESTONES, get_direction, r
 from apps.initiatives.models import (PROBLEM_QUESTIONS, Initiative, InitiativeComment,
                                      InitiativeVote, Problem, ProblemCategory,
                                      Solution, SolutionLike)
-from apps.business.models import BusinessProfile, BusinessSphere
-from apps.startups.models import Startup, StartupSphere, StartupStage
+from apps.business.models import BUSINESS_SPHERE_ICONS, BusinessProfile, BusinessSphere
+from apps.startups.models import STARTUP_SPHERE_ICONS, Startup, StartupSphere, StartupStage
 
 from . import serializers as s
 
@@ -641,23 +642,72 @@ def public_businesses():
             .select_related('user').prefetch_related('gallery'))
 
 
-class StartupList(generics.ListAPIView):
+class DirectoryPagination(PageNumberPagination):
+    """Startap va tadbirkorlar ro'yxati: sahifada 24 ta, `?page=` bilan keyingisi."""
+
+    page_size = 24
+
+
+def facet_counts(queryset, field, choices, icons=None):
+    """Filtr tugmalari uchun: har bir qiymatda nechta (bo'shlari tushiriladi)."""
+    rows = dict(queryset.order_by().values(field).annotate(total=Count('id'))
+                .values_list(field, 'total'))
+    facets = [{'value': value, 'label': label, 'count': rows[value],
+               **({'icon': icons.get(value, '')} if icons is not None else {})}
+              for value, label in choices if rows.get(value)]
+    return sorted(facets, key=lambda item: -item['count'])
+
+
+class FacetedList(generics.ListAPIView):
+    """Ro'yxat + filtr sonlari. Sonlar butun bazadan hisoblanadi, sahifadan emas.
+
+    Har bir filtr qatorining sonlari qolgan filtrlar hisobga olingan holda
+    sanaladi: «EdTech» tanlansa ham bosqichlar faqat EdTech ichida sanaladi.
+    """
+
+    permission_classes = [AllowAny]
+    pagination_class = DirectoryPagination
+    #: {so'rov parametri: (maydon, tanlovlar, belgilar yoki None)}
+    facets = {}
+
+    def base_queryset(self):
+        raise NotImplementedError
+
+    def filtered(self, skip=None):
+        queryset = self.base_queryset()
+        for param, (field, _choices, _icons) in self.facets.items():
+            value = self.request.query_params.get(param)
+            if value and param != skip:
+                queryset = queryset.filter(**{field: value})
+        return queryset
+
+    def get_queryset(self):
+        return self.filtered().order_by('-created_at')
+
+    def list(self, request, *args, **kwargs):
+        response = super().list(request, *args, **kwargs)
+        response.data['total'] = self.base_queryset().count()
+        response.data['facets'] = {
+            param: facet_counts(self.filtered(skip=param), field, choices, icons)
+            for param, (field, choices, icons) in self.facets.items()
+        }
+        return response
+
+
+class StartupList(FacetedList):
     """Startaplar ro'yxati: `?soha=`, `?bosqich=`, `?q=` bilan filtrlanadi."""
 
     serializer_class = s.PublicStartupSerializer
-    permission_classes = [AllowAny]
+    facets = {
+        'soha': ('sphere', StartupSphere.choices, STARTUP_SPHERE_ICONS),
+        'bosqich': ('stage', StartupStage.choices, None),
+    }
 
-    def get_queryset(self):
-        queryset = public_startups().order_by('-created_at')
-        params = self.request.query_params
-
-        if params.get('soha'):
-            queryset = queryset.filter(sphere=params['soha'])
-        if params.get('bosqich'):
-            queryset = queryset.filter(stage=params['bosqich'])
-        if params.get('q'):
-            queryset = queryset.filter(Q(name__icontains=params['q'])
-                                       | Q(about__icontains=params['q']))
+    def base_queryset(self):
+        queryset = public_startups()
+        search = self.request.query_params.get('q')
+        if search:
+            queryset = queryset.filter(Q(name__icontains=search) | Q(about__icontains=search))
         return queryset
 
 
@@ -669,23 +719,21 @@ class StartupDetail(generics.RetrieveAPIView):
         return public_startups()
 
 
-class BusinessList(generics.ListAPIView):
+class BusinessList(FacetedList):
     """Tadbirkorlar ro'yxati: `?soha=`, `?hudud=`, `?q=` bilan filtrlanadi."""
 
     serializer_class = s.PublicBusinessSerializer
-    permission_classes = [AllowAny]
+    facets = {
+        'soha': ('sphere', BusinessSphere.choices, BUSINESS_SPHERE_ICONS),
+        'hudud': ('region', Region.choices, None),
+    }
 
-    def get_queryset(self):
-        queryset = public_businesses().order_by('-created_at')
-        params = self.request.query_params
-
-        if params.get('soha'):
-            queryset = queryset.filter(sphere=params['soha'])
-        if params.get('hudud'):
-            queryset = queryset.filter(region=params['hudud'])
-        if params.get('q'):
-            queryset = queryset.filter(Q(name__icontains=params['q'])
-                                       | Q(description__icontains=params['q']))
+    def base_queryset(self):
+        queryset = public_businesses()
+        search = self.request.query_params.get('q')
+        if search:
+            queryset = queryset.filter(Q(name__icontains=search)
+                                       | Q(description__icontains=search))
         return queryset
 
 
