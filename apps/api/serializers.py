@@ -19,7 +19,7 @@ from apps.content.models import (NEWS_PHOTO_LIMIT, NEWS_VIDEO_EXTENSIONS, NEWS_V
 from apps.initiatives.directions import DIRECTIONS, get_direction
 from apps.initiatives.models import (Initiative, InitiativeComment, Organization,
                                      Problem, Solution)
-from apps.startups.models import OfficeStartup, Startup
+from apps.startups.models import Laureate, OfficeStartup, Startup
 
 User = get_user_model()
 
@@ -1136,4 +1136,57 @@ class PanelOfficeStartupSerializer(OfficeStartupSerializer):
         for field, name in old.items():
             if getattr(item, field).name != name:
                 getattr(item, field).storage.delete(name)
+        return item
+
+
+# --------------------------------------------------------------------------
+# Mirzo Ulug'bek vorislari (Innovatsion rivojlanish bo'linmasi)
+# --------------------------------------------------------------------------
+
+class LaureateSerializer(serializers.ModelSerializer):
+    """Ochiq sayt uchun: aloqa ma'lumoti yo'q."""
+
+    photo = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Laureate
+        fields = ['id', 'full_name', 'year', 'district', 'age', 'education_place', 'course',
+                  'photo', 'project_name', 'about', 'is_national_winner']
+
+    def get_photo(self, obj):
+        return absolute(self.context.get('request'), obj.photo)
+
+
+class PanelLaureateSerializer(LaureateSerializer):
+    photo_file = serializers.ImageField(source='photo', required=False, allow_null=True,
+                                        write_only=True)
+    remove_photo = serializers.BooleanField(required=False, write_only=True)
+    visible = serializers.BooleanField(source='is_published', read_only=True)
+
+    class Meta(LaureateSerializer.Meta):
+        fields = LaureateSerializer.Meta.fields + [
+            'birth_date', 'is_published', 'visible', 'photo_file', 'remove_photo', 'created_at']
+
+    def validate_year(self, value):
+        if not 2000 <= value <= 2100:
+            raise serializers.ValidationError("Yilni to'g'ri kiriting.")
+        return value
+
+    def create(self, validated_data):
+        from apps.startups.laureate_import import import_key
+
+        validated_data.pop('remove_photo', None)
+        validated_data['import_key'] = import_key(validated_data['full_name'],
+                                                  validated_data['project_name'],
+                                                  validated_data['year'])
+        return super().create(validated_data)
+
+    def update(self, instance, validated_data):
+        old = instance.photo.name if instance.photo else ''
+        if validated_data.pop('remove_photo', False) and 'photo' not in validated_data:
+            validated_data['photo'] = ''
+        item = super().update(instance, validated_data)
+        # Almashtirilgan yoki olib tashlangan rasm diskda qolib ketmasin
+        if old and item.photo.name != old:
+            item.photo.storage.delete(old)
         return item

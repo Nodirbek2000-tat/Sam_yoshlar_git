@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Startup, OfficeStartup
+from .models import Laureate, OfficeStartup, Startup
 
 
 @admin.register(Startup)
@@ -25,4 +25,13 @@ class OfficeStartupAdmin(admin.ModelAdmin):
     list_display = ['name', 'full_name', 'sphere', 'stage', 'district', 'is_published']
     list_filter = ['sphere', 'stage', 'is_published']
     search_fields = ['name', 'full_name', 'about']
+    list_editable = ['is_published']
+
+
+@admin.register(Laureate)
+class LaureateAdmin(admin.ModelAdmin):
+    list_display = ['full_name', 'project_name', 'year', 'district', 'is_national_winner',
+                    'is_published']
+    list_filter = ['year', 'is_national_winner', 'is_published']
+    search_fields = ['full_name', 'project_name']
     list_editable = ['is_published']

@@ -203,3 +203,39 @@ class OfficeStartup(TimeStampedModel):
 
     def __str__(self):
         return f"{self.name} — {self.full_name}"
+
+
+class Laureate(TimeStampedModel):
+    """«Mirzo Ulug'bek vorislari» respublika tanlovining Samarqand viloyati g'olibi.
+
+    Samarqand viloyati Innovatsion rivojlanish bo'linmasi bo'limida ko'rinadi.
+    Panelda Excel'dan yuklanadi; aloqa ham, soha ham yo'q — faqat kim, qaysi
+    yili va qanday loyiha bilan g'olib bo'lgani.
+    """
+
+    full_name = models.CharField("F.I.Sh.", max_length=150)
+    year = models.PositiveSmallIntegerField("Tanlov yili", db_index=True)
+    district = models.CharField("Tuman / shahar", max_length=100, blank=True)
+    birth_date = models.DateField("Tug'ilgan sana", null=True, blank=True)
+    age = models.PositiveSmallIntegerField("Yoshi", null=True, blank=True,
+                                           help_text="Tanlov paytidagi yoshi")
+    education_place = models.CharField("Ta'lim muassasasi", max_length=250, blank=True)
+    course = models.CharField("Kurs / sinf", max_length=40, blank=True)
+    photo = models.ImageField("Rasmi", upload_to='vorislar/%Y/%m/', blank=True)
+
+    project_name = models.CharField("Loyiha nomi", max_length=250)
+    about = models.TextField("Loyiha haqida", blank=True)
+    is_national_winner = models.BooleanField("Respublika g'olibi", default=False)
+
+    is_published = models.BooleanField("Saytda ko'rinadi", default=True)
+    #: Takror yuklanmasligi uchun: ism + loyiha + yil
+    import_key = models.CharField(max_length=64, blank=True, db_index=True, editable=False)
+
+    class Meta:
+        verbose_name = "Mirzo Ulug'bek vorisi"
+        verbose_name_plural = "Mirzo Ulug'bek vorislari"
+        ordering = ['-year', 'id']
+        indexes = [models.Index(fields=['is_published', '-year'])]
+
+    def __str__(self):
+        return f"{self.full_name} — {self.project_name} ({self.year})"
