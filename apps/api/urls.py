@@ -2,8 +2,8 @@
 from django.urls import path
 from rest_framework_simplejwt.views import TokenRefreshView, TokenVerifyView
 
-from . import (admin_views, auth_views, cabinet_views, laureate_views, offer_views, office_views,
-               poll_views, region_stats, views)
+from . import (admin_views, auth_views, cabinet_views, funded_views, laureate_views, offer_views,
+               office_views, poll_views, region_stats, views)
 
 app_name = 'api'
 
@@ -62,6 +62,7 @@ urlpatterns = [
          name='announcement_detail'),
     path('startuplar-ofisi/', office_views.office_startups, name='office_startups'),
     path('vorislar/', laureate_views.laureates, name='laureates'),
+    path('mablag-olganlar/', funded_views.funded_startups, name='funded_startups'),
     path('vorislar/<int:pk>/', laureate_views.laureate_detail, name='laureate_detail'),
     path('startuplar-ofisi/<int:pk>/', office_views.office_startup_detail,
          name='office_startup_detail'),
@@ -140,6 +141,9 @@ urlpatterns = [
     path('panel/announcements/<int:pk>/tahrir/',
          admin_views.PanelAnnouncementDetail.as_view(), name='panel_announcement_detail'),
     path('panel/laureates/', laureate_views.PanelLaureates.as_view(), name='panel_laureates'),
+    path('panel/funded/', funded_views.PanelFundedStartups.as_view(), name='panel_funded'),
+    path('panel/funded/<int:pk>/tahrir/', funded_views.PanelFundedStartupDetail.as_view(),
+         name='panel_funded_detail'),
     path('panel/laureates/import/', laureate_views.PanelLaureateImport.as_view(),
          name='panel_laureate_import'),
     path('panel/laureates/<int:pk>/tahrir/', laureate_views.PanelLaureateDetail.as_view(),

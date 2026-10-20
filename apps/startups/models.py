@@ -239,3 +239,38 @@ class Laureate(TimeStampedModel):
 
     def __str__(self):
         return f"{self.full_name} — {self.project_name} ({self.year})"
+
+
+class FundingCurrency(models.TextChoices):
+    UZS = 'UZS', "so'm"
+    USD = 'USD', "AQSH dollari"
+
+
+class FundedStartup(TimeStampedModel):
+    """Mablag' (grant, investitsiya) olgan startap — bosh sahifaning eng tepasida.
+
+    Panelda qo'lda qo'shiladi: rasm, nomi, qancha va kimdan mablag' olgani.
+    Saytda kartaga bosilsa — qisqa batafsil ma'lumot oynada ochiladi.
+    """
+
+    name = models.CharField("Startap nomi", max_length=200)
+    image = models.ImageField("Rasm", upload_to='mablag/%Y/%m/', blank=True)
+    founder = models.CharField("Asoschi", max_length=200, blank=True)
+    sphere = models.CharField("Yo'nalish", max_length=100, blank=True)
+    amount = models.PositiveBigIntegerField("Olgan mablag'i", null=True, blank=True)
+    currency = models.CharField("Valyuta", max_length=3, choices=FundingCurrency.choices,
+                                default=FundingCurrency.UZS)
+    funder = models.CharField("Mablag' bergan tashkilot", max_length=200, blank=True)
+    year = models.PositiveSmallIntegerField("Yili", null=True, blank=True)
+    about = models.TextField("Startap haqida", blank=True)
+    order = models.PositiveSmallIntegerField("Tartib", default=0,
+                                             help_text="Kichigi oldinda turadi")
+    is_published = models.BooleanField("Saytda ko'rinadi", default=True)
+
+    class Meta:
+        verbose_name = "Mablag' olgan startap"
+        verbose_name_plural = "Mablag' olgan startaplar"
+        ordering = ['order', '-created_at']
+
+    def __str__(self):
+        return self.name

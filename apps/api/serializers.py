@@ -19,7 +19,7 @@ from apps.content.models import (NEWS_PHOTO_LIMIT, NEWS_VIDEO_EXTENSIONS, NEWS_V
 from apps.initiatives.directions import DIRECTIONS, get_direction
 from apps.initiatives.models import (Initiative, InitiativeComment, Organization,
                                      Problem, Solution)
-from apps.startups.models import Laureate, OfficeStartup, Startup
+from apps.startups.models import FundedStartup, Laureate, OfficeStartup, Startup
 
 User = get_user_model()
 
@@ -1189,4 +1189,60 @@ class PanelLaureateSerializer(LaureateSerializer):
         # Almashtirilgan yoki olib tashlangan rasm diskda qolib ketmasin
         if old and item.photo.name != old:
             item.photo.storage.delete(old)
+        return item
+
+
+# --------------------------------------------------------------------------
+# Mablag' olgan startaplar (bosh sahifa)
+# --------------------------------------------------------------------------
+
+class FundedStartupSerializer(serializers.ModelSerializer):
+    image = serializers.SerializerMethodField()
+    currency_display = serializers.CharField(source='get_currency_display', read_only=True)
+
+    class Meta:
+        model = FundedStartup
+        fields = ['id', 'name', 'image', 'founder', 'sphere', 'amount', 'currency',
+                  'currency_display', 'funder', 'year', 'about']
+
+    def get_image(self, obj):
+        return absolute(self.context.get('request'), obj.image)
+
+
+class PanelFundedStartupSerializer(FundedStartupSerializer):
+    image_file = serializers.ImageField(source='image', required=False, allow_null=True,
+                                        write_only=True)
+    remove_image = serializers.BooleanField(required=False, write_only=True)
+    visible = serializers.BooleanField(source='is_published', read_only=True)
+
+    class Meta(FundedStartupSerializer.Meta):
+        fields = FundedStartupSerializer.Meta.fields + [
+            'order', 'is_published', 'visible', 'image_file', 'remove_image', 'created_at']
+
+    def validate_name(self, value):
+        value = value.strip()
+        if len(value) < 2:
+            raise serializers.ValidationError("Startap nomini yozing.")
+        return value
+
+    def validate_year(self, value):
+        if value is not None and not 2000 <= value <= 2100:
+            raise serializers.ValidationError("Yilni to'g'ri kiriting.")
+        return value
+
+    def validate_image_file(self, value):
+        return validate_image_size(value, limit_mb=10)
+
+    def create(self, validated_data):
+        validated_data.pop('remove_image', None)
+        return super().create(validated_data)
+
+    def update(self, instance, validated_data):
+        old = instance.image.name if instance.image else ''
+        if validated_data.pop('remove_image', False) and 'image' not in validated_data:
+            validated_data['image'] = ''
+        item = super().update(instance, validated_data)
+        # Almashtirilgan yoki olib tashlangan rasm diskda qolib ketmasin
+        if old and item.image.name != old:
+            item.image.storage.delete(old)
         return item

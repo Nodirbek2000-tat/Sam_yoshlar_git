@@ -34,7 +34,7 @@ from apps.initiatives.models import (Initiative, InitiativeComment, Organization
                                      OrganizationSphere, Problem, ProblemCategory,
                                      Solution)
 from apps.panel.mixins import is_panel_admin
-from apps.startups.models import Laureate, OfficeStartup, Startup
+from apps.startups.models import FundedStartup, Laureate, OfficeStartup, Startup
 
 from . import serializers as s
 from .exports import EXPORTS, Period, build_workbook, export_count
@@ -991,6 +991,7 @@ VISIBILITY = {
     'startups': 'is_public',
     'office-startups': 'is_published',
     'laureates': 'is_published',
+    'funded': 'is_published',
 }
 
 #: Moderatsiya holati bor bo'limlar
@@ -1057,6 +1058,7 @@ MODELS = {
     'startups': (Startup, s.StartupSerializer),
     'office-startups': (OfficeStartup, s.PanelOfficeStartupSerializer),
     'laureates': (Laureate, s.PanelLaureateSerializer),
+    'funded': (FundedStartup, s.PanelFundedStartupSerializer),
 }
 
 
