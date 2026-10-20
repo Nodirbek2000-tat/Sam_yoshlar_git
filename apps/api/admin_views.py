@@ -34,7 +34,7 @@ from apps.initiatives.models import (Initiative, InitiativeComment, Organization
                                      OrganizationSphere, Problem, ProblemCategory,
                                      Solution)
 from apps.panel.mixins import is_panel_admin
-from apps.startups.models import FundedStartup, Laureate, OfficeStartup, Startup
+from apps.startups.models import FundedPhoto, FundedStartup, Laureate, OfficeStartup, Startup
 
 from . import serializers as s
 from .exports import EXPORTS, Period, build_workbook, export_count
@@ -1147,6 +1147,7 @@ def _generate_password(length=12):
 CASCADE_FILES = {
     'problems': lambda queryset: [Solution.objects.filter(problem__in=queryset)],
     'news': lambda queryset: [NewsPhoto.objects.filter(news__in=queryset)],
+    'funded': lambda queryset: [FundedPhoto.objects.filter(startup__in=queryset)],
 }
 
 

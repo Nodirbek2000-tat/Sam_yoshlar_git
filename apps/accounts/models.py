@@ -246,6 +246,7 @@ class BotPost(models.Model):
         PEER = 'peer', "Chet eldagi tengdosh"
         POLL = 'poll', "So'rovnoma"
         PROBLEM = 'problem', "Tashkilot muammosi"
+        FUNDED = 'funded', "Mablag' olgan startap"
 
     class Status(models.TextChoices):
         PENDING = 'pending', "Navbatda"

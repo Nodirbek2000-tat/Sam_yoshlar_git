@@ -1198,26 +1198,45 @@ class PanelLaureateSerializer(LaureateSerializer):
 
 class FundedStartupSerializer(serializers.ModelSerializer):
     image = serializers.SerializerMethodField()
+    video = serializers.SerializerMethodField()
+    photos = serializers.SerializerMethodField()
     currency_display = serializers.CharField(source='get_currency_display', read_only=True)
 
     class Meta:
         model = FundedStartup
-        fields = ['id', 'name', 'image', 'founder', 'sphere', 'amount', 'currency',
-                  'currency_display', 'funder', 'year', 'about']
+        fields = ['id', 'name', 'image', 'photos', 'video', 'founder', 'sphere', 'amount',
+                  'currency', 'currency_display', 'funder', 'year', 'about']
 
     def get_image(self, obj):
         return absolute(self.context.get('request'), obj.image)
 
+    def get_video(self, obj):
+        return absolute(self.context.get('request'), obj.video)
+
+    def get_photos(self, obj):
+        request = self.context.get('request')
+        return [{'id': photo.pk, 'url': absolute(request, photo.image)} for photo in obj.photos.all()]
+
 
 class PanelFundedStartupSerializer(FundedStartupSerializer):
+    """Panel: asosiy rasm, qo'shimcha rasmlar (`new_photos` / `remove_photos`) va video."""
+
     image_file = serializers.ImageField(source='image', required=False, allow_null=True,
                                         write_only=True)
     remove_image = serializers.BooleanField(required=False, write_only=True)
+    video_file = serializers.FileField(source='video', required=False, allow_null=True,
+                                       write_only=True)
+    remove_video = serializers.BooleanField(required=False, write_only=True)
+    new_photos = serializers.ListField(child=serializers.ImageField(), required=False,
+                                       write_only=True)
+    remove_photos = serializers.ListField(child=serializers.IntegerField(), required=False,
+                                          write_only=True)
     visible = serializers.BooleanField(source='is_published', read_only=True)
 
     class Meta(FundedStartupSerializer.Meta):
         fields = FundedStartupSerializer.Meta.fields + [
-            'order', 'is_published', 'visible', 'image_file', 'remove_image', 'created_at']
+            'order', 'is_published', 'visible', 'image_file', 'remove_image', 'video_file',
+            'remove_video', 'new_photos', 'remove_photos', 'created_at']
 
     def validate_name(self, value):
         value = value.strip()
@@ -1233,16 +1252,68 @@ class PanelFundedStartupSerializer(FundedStartupSerializer):
     def validate_image_file(self, value):
         return validate_image_size(value, limit_mb=10)
 
+    def validate_video_file(self, file):
+        from apps.startups.models import FUNDED_VIDEO_EXTENSIONS, FUNDED_VIDEO_MAX_MB
+
+        if not file:
+            return file
+        extension = file.name.rsplit('.', 1)[-1].lower() if '.' in file.name else ''
+        if extension not in FUNDED_VIDEO_EXTENSIONS:
+            raise serializers.ValidationError("Video MP4, WEBM yoki MOV formatida bo'lsin.")
+        if file.size > FUNDED_VIDEO_MAX_MB * 1024 * 1024:
+            raise serializers.ValidationError(f"Video {FUNDED_VIDEO_MAX_MB} MB dan oshmasin.")
+        return file
+
+    def validate_new_photos(self, files):
+        for file in files:
+            validate_image_size(file, limit_mb=10)
+        return files
+
+    def validate(self, attrs):
+        from apps.startups.models import FUNDED_PHOTO_LIMIT
+
+        kept = 0
+        if self.instance is not None:
+            removing = set(attrs.get('remove_photos') or [])
+            kept = self.instance.photos.exclude(pk__in=removing).count()
+        if kept + len(attrs.get('new_photos') or []) > FUNDED_PHOTO_LIMIT:
+            raise serializers.ValidationError(
+                {'new_photos': f"Ko'pi bilan {FUNDED_PHOTO_LIMIT} ta qo'shimcha rasm. "
+                               f"Yana {max(FUNDED_PHOTO_LIMIT - kept, 0)} ta qo'shish mumkin."})
+        return attrs
+
+    def _photos(self, item, new_photos, remove_photos):
+        from apps.startups.models import FundedPhoto
+
+        if remove_photos:
+            for photo in item.photos.filter(pk__in=remove_photos):
+                photo.image.delete(save=False)
+                photo.delete()
+        if new_photos:
+            start = (item.photos.order_by('-order').values_list('order', flat=True).first() or 0) + 1
+            for index, file in enumerate(new_photos):
+                FundedPhoto.objects.create(startup=item, image=file, order=start + index)
+
     def create(self, validated_data):
-        validated_data.pop('remove_image', None)
-        return super().create(validated_data)
+        new_photos = validated_data.pop('new_photos', [])
+        for flag in ('remove_photos', 'remove_image', 'remove_video'):
+            validated_data.pop(flag, None)
+        item = super().create(validated_data)
+        self._photos(item, new_photos, [])
+        return item
 
     def update(self, instance, validated_data):
-        old = instance.image.name if instance.image else ''
-        if validated_data.pop('remove_image', False) and 'image' not in validated_data:
-            validated_data['image'] = ''
+        new_photos = validated_data.pop('new_photos', [])
+        remove_photos = validated_data.pop('remove_photos', [])
+        old = {field: getattr(instance, field).name for field in ('image', 'video')
+               if getattr(instance, field)}
+        for field, flag in (('image', 'remove_image'), ('video', 'remove_video')):
+            if validated_data.pop(flag, False) and field not in validated_data:
+                validated_data[field] = ''
         item = super().update(instance, validated_data)
-        # Almashtirilgan yoki olib tashlangan rasm diskda qolib ketmasin
-        if old and item.image.name != old:
-            item.image.storage.delete(old)
+        self._photos(item, new_photos, remove_photos)
+        # Almashtirilgan yoki olib tashlangan fayl diskda qolib ketmasin
+        for field, name in old.items():
+            if getattr(item, field).name != name:
+                getattr(item, field).storage.delete(name)
         return item

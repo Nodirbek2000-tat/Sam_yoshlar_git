@@ -46,14 +46,19 @@ def plain_text(text):
     return text.replace('**', '').replace('*', '')
 
 
-def shorten(text, limit=EXCERPT_LIMIT):
-    text = ' '.join(plain_text(text).split())
+def shorten(text, limit=EXCERPT_LIMIT, keep_lines=False):
+    """Qisqa matn. `keep_lines` — qator tashlashlar saqlanadi (ro'yxatsimon xabar uchun)."""
+    if keep_lines:
+        lines = (' '.join(line.split()) for line in plain_text(text).splitlines())
+        text = '\n'.join(line for line in lines if line)
+    else:
+        text = ' '.join(plain_text(text).split())
     if len(text) <= limit:
         return text
     return text[:limit].rsplit(' ', 1)[0] + '…'
 
 
-def enqueue(kind, obj, title, excerpt, link, image=''):
+def enqueue(kind, obj, title, excerpt, link, image='', keep_lines=False, limit=EXCERPT_LIMIT):
     """Navbatga qo'shadi. O'chirilgan bo'lsa yoki allaqachon bor bo'lsa — jim o'tadi."""
     if not BotSetting.load().auto_post:
         return None
@@ -63,7 +68,7 @@ def enqueue(kind, obj, title, excerpt, link, image=''):
         object_id=obj.pk,
         defaults={
             'title': title[:250],
-            'excerpt': shorten(excerpt),
+            'excerpt': shorten(excerpt, limit=limit, keep_lines=keep_lines),
             'image_url': image[:400],
             'link': link[:400],
         },
@@ -121,6 +126,40 @@ def peer_published(sender, instance, **kwargs):
             f"{instance.full_name} — {instance.get_country_display()}",
             instance.achievements or instance.about,
             site_link(f'/tengdoshlar/{instance.pk}'), file_url(instance.photo))
+
+
+def money(amount, currency):
+    """«500 mln so'm», «1,2 mlrd so'm», «$20 000»."""
+    if not amount:
+        return ''
+    if currency == 'USD':
+        return f"${amount:,}".replace(',', ' ')
+    for size, word in ((1_000_000_000, 'mlrd'), (1_000_000, 'mln')):
+        if amount >= size:
+            value = f"{amount / size:.1f}".rstrip('0').rstrip('.').replace('.', ',')
+            return f"{value} {word} so'm"
+    return f"{amount:,} so'm".replace(',', ' ')
+
+
+@receiver(post_save, dispatch_uid='bot_feed_funded')
+def funded_published(sender, instance, **kwargs):
+    """Startap mablag' oldi — hammaga tabrik xabari (bir marta)."""
+    if sender.__name__ != 'FundedStartup' or not instance.is_published:
+        return
+    amount = money(instance.amount, instance.currency)
+    title = (f"{instance.name} {amount} mablag' oldi! 🎉" if amount
+             else f"{instance.name} mablag' oldi! 🎉")
+    lines = []
+    if instance.funder:
+        lines.append(f"🏦 {instance.funder}" + (f" tomonidan {amount} ajratildi." if amount else ""))
+    if instance.founder:
+        lines.append(f"👤 Asoschi: {instance.founder}")
+    lines.append("Keyingi navbat — sizniki! 🚀")
+    if instance.about:
+        lines.append(instance.about)
+    enqueue(BotPost.Kind.FUNDED, instance, title, "\n".join(lines),
+            site_link(f'/?mablag={instance.pk}'), file_url(instance.image),
+            keep_lines=True, limit=600)
 
 
 @receiver(post_save, dispatch_uid='bot_feed_problem')

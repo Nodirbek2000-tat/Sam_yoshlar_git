@@ -1,3 +1,4 @@
+from django.core.validators import FileExtensionValidator
 from django.db import models
 
 from apps.core.constants import Region, Status
@@ -246,15 +247,24 @@ class FundingCurrency(models.TextChoices):
     USD = 'USD', "AQSH dollari"
 
 
+#: Mablag' olgan startap videosi
+FUNDED_VIDEO_EXTENSIONS = ['mp4', 'webm', 'mov', 'm4v']
+FUNDED_VIDEO_MAX_MB = 50
+FUNDED_PHOTO_LIMIT = 20
+
+
 class FundedStartup(TimeStampedModel):
     """Mablag' (grant, investitsiya) olgan startap — bosh sahifaning eng tepasida.
 
-    Panelda qo'lda qo'shiladi: rasm, nomi, qancha va kimdan mablag' olgani.
-    Saytda kartaga bosilsa — qisqa batafsil ma'lumot oynada ochiladi.
+    Panelda qo'lda qo'shiladi: asosiy rasm, qo'shimcha rasmlar, video, nomi,
+    qancha va kimdan mablag' olgani. Saytda kartaga bosilsa — batafsil oyna;
+    qo'shilganda botga «mablag' oldi» xabari ketadi.
     """
 
     name = models.CharField("Startap nomi", max_length=200)
-    image = models.ImageField("Rasm", upload_to='mablag/%Y/%m/', blank=True)
+    image = models.ImageField("Asosiy rasm", upload_to='mablag/%Y/%m/', blank=True)
+    video = models.FileField("Video", upload_to='mablag/video/%Y/%m/', blank=True,
+                             validators=[FileExtensionValidator(FUNDED_VIDEO_EXTENSIONS)])
     founder = models.CharField("Asoschi", max_length=200, blank=True)
     sphere = models.CharField("Yo'nalish", max_length=100, blank=True)
     amount = models.PositiveBigIntegerField("Olgan mablag'i", null=True, blank=True)
@@ -274,3 +284,20 @@ class FundedStartup(TimeStampedModel):
 
     def __str__(self):
         return self.name
+
+
+class FundedPhoto(TimeStampedModel):
+    """Mablag' olgan startapning qo'shimcha rasmlari (oynadagi galereya)."""
+
+    startup = models.ForeignKey(FundedStartup, verbose_name="Startap", on_delete=models.CASCADE,
+                                related_name='photos')
+    image = models.ImageField("Rasm", upload_to='mablag/galereya/%Y/%m/')
+    order = models.PositiveSmallIntegerField("Tartib", default=0)
+
+    class Meta:
+        verbose_name = "Mablag' olgan startap rasmi"
+        verbose_name_plural = "Mablag' olgan startap rasmlari"
+        ordering = ['order', 'id']
+
+    def __str__(self):
+        return f"{self.startup} — rasm #{self.pk}"

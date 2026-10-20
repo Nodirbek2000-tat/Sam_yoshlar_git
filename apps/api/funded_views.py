@@ -25,7 +25,7 @@ LIST_LIMIT = 60
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def funded_startups(request):
-    published = FundedStartup.objects.filter(is_published=True)
+    published = FundedStartup.objects.filter(is_published=True).prefetch_related('photos')
     totals = {row['currency']: row['total'] for row in
               published.order_by().values('currency').annotate(total=Sum('amount'))}
     return Response({
@@ -42,7 +42,7 @@ class PanelFundedStartups(APIView):
     parser_classes = [JSONParser, MultiPartParser, FormParser]
 
     def get(self, request):
-        queryset = FundedStartup.objects.all()
+        queryset = FundedStartup.objects.all().prefetch_related('photos')
         return Response({
             'count': queryset.count(),
             'results': s.PanelFundedStartupSerializer(queryset, many=True,
