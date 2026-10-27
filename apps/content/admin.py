@@ -1,7 +1,7 @@
 from django.contrib import admin
 
-from .models import (Announcement, Event, EventRegistration, News, NewsPhoto, Poll, PollOption,
-                     PollVote)
+from .models import (Announcement, Event, EventRegistration, News, NewsPhoto, Poll, PollCategory,
+                     PollOption, PollVote)
 
 
 class NewsPhotoInline(admin.TabularInline):
@@ -57,10 +57,16 @@ class AnnouncementAdmin(admin.ModelAdmin):
     list_editable = ['is_active']
 
 
+class PollCategoryInline(admin.TabularInline):
+    model = PollCategory
+    extra = 0
+    fields = ['order', 'emoji', 'title']
+
+
 class PollOptionInline(admin.TabularInline):
     model = PollOption
     extra = 0
-    fields = ['order', 'name', 'mahalla', 'district', 'photo']
+    fields = ['order', 'name', 'category', 'status', 'mahalla', 'district', 'phone', 'photo']
 
 
 @admin.register(Poll)
@@ -69,7 +75,7 @@ class PollAdmin(admin.ModelAdmin):
     list_filter = ['is_active', 'show_results']
     search_fields = ['title', 'options__name']
     readonly_fields = ['slug']
-    inlines = [PollOptionInline]
+    inlines = [PollCategoryInline, PollOptionInline]
 
     def save_related(self, request, form, formsets, change):
         super().save_related(request, form, formsets, change)

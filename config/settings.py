@@ -249,8 +249,8 @@ REST_FRAMEWORK = {
     ],
     'UNAUTHENTICATED_USER': 'django.contrib.auth.models.AnonymousUser',
     'DEFAULT_THROTTLE_CLASSES': [],
-    # Parol tanlashga urinishni cheklaymiz
-    'DEFAULT_THROTTLE_RATES': {'login': '10/min'},
+    # Parol tanlashga urinishni va so'rovnoma arizalarini (spam) cheklaymiz
+    'DEFAULT_THROTTLE_RATES': {'login': '10/min', 'poll_apply': '20/hour'},
     # Oldimizda bitta proksi (nginx) — foydalanuvchi manzili X-Forwarded-For
     # ning oxirgisi. Busiz hamma so'rov front konteyneridan kelgandek
     # ko'rinadi va cheklov butun sayt uchun bitta bo'lib qoladi.

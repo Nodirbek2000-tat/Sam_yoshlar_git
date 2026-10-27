@@ -1,3 +1,5 @@
+import secrets
+
 from django.core.validators import FileExtensionValidator
 from django.db import models
 from django.urls import reverse
@@ -262,6 +264,11 @@ class Poll(TimeStampedModel):
     # Kam ovoz bilan «1-o'rin» bo'lib ko'rinib qolmasin: shuncha ovozga yetmagan
     # nomzod ro'yxatda turadi, lekin 1-2-3 o'rin zinapoyasiga chiqmaydi
     podium_min_votes = models.PositiveIntegerField("Peshqadamlik uchun eng kam ovoz", default=1000)
+    # Nomzodlar o'zi ariza topshiradigan maxfiy havola: /sorovnomalar/ariza/<kalit>.
+    # Kalit faqat panelda ko'rinadi — havolani admin kerakli odamlarga o'zi tarqatadi
+    apply_token = models.CharField("Ariza havolasi kaliti", max_length=48, unique=True,
+                                   null=True, blank=True, editable=False)
+    apply_open = models.BooleanField("Ariza qabul qilinadi", default=False)
 
     class Meta:
         verbose_name = "So'rovnoma"
@@ -286,12 +293,58 @@ class Poll(TimeStampedModel):
         """Ovoz berish mumkinmi: saytda ko'rinadi va muddati o'tmagan."""
         return self.is_active and not self.is_closed
 
+    @property
+    def accepts_applications(self):
+        """Ariza havolasi ishlaydimi: qabul yoqilgan va ovoz berish tugamagan."""
+        return self.apply_open and not self.is_closed
+
+    def new_apply_token(self):
+        """Yangi kalit — eski havola darhol ishlamay qoladi."""
+        self.apply_token = secrets.token_urlsafe(18)
+
+
+class PollCategory(TimeStampedModel):
+    """Yo'nalish (nominatsiya): «Eng faol yoshlar yetakchisi» va h.k.
+
+    Yo'nalishi bor so'rovnomada reyting har yo'nalish ichida alohida, ovoz
+    ham har yo'nalishda bittadan beriladi.
+    """
+
+    poll = models.ForeignKey(Poll, verbose_name="So'rovnoma", on_delete=models.CASCADE,
+                             related_name='categories')
+    title = models.CharField("Nomi", max_length=150)
+    emoji = models.CharField("Belgi", max_length=8, blank=True)
+    order = models.PositiveSmallIntegerField("Tartib", default=0)
+
+    class Meta:
+        verbose_name = "Yo'nalish"
+        verbose_name_plural = "Yo'nalishlar"
+        ordering = ['order', 'pk']
+
+    def __str__(self):
+        return self.title
+
 
 class PollOption(TimeStampedModel):
-    """So'rovnomadagi bitta nomzod — mahalla yetakchisi yoki boshqa variant."""
+    """So'rovnomadagi bitta nomzod — mahalla yetakchisi yoki boshqa variant.
+
+    Panelda qo'shilgani darhol tasdiqlangan; havola orqali o'zi ariza bergani
+    admin tasdiqlaguncha saytda ko'rinmaydi.
+    """
+
+    class Status(models.TextChoices):
+        PENDING = 'pending', "Ko'rib chiqilmoqda"
+        APPROVED = 'approved', "Tasdiqlangan"
+        REJECTED = 'rejected', "Rad etilgan"
 
     poll = models.ForeignKey(Poll, verbose_name="So'rovnoma", on_delete=models.CASCADE,
                              related_name='options')
+    category = models.ForeignKey(PollCategory, verbose_name="Yo'nalish", null=True, blank=True,
+                                 on_delete=models.CASCADE, related_name='options')
+    status = models.CharField("Holat", max_length=12, choices=Status.choices,
+                              default=Status.APPROVED, db_index=True)
+    # Ariza beruvchining raqami — faqat panelda (bog'lanish uchun)
+    phone = models.CharField("Telefon", max_length=20, blank=True)
     name = models.CharField("F.I.O. / nomi", max_length=150)
     mahalla = models.CharField("Mahalla", max_length=150, blank=True)
     district = models.CharField("Tuman / shahar", max_length=30, blank=True,
@@ -310,8 +363,9 @@ class PollOption(TimeStampedModel):
 
 
 class PollVote(TimeStampedModel):
-    """Bitta ovoz. Bir kishi bitta so'rovnomada faqat bir marta ovoz beradi —
-    buni baza o'zi kafolatlaydi (bir vaqtda ikki marta bosilsa ham)."""
+    """Bitta ovoz. Bir kishi bitta so'rovnomada (yo'nalishli bo'lsa — har
+    yo'nalishda) faqat bir marta ovoz beradi — buni baza o'zi kafolatlaydi
+    (bir vaqtda ikki marta bosilsa ham)."""
 
     poll = models.ForeignKey(Poll, verbose_name="So'rovnoma", on_delete=models.CASCADE,
                              related_name='votes')
@@ -319,13 +373,20 @@ class PollVote(TimeStampedModel):
                                related_name='votes')
     user = models.ForeignKey('accounts.User', verbose_name="Foydalanuvchi",
                              on_delete=models.CASCADE, related_name='poll_votes')
+    # Yo'nalishli so'rovnomada — har yo'nalishda bitta ovoz (nomzodning yo'nalishi)
+    category = models.ForeignKey(PollCategory, verbose_name="Yo'nalish", null=True, blank=True,
+                                 on_delete=models.CASCADE, related_name='votes')
 
     class Meta:
         verbose_name = "So'rovnoma ovozi"
         verbose_name_plural = "So'rovnoma ovozlari"
         ordering = ['-created_at']
         constraints = [
-            models.UniqueConstraint(fields=['poll', 'user'], name='uniq_poll_vote_per_user'),
+            models.UniqueConstraint(fields=['poll', 'user'], name='uniq_poll_vote_per_user',
+                                    condition=models.Q(category__isnull=True)),
+            models.UniqueConstraint(fields=['poll', 'user', 'category'],
+                                    name='uniq_poll_vote_per_category',
+                                    condition=models.Q(category__isnull=False)),
         ]
 
     def __str__(self):

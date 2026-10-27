@@ -69,6 +69,8 @@ urlpatterns = [
     path('polls/', poll_views.poll_list, name='poll_list'),
     path('polls/<slug:slug>/', poll_views.poll_detail, name='poll_detail'),
     path('polls/<slug:slug>/vote/', poll_views.poll_vote, name='poll_vote'),
+    # Nomzodning o'zi ariza berishi — maxfiy havola
+    path('polls/ariza/<str:token>/', poll_views.PollApply.as_view(), name='poll_apply'),
 
     # --- Tashabbuslar ---
     path('directions/', views.DirectionList.as_view(), name='directions'),
@@ -157,6 +159,10 @@ urlpatterns = [
     path('panel/polls/', poll_views.PanelPolls.as_view(), name='panel_polls'),
     path('panel/polls/<int:pk>/', poll_views.PanelPollDetail.as_view(),
          name='panel_poll_detail'),
+    path('panel/polls/<int:pk>/arizalar/', poll_views.PanelPollApplications.as_view(),
+         name='panel_poll_applications'),
+    path('panel/polls/<int:pk>/arizalar/<int:option_id>/',
+         poll_views.PanelPollApplication.as_view(), name='panel_poll_application'),
     path('panel/polls/<int:pk>/natijalar/', poll_views.panel_poll_results,
          name='panel_poll_results'),
     path('panel/<slug:resource>/<int:pk>/holat/', admin_views.panel_moderate,

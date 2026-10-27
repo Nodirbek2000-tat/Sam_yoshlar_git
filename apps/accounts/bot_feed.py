@@ -178,7 +178,8 @@ def problem_published(sender, instance, **kwargs):
 def _poll_ready(poll):
     """So'rovnoma botga faqat ovoz berish ochiq va kamida 2 nomzod bo'lganda chiqadi —
     aks holda odam havolani ochib, bo'sh sahifa ko'radi."""
-    return poll.is_open and poll.options.count() >= 2
+    # Tasdiqlanmagan arizalar sanalmaydi — ular saytda ko'rinmaydi
+    return poll.is_open and poll.options.filter(status='approved').count() >= 2
 
 
 def enqueue_poll(poll):

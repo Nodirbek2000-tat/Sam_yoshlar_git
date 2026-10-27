@@ -383,12 +383,14 @@ class PollTests(TestCase):
         response = self.client.post('/boshqaruv/content/poll/add/', {
             'title': "Admin so'rovnomasi", 'description': '', 'ends_at_0': '', 'ends_at_1': '',
             'is_active': 'on', 'show_results': 'on', 'podium_min_votes': '1000',
+            'categories-TOTAL_FORMS': '0', 'categories-INITIAL_FORMS': '0',
+            'categories-MIN_NUM_FORMS': '0', 'categories-MAX_NUM_FORMS': '1000',
             'options-TOTAL_FORMS': '2', 'options-INITIAL_FORMS': '0',
             'options-MIN_NUM_FORMS': '0', 'options-MAX_NUM_FORMS': '1000',
             'options-0-order': '0', 'options-0-name': "Bir", 'options-0-mahalla': '',
-            'options-0-district': '',
+            'options-0-district': '', 'options-0-status': 'approved',
             'options-1-order': '1', 'options-1-name': "Ikki", 'options-1-mahalla': '',
-            'options-1-district': '',
+            'options-1-district': '', 'options-1-status': 'approved',
         })
         self.assertEqual(response.status_code, 302, response.content[:500])
         self.assertEqual(BotPost.objects.filter(kind=BotPost.Kind.POLL).count(), 1)
