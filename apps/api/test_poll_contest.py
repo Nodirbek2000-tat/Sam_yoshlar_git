@@ -100,6 +100,11 @@ class ContestTests(TestCase):
 
     # -- panel: yaratish ------------------------------------------------------
 
+    def test_poll_made_in_django_admin_also_gets_link(self):
+        poll = Poll.objects.create(title="Admin orqali")
+        self.assertTrue(poll.apply_token)
+        self.assertTrue(poll.apply_open)
+
     def test_contest_starts_without_candidates_and_gets_link(self):
         data = self.create()
         self.assertEqual([c['title'] for c in data['categories']], NOMINATIONS)

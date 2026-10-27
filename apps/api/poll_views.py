@@ -461,8 +461,16 @@ def truthy(value):
     return value is True or str(value).strip().lower() in ('1', 'true', 'on', 'yes')
 
 
+class OptionalBoolean(serializers.BooleanField):
+    """Formada yuborilmagan bo'lsa — «yo'q» emas, umuman tegilmaydi (model standarti qoladi)."""
+
+    default_empty_html = serializers.empty
+
+
 class PanelPollSerializer(serializers.ModelSerializer):
     image = serializers.ImageField(required=False, allow_null=True)
+    # Ariza qabul qilish standart holatda ochiq — panel formasi uni yubormaydi
+    apply_open = OptionalBoolean(required=False)
     remove_image = serializers.BooleanField(required=False, write_only=True)
 
     class Meta:
@@ -526,7 +534,8 @@ class CategoryInput(serializers.Serializer):
 
 
 def _json_list(request, name, broken):
-    raw = request.data.get(name)
+    # Yuborilmagan bo'lsa — bo'sh ro'yxat (masalan, nomzodlarsiz yangi so'rovnoma)
+    raw = request.data.get(name, [])
     if isinstance(raw, str):
         try:
             raw = json.loads(raw or '[]')
@@ -620,11 +629,10 @@ def parse_options(request, poll, refs):
     Ro'yxatda faqat tasdiqlangan nomzodlar: ko'rib chiqilayotgan arizalarga
     bu forma tegmaydi (ular «Arizalar» bo'limida). `refs` — yo'nalishlar;
     bo'sh bo'lmasa, har nomzodning yo'nalishi bo'lishi shart.
+
+    Nomzod kiritish shart emas — odatda ular havola orqali o'zi ariza beradi.
     """
     raw = _json_list(request, 'options', "Nomzodlar ro'yxati buzilgan.")
-    # Yo'nalishli so'rovnomada nomzodlar arizadan keladi — boshida bo'sh bo'lishi mumkin
-    if len(raw) < 2 and not refs:
-        raise serializers.ValidationError({'options': "Kamida 2 ta nomzod kiriting."})
     if len(raw) > MAX_OPTIONS:
         raise serializers.ValidationError(
             {'options': f"Nomzodlar {MAX_OPTIONS} tadan oshmasin."})
@@ -791,8 +799,8 @@ def save_poll(request, poll):
 
     with transaction.atomic():
         poll = serializer.save()
-        # Ariza havolasi: qabul birinchi marta yoqilganda yoki admin yangisini so'raganda
-        if truthy(request.data.get('new_apply_link')) or (poll.apply_open and not poll.apply_token):
+        # Ariza havolasi har so'rovnomada bor (model o'zi yaratadi); bu — admin yangisini so'raganda
+        if truthy(request.data.get('new_apply_link')):
             poll.new_apply_token()
             poll.save(update_fields=['apply_token', 'updated_at'])
         if categories is not None:

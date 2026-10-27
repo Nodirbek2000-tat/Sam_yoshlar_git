@@ -265,10 +265,11 @@ class Poll(TimeStampedModel):
     # nomzod ro'yxatda turadi, lekin 1-2-3 o'rin zinapoyasiga chiqmaydi
     podium_min_votes = models.PositiveIntegerField("Peshqadamlik uchun eng kam ovoz", default=1000)
     # Nomzodlar o'zi ariza topshiradigan maxfiy havola: /sorovnomalar/ariza/<kalit>.
-    # Kalit faqat panelda ko'rinadi — havolani admin kerakli odamlarga o'zi tarqatadi
+    # Har so'rovnomada yaratilishi bilan bor; kalit faqat panelda ko'rinadi —
+    # havolani admin kerakli odamlarga o'zi tarqatadi
     apply_token = models.CharField("Ariza havolasi kaliti", max_length=48, unique=True,
                                    null=True, blank=True, editable=False)
-    apply_open = models.BooleanField("Ariza qabul qilinadi", default=False)
+    apply_open = models.BooleanField("Ariza qabul qilinadi", default=True)
 
     class Meta:
         verbose_name = "So'rovnoma"
@@ -282,6 +283,8 @@ class Poll(TimeStampedModel):
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = _unique_slug(Poll, self.title, self.pk, 'sorovnoma')
+        if not self.apply_token:
+            self.new_apply_token()
         super().save(*args, **kwargs)
 
     @property

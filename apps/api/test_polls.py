@@ -87,11 +87,18 @@ class PollTests(TestCase):
         self.assertFalse(self.option("Rasulov Sardor").photo)
         self.assertEqual(data['editable'][1]['district_display'], "Samarqand shahri")
 
-    def test_poll_needs_two_options(self):
-        response = self.create(options=[{'name': "Yolg'iz"}])
-        self.assertEqual(response.status_code, 400)
-        self.assertIn("Kamida 2", response.json()['options'])
-        self.assertFalse(Poll.objects.exists())
+    def test_poll_starts_without_candidates_and_gets_apply_link(self):
+        # Nomzodlar havola orqali o'zi keladi — so'rovnoma bo'sh ochiladi
+        response = self.client.post('/api/v1/panel/polls/', {
+            'title': "Eng yaxshi mahalla yetakchisi", 'is_active': 'true'}, **auth(self.admin))
+        self.assertEqual(response.status_code, 201, response.content)
+        data = response.json()
+        self.assertEqual(data['options_count'], 0)
+        poll = self.poll()
+        self.assertTrue(poll.apply_open)
+        self.assertEqual(data['apply_url'], f'/sorovnomalar/ariza/{poll.apply_token}')
+        info = self.client.get(f'/api/v1/polls/ariza/{poll.apply_token}/').json()
+        self.assertTrue(info['accepts'])
 
     def test_bad_option_rejects_everything(self):
         response = self.create(options=[{'name': "Bir"}, {'name': ""}])
